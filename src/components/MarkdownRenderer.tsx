@@ -126,14 +126,16 @@ const renderVideoTag = (tag: string, key: string): React.ReactNode => {
 // Replace raw HTML img/video tags in text with placeholders
 const extractHtmlTags = (text: string): React.ReactNode[] => {
   const parts: React.ReactNode[] = [];
+  // Handle markdown images ![alt](url) by converting to <img> tags
+  const mdImgConverted = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />');
   const imgRegex = /<img[^>]+>/gi;
   const videoRegex = /<video[^>]*>[\s\S]*?<\/video>|<video[^>]+>/gi;
   let lastIndex = 0;
   let keyIdx = 0;
   // Process images first
-  let remaining = text;
+  let remaining = mdImgConverted;
   const segments: { type: string; content: string; start: number; end: number }[] = [];
-  let tmp = text;
+  let tmp = mdImgConverted;
   let offset = 0;
   imgRegex.lastIndex = 0;
   videoRegex.lastIndex = 0;
@@ -141,14 +143,14 @@ const extractHtmlTags = (text: string): React.ReactNode[] => {
   const allMatches: { type: string; content: string; index: number }[] = [];
   let m;
   const imgRe = /<img[^>]+>/gi;
-  while ((m = imgRe.exec(text)) !== null) { allMatches.push({ type: 'img', content: m[0], index: m.index }); }
+  while ((m = imgRe.exec(mdImgConverted)) !== null) { allMatches.push({ type: 'img', content: m[0], index: m.index }); }
   const vidRe = /<video[^>]*>[\s\S]*?<\/video>|<video[^>]+>/gi;
-  while ((m = vidRe.exec(text)) !== null) { allMatches.push({ type: 'video', content: m[0], index: m.index }); }
+  while ((m = vidRe.exec(mdImgConverted)) !== null) { allMatches.push({ type: 'video', content: m[0], index: m.index }); }
   allMatches.sort((a, b) => a.index - b.index);
   let pos = 0;
   for (const match of allMatches) {
     if (match.index > pos) {
-      parts.push(text.slice(pos, match.index) as any);  // raw string for caller to format
+      parts.push(mdImgConverted.slice(pos, match.index) as any);  // raw string for caller to format
     }
     if (match.type === 'img') parts.push(renderImgTag(match.content, `img-${keyIdx++}`));
     else parts.push(renderVideoTag(match.content, `vid-${keyIdx++}`));
@@ -340,6 +342,20 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
           <View key={`ol-${i}`} style={styles.listItem}>
             <Text style={{ color: Colors.primary, fontSize: FontSize.md, fontWeight: '600', width: 24 }}>{match[1]}.</Text>
             <Text style={{ color: textColor, fontSize: FontSize.md, flex: 1 }}>{renderInline(match[2], `ol-${i}`)}</Text>
+          </View>
+        );
+      }
+    }
+    // Markdown 图片 ![alt](url)
+    else if (/^!\[([^\]]*)\]\(([^)]+)\)/i.test(line.trim())) {
+      const mdImgMatch = line.trim().match(/^!\[([^\]]*)\]\(([^)]+)\)/);
+      if (mdImgMatch) {
+        const alt = mdImgMatch[1] || '';
+        const src = mdImgMatch[2];
+        elements.push(
+          <View key={`md-img-${i}`} style={[styles.imgContainer]}>
+            <Image source={{ uri: src }} style={styles.img} resizeMode="cover" />
+            {alt ? <Text style={{ fontSize: 11, color: '#94a3b8', marginTop: 4, textAlign: 'center' }}>{alt}</Text> : null}
           </View>
         );
       }
