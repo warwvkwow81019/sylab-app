@@ -35,6 +35,13 @@ function VideoPlayerInline({ src, videoKey }: { src: string; videoKey: string })
 }
 
 function NativeVideoInline({ src }: { src: string }) {
+  const player = useVideoPlayer(src, p => { p.loop = false; });
+  return (
+    <View style={{ marginVertical: 8, borderRadius: 12, overflow: 'hidden', backgroundColor: '#000' }}>
+      <VideoView player={player} style={{ width: '100%', height: 200, borderRadius: 12 }} contentFit="contain" allowsFullscreen allowsPictureInPicture />
+    </View>
+  );
+}: { src: string }) {
   try {
     const player = useVideoPlayer(src, p => { p.loop = false; });
     return (

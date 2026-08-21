@@ -242,31 +242,18 @@ function CompletedVideoCard({ videoUrl, isDark }: { videoUrl: string; isDark: bo
 }
 
 function NativeVideoPlayer({ videoUrl, isDark }: { videoUrl: string; isDark: boolean }) {
-  try {
-    const player = useVideoPlayer(videoUrl, p => { p.loop = false; });
-    return (
-      <View style={{ marginHorizontal: 12, marginVertical: 6 }}>
-        <View style={{ backgroundColor: isDark ? '#1e293b' : '#fff', borderRadius: 16, padding: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 2 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-            <Ionicons name="videocam" size={20} color="#8B5CF6" />
-            <Text style={{ color: isDark ? '#f1f5f9' : '#1f2937', fontSize: 14, fontWeight: '600', marginLeft: 8 }}>视频已生成</Text>
-          </View>
-          <VideoView player={player} style={{ width: '100%', height: 220, borderRadius: 12, backgroundColor: '#000' }} contentFit="contain" allowsFullscreen allowsPictureInPicture />
+  const player = useVideoPlayer(videoUrl, p => { p.loop = false; });
+  return (
+    <View style={{ marginHorizontal: 12, marginVertical: 6 }}>
+      <View style={{ backgroundColor: isDark ? '#1e293b' : '#fff', borderRadius: 16, padding: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 2 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+          <Ionicons name="videocam" size={20} color="#8B5CF6" />
+          <Text style={{ color: isDark ? '#f1f5f9' : '#1f2937', fontSize: 14, fontWeight: '600', marginLeft: 8 }}>视频已生成</Text>
         </View>
+        <VideoView player={player} style={{ width: '100%', height: 220, borderRadius: 12, backgroundColor: '#000' }} contentFit="contain" allowsFullscreen allowsPictureInPicture />
       </View>
-    );
-  } catch (e) {
-    return (
-      <View style={{ marginHorizontal: 12, marginVertical: 4 }}>
-        <View style={{ backgroundColor: isDark ? '#1e293b' : '#fff', borderRadius: 16, padding: 16 }}>
-          <Ionicons name="videocam-outline" size={24} color="#8B5CF6" />
-          <TouchableOpacity onPress={() => Linking.openURL(videoUrl)} style={{ marginTop: 8, padding: 8, backgroundColor: '#8B5CF6', borderRadius: 8 }}>
-            <Text style={{ color: '#fff', fontSize: 12, textAlign: 'center' }}>点击查看视频</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
+    </View>
+  );
 }
 
 // Strip technical info (task_id, API URLs) from AI message for display
