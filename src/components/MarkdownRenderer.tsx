@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Linking, Platform } from 'react-native';
-import { VideoView, useVideoPlayer } from 'expo-video';
+// expo-video removed - use safe link instead
 import { Colors, Spacing, BorderRadius, FontSize } from '../constants/theme';
 
 interface MarkdownRendererProps {
@@ -22,21 +22,14 @@ const webWrapCSS = Platform.OS === 'web' ? `
  * 支持：标题、粗体、斜体、代码块、行内代码、列表、引用、链接
  */
 
-// Inline video player component for video URLs
+// Inline video player component - simplified to avoid expo-video native module issues
 function VideoPlayerInline({ src, videoKey }: { src: string; videoKey: string }) {
-  const player = useVideoPlayer(src, player => {
-    player.loop = false;
-    player.play();
-  });
-
   return (
-    <View style={{ marginVertical: 8, borderRadius: 12, overflow: 'hidden' }}>
-      <VideoView
-        player={player}
-        style={{ width: '100%', height: 220 }}
-        allowsFullscreen
-        allowsPictureInPicture
-      />
+    <View style={{ marginVertical: 8, borderRadius: 12, overflow: 'hidden', backgroundColor: '#1e293b', padding: 12 }}>
+      <TouchableOpacity onPress={() => Linking.openURL(src)} style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={{ color: '#fff', fontSize: 18, marginRight: 8 }}>▶</Text>
+        <Text style={{ color: '#60a5fa', fontSize: 13 }}>点击播放视频</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -62,7 +55,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, isD
     return parts.map((part, i) => {
       if (part.startsWith('`') && part.endsWith('`')) {
         return (
-          <Text key={`${key}-code-${i}`} style={[styles.inlineCode, { backgroundColor: codeBg, color: isDark ? '#d4d4d4' : '#e01e5a' }]}>
+          <Text key={`${key}-code-${i}`} style={[styles.inlineCode, { backgroundColor: codeBg, color: isDark ? '#d4d4d4' : '#334155' }]}>
             {part.slice(1, -1)}
           </Text>
         );

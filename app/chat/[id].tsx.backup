@@ -73,6 +73,16 @@ class ChatErrorBoundary extends React.Component<
 
 
 
+// Global error handler for debugging
+if (typeof window !== "undefined") {
+  window.addEventListener("error", (e) => {
+    console.error("[GlobalError]", e.message, e.filename, e.lineno);
+  });
+  window.addEventListener("unhandledrejection", (e) => {
+    console.error("[UnhandledRejection]", e.reason);
+  });
+}
+
 // Module-level message tracker - survives component remounts
 let _sessionMessages: any[] = [];
 // Nuclear backup: Map<convId, messages[]> - survives any reset

@@ -70,6 +70,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   const [inputHeight, setInputHeight] = useState(40);
 
   useEffect(() => {
+    if (Platform.OS !== 'web') return;
     if (!inputRef.current) return;
     const node = inputRef.current as any;
     const el = node?.getElement ? node.getElement() : node;
@@ -269,7 +270,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           onPress={handleFileSelect}
           activeOpacity={0.7}
         >
-          <Ionicons name="add" size={22} color={Colors.textSecondary} />
+          <Ionicons name="attach" size={22} color={Colors.textSecondary} />
         </TouchableOpacity>
 
         <TextInput

@@ -9,5 +9,5 @@ export { pluginApi } from './plugin';
 export { automationApi } from './automation';
 export { projectApi } from './project';
 export { sendMessageStream, isBotOpenApiEnabled } from './sse';
-export { webApiClient, openApiClient, noAuthClient, setSessionId, setBearerToken, clearAuth, normalizeIds } from './client';
+export { webApiClient, webApiClient, noAuthClient, setSessionId, setBearerToken, clearAuth, normalizeIds } from './client';
 export { creditsApi } from './credits';

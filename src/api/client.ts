@@ -34,6 +34,10 @@ function createClient(options: ClientOptions): AxiosInstance {
           config.headers['X-Session-Id'] = options.sessionId;
           config.headers['Cookie'] = `session_key=${options.sessionId}`;
         }
+        // Also add bearer token for dual-auth endpoints
+        if (options.bearerToken) {
+          config.headers['Authorization'] = `Bearer ${options.bearerToken}`;
+        }
         break;
       case 'bearer':
         if (options.bearerToken) {
@@ -101,6 +105,7 @@ export const webApiClient = createClient({
   baseURL: API_BASE,
   authMode: 'session',
   get sessionId() { return _sessionId; },
+  get bearerToken() { return _bearerToken; },
 });
 
 export const openApiClient = createClient({

@@ -3,7 +3,7 @@
  * - 列表/详情/删除/发布 → WebAPI (Session): /api/workflow_api/*
  * - 运行/流式运行 → OpenAPI (Bearer PAT): /v1/workflow/*
  */
-import { webApiClient, openApiClient } from './client';
+import { webApiClient } from './client';
 import { API_PATHS } from '../constants';
 import type { SnowflakeId } from '../types/api';
 
@@ -56,9 +56,9 @@ export const workflowApi = {
 
   /** 运行工作流 (OpenAPI, 同步) */
   run: (data: { workflow_id: SnowflakeId; parameters?: Record<string, any> }) =>
-    openApiClient.post('/v1/workflow/run', data).then((r) => r.data),
+    webApiClient.post('/v1/workflow/run', data).then((r) => r.data),
 
   /** 流式运行工作流 (OpenAPI, SSE) */
   streamRun: (data: { workflow_id: SnowflakeId; parameters?: Record<string, any> }) =>
-    openApiClient.post('/v1/workflow/stream_run', data).then((r) => r.data),
+    webApiClient.post('/v1/workflow/stream_run', data).then((r) => r.data),
 };

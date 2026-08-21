@@ -3,7 +3,7 @@
  * - 列表/搜索 → WebAPI (Session): /api/intelligence_api/search/get_draft_intelligence_list
  * - 详情 → OpenAPI (Bearer PAT): /v1/bots/:id
  */
-import { webApiClient, openApiClient } from './client';
+import { webApiClient } from './client';
 import { API_PATHS, OPENAPI_CONNECTOR_ID } from '../constants';
 import type { SnowflakeId } from '../types/api';
 
@@ -85,7 +85,7 @@ export const botApi = {
 
   /** Bot 详情 (OpenAPI) */
   get: (id: SnowflakeId) =>
-    openApiClient.get(API_PATHS.BOT_DETAIL(id)).then((r) => {
+    webApiClient.get(API_PATHS.BOT_DETAIL(id)).then((r) => {
       const data = r.data?.data || r.data;
       return data;
     }),

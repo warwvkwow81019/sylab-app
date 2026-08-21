@@ -17,7 +17,7 @@ buildscript {
     dependencies {
         classpath('com.android.tools.build:gradle')
         classpath('com.facebook.react:react-native-gradle-plugin')
-        classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
+        classpath('org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.25')
     }
 }
 
@@ -39,3 +39,9 @@ allprojects {
         maven { url 'https://www.jitpack.io' }
     }
 }
+
+// Fix: expo-modules-core reads rootProject.ext.kotlinVersion (not buildscript.ext)
+ext {
+    kotlinVersion = "1.9.25"
+}
+

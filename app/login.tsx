@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Platform, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuthStore } from '../src/store/auth';
@@ -27,7 +27,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <View style={styles.container}>
       <LinearGradient colors={[Colors.gradientStart, Colors.gradientEnd]} style={styles.gradient}>
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
           {/* Logo Area */}
@@ -95,7 +95,7 @@ export default function LoginScreen() {
           </View>
         </ScrollView>
       </LinearGradient>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 

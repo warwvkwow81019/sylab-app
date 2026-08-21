@@ -1,10 +1,38 @@
 import React, { useEffect } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useAuthStore } from '../src/store/auth';
 import { Colors } from '../src/constants/theme';
+
+
+class RootErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean; error: string}> {
+  constructor(props: {children: React.ReactNode}) {
+    super(props);
+    this.state = { hasError: false, error: '' };
+  }
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error: String(error?.message || error) };
+  }
+  componentDidCatch(error: any, info: any) {
+    console.error('[RootErrorBoundary]', error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <View style={{flex:1, justifyContent:'center', alignItems:'center', padding:20, backgroundColor:'#fff'}}>
+          <Text style={{fontSize:20, fontWeight:'bold', color:'#ef4444', marginBottom:12}}>App Error</Text>
+          <Text style={{fontSize:13, color:'#6b7280', textAlign:'center', marginBottom:20}}>{this.state.error}</Text>
+          <TouchableOpacity onPress={() => this.setState({hasError:false, error:''})} style={{padding:12, backgroundColor:'#8B5CF6', borderRadius:8}}>
+            <Text style={{color:'#fff', fontSize:15, fontWeight:'600'}}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 function RootLayoutNav() {
   const { isRestoring, user } = useAuthStore();
@@ -70,12 +98,15 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   const restore = useAuthStore((s) => s.restore);
+  
+  console.log("[DEBUG] RootLayout rendering...");
 
   useEffect(() => {
+    console.log("[DEBUG] RootLayout useEffect - calling restore()");
     restore();
   }, []);
 
-  return <RootLayoutNav />;
+  return <RootErrorBoundary><RootLayoutNav /></RootErrorBoundary>;
 }
 
 const styles = StyleSheet.create({

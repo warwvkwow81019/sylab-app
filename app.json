@@ -11,9 +11,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.sylab.app",
       "infoPlist": {
-        "NSCameraUsageDescription": "\u5141\u8bb8\u8bbf\u95ee\u76f8\u673a\u4ee5\u62cd\u6444\u7167\u7247",
-        "NSPhotoLibraryUsageDescription": "\u5141\u8bb8\u8bbf\u95ee\u7167\u7247\u4ee5\u4e0a\u4f20\u6587\u4ef6",
-        "NSMicrophoneUsageDescription": "\u5141\u8bb8\u4f7f\u7528\u9ea6\u514b\u98ce\u8fdb\u884c\u8bed\u97f3\u8f93\u5165"
+        "NSCameraUsageDescription": "允许访问相机以拍摄照片",
+        "NSPhotoLibraryUsageDescription": "允许访问照片以上传文件",
+        "NSMicrophoneUsageDescription": "允许使用麦克风进行语音输入"
       }
     },
     "android": {
@@ -22,10 +22,10 @@
       },
       "package": "com.sylab.app",
       "permissions": [
-        "CAMERA",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE",
-        "RECORD_AUDIO"
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -39,8 +39,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "\u5141\u8bb8\u8bbf\u95ee\u7167\u7247\u4ee5\u4e0a\u4f20\u6587\u4ef6",
-          "cameraPermission": "\u5141\u8bb8\u62cd\u6444\u7167\u7247"
+          "photosPermission": "允许访问照片以上传文件",
+          "cameraPermission": "允许拍摄照片"
         }
       ],
       [
@@ -55,7 +55,13 @@
       "typedRoutes": true
     },
     "extra": {
-      "eas": {}
-    }
+      "eas": {
+        "projectId": "d96bf15e-fb28-4efa-bad6-3449a5f8e0b7"
+      },
+      "router": {
+        "origin": false
+      }
+    },
+    "owner": "ahuaj"
   }
 }

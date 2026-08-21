@@ -1,15 +1,19 @@
-import React from 'react';
-import { View } from 'react-native';
+import React from "react";
+import { View, ActivityIndicator, Text, StyleSheet } from "react-native";
 
-type SkeletonType = 'chat-list' | 'chat-detail' | 'card-grid' | 'list';
+type SkeletonType = "chat-list" | "chat-detail" | "card-grid" | "list";
+interface SkeletonLoaderProps { type: SkeletonType; visible: boolean; delay?: number; }
 
-interface SkeletonLoaderProps {
-  type: SkeletonType;
-  visible: boolean;
-  delay?: number;
+export function SkeletonLoader({ visible }: SkeletonLoaderProps) {
+  if (!visible) return null;
+  return (
+    <View style={styles.container}>
+      <ActivityIndicator size="large" color="#8B5CF6" />
+      <Text style={styles.text}>加载中...</Text>
+    </View>
+  );
 }
-
-// 临时禁用骨架屏（排查Web端页面抖动问题）
-export function SkeletonLoader({ type, visible, delay }: SkeletonLoaderProps) {
-  return null;
-}
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: "center", alignItems: "center" },
+  text: { marginTop: 12, fontSize: 14, color: "#9ca3af" },
+});

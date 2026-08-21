@@ -73,13 +73,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         created_at: String(data.user_create_time || Date.now()),
       };
 
-      // Extract session key from cookie (set by server Set-Cookie header)
-      // Session auth is used for conversation APIs (user-isolated)
+      // Extract session_key from login response
+      const sessionKey = data?.session_key || '';
+      if (sessionKey) {
+        await Storage.setItem(SESSION_KEY, sessionKey);
+        setSessionId(sessionKey);
+      }
+
       const defaultPat = process.env.EXPO_PUBLIC_DEFAULT_PAT || 'pat_f360e4508904a857bf1466629c9ecc4f53abd2c4cb6572fa76667fceefb24de4';
       await Storage.setItem(PAT_KEY, defaultPat);
       setBearerToken(defaultPat);
       await Storage.setItem(USER_KEY, JSON.stringify(user));
-      set({ user, sessionId: null, patToken: defaultPat, isLoading: false });
+      set({ user, sessionId: sessionKey || null, patToken: defaultPat, isLoading: false });
     } catch (error) {
       set({ isLoading: false });
       throw error;

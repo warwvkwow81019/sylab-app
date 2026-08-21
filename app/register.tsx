@@ -115,7 +115,7 @@ export default function RegisterScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
       <LinearGradient colors={[Colors.gradientStart, Colors.gradientEnd]} style={styles.gradient}>
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
           {/* Logo */}
