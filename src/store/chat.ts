@@ -93,7 +93,8 @@ export const useChatStore = create<ChatState>((set) => ({
     }
     // Prevent duplicate tool calls
     if (!name) return state;
-    const isDuplicate = state.toolCalls.some(tc => tc.name === name && tc.arguments === args);
+    // Allow status update from onToolCallStart (empty args)
+    const isDuplicate = args === '' ? false : state.toolCalls.some(tc => tc.name === name && tc.arguments === args);
     if (isDuplicate) return state;
     // Detect generation type from tool name
     const lowerName = name.toLowerCase();

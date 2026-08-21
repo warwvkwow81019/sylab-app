@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Linking, Platform } from 'react-native';
-// expo-video removed - use safe link instead
+import { useVideoPlayer, VideoView } from 'expo-video';
 import { Colors, Spacing, BorderRadius, FontSize } from '../constants/theme';
 
 interface MarkdownRendererProps {
@@ -22,16 +22,36 @@ const webWrapCSS = Platform.OS === 'web' ? `
  * 支持：标题、粗体、斜体、代码块、行内代码、列表、引用、链接
  */
 
-// Inline video player component - simplified to avoid expo-video native module issues
+// Inline video player component
 function VideoPlayerInline({ src, videoKey }: { src: string; videoKey: string }) {
-  return (
-    <View style={{ marginVertical: 8, borderRadius: 12, overflow: 'hidden', backgroundColor: '#1e293b', padding: 12 }}>
-      <TouchableOpacity onPress={() => Linking.openURL(src)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ color: '#fff', fontSize: 18, marginRight: 8 }}>▶</Text>
-        <Text style={{ color: '#60a5fa', fontSize: 13 }}>点击播放视频</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  if (Platform.OS === 'web') {
+    return (
+      <View style={{ marginVertical: 8, borderRadius: 12, overflow: 'hidden' }}>
+        <video src={src} controls style={{ width: '100%', maxWidth: 480, borderRadius: 12, backgroundColor: '#000' }} />
+      </View>
+    );
+  }
+  return <NativeVideoInline src={src} />;
+}
+
+function NativeVideoInline({ src }: { src: string }) {
+  try {
+    const player = useVideoPlayer(src, p => { p.loop = false; });
+    return (
+      <View style={{ marginVertical: 8, borderRadius: 12, overflow: 'hidden', backgroundColor: '#000' }}>
+        <VideoView player={player} style={{ width: '100%', height: 200, borderRadius: 12 }} contentFit="contain" allowsFullscreen allowsPictureInPicture />
+      </View>
+    );
+  } catch (e) {
+    return (
+      <View style={{ marginVertical: 8, borderRadius: 12, overflow: 'hidden', backgroundColor: '#1e293b', padding: 12 }}>
+        <TouchableOpacity onPress={() => Linking.openURL(src)} style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={{ color: '#fff', fontSize: 18, marginRight: 8 }}>▶</Text>
+          <Text style={{ color: '#60a5fa', fontSize: 13 }}>点击播放视频</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 }
 
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, isDark }) => {

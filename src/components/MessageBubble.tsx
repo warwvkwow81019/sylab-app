@@ -208,11 +208,11 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isDark, u
 };
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', marginVertical: 6, paddingHorizontal: 16, flex: 1 },
+  row: { flexDirection: 'row', marginVertical: 6, paddingHorizontal: 16 },
   avatar: { width: 30, height: 30, borderRadius: 15, justifyContent: 'center', alignItems: 'center', marginHorizontal: 6, flexShrink: 0 },
   avatarText: { color: '#fff', fontSize: FontSize.xs, fontWeight: '600' },
   bubble: { flexShrink: 1, maxWidth: '96%', paddingHorizontal: 12, paddingVertical: 8, borderRadius: BorderRadius.md },
-  bubbleWrapper: { flexShrink: 1, flex: 1 },
+  bubbleWrapper: { flexShrink: 1 },
   userBubble: { borderBottomRightRadius: BorderRadius.xs },
   userText: { fontSize: FontSize.md, lineHeight: FontSize.md * 1.5 },
   assistantBubble: { borderBottomLeftRadius: BorderRadius.xs },

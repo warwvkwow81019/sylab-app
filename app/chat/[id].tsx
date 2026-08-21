@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, FlatList, KeyboardAvoidingView, Platform, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Alert, Dimensions, StatusBar, TextInput, Animated, ScrollView, Linking } from 'react-native';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import NetInfo from '@react-native-community/netinfo';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
@@ -221,26 +222,51 @@ function VideoGenerationOverlay({ status, progress }: { status: string; progress
   );
 }
 
-// Completed video card - shows video link (simplified to avoid expo-video issues)
+// Completed video card - inline video playback
 function CompletedVideoCard({ videoUrl, isDark }: { videoUrl: string; isDark: boolean }) {
-  return (
-    <View style={{ marginHorizontal: 12, marginVertical: 4 }}>
-      <View style={{ backgroundColor: isDark ? '#1e293b' : '#fff', borderRadius: 16, padding: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 2 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Ionicons name="videocam-outline" size={24} color="#8B5CF6" />
-          <Text style={{ color: isDark ? '#f1f5f9' : '#1f2937', fontSize: 14, fontWeight: '600', marginLeft: 8 }}>视频已生成完成</Text>
+  if (!videoUrl) return null;
+  if (Platform.OS === 'web') {
+    return (
+      <View style={{ marginHorizontal: 12, marginVertical: 6 }}>
+        <View style={{ backgroundColor: isDark ? '#1e293b' : '#fff', borderRadius: 16, padding: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 2 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+            <Ionicons name="videocam" size={20} color="#8B5CF6" />
+            <Text style={{ color: isDark ? '#f1f5f9' : '#1f2937', fontSize: 14, fontWeight: '600', marginLeft: 8 }}>视频已生成</Text>
+          </View>
+          <video src={videoUrl} controls style={{ width: '100%', maxWidth: 480, borderRadius: 12, backgroundColor: '#000' }} />
         </View>
-        <TouchableOpacity onPress={() => {
-            if (videoUrl) {
-              if (Platform.OS === 'web') { window.open(videoUrl, '_blank'); }
-              else { Linking.openURL(videoUrl); }
-            }
-          }} style={{ marginTop: 8, padding: 8, backgroundColor: '#8B5CF6', borderRadius: 8 }}>
-          <Text style={{ color: '#fff', fontSize: 12, textAlign: 'center' }}>点击查看视频</Text>
-        </TouchableOpacity>
       </View>
-    </View>
-  );
+    );
+  }
+  return <NativeVideoPlayer videoUrl={videoUrl} isDark={isDark} />;
+}
+
+function NativeVideoPlayer({ videoUrl, isDark }: { videoUrl: string; isDark: boolean }) {
+  try {
+    const player = useVideoPlayer(videoUrl, p => { p.loop = false; });
+    return (
+      <View style={{ marginHorizontal: 12, marginVertical: 6 }}>
+        <View style={{ backgroundColor: isDark ? '#1e293b' : '#fff', borderRadius: 16, padding: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 2 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+            <Ionicons name="videocam" size={20} color="#8B5CF6" />
+            <Text style={{ color: isDark ? '#f1f5f9' : '#1f2937', fontSize: 14, fontWeight: '600', marginLeft: 8 }}>视频已生成</Text>
+          </View>
+          <VideoView player={player} style={{ width: '100%', height: 220, borderRadius: 12, backgroundColor: '#000' }} contentFit="contain" allowsFullscreen allowsPictureInPicture />
+        </View>
+      </View>
+    );
+  } catch (e) {
+    return (
+      <View style={{ marginHorizontal: 12, marginVertical: 4 }}>
+        <View style={{ backgroundColor: isDark ? '#1e293b' : '#fff', borderRadius: 16, padding: 16 }}>
+          <Ionicons name="videocam-outline" size={24} color="#8B5CF6" />
+          <TouchableOpacity onPress={() => Linking.openURL(videoUrl)} style={{ marginTop: 8, padding: 8, backgroundColor: '#8B5CF6', borderRadius: 8 }}>
+            <Text style={{ color: '#fff', fontSize: 12, textAlign: 'center' }}>点击查看视频</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
 }
 
 // Strip technical info (task_id, API URLs) from AI message for display
@@ -869,8 +895,9 @@ function ChatDetailScreenInner() {
           appendDelta(delta);
         },
         onToolCallStart: (toolName) => {
-    console.log("[ToolStart]", toolName);
-  },
+          console.log("[ToolStart]", toolName);
+          if (toolName) appendToolCall(toolName, '');
+        },
         onToolCall: (name, args, result) => {
           appendToolCall(name, args, result);
           // Detect video task_id from tool result and start polling immediately
@@ -1140,7 +1167,10 @@ function ChatDetailScreenInner() {
             }
           }
         },
-        onStatus: (status) => console.log('[SSE status]', status),
+        onStatus: (status) => {
+          console.log('[SSE status]', status);
+          if (status) setActivityStatus(status);
+        },
       }
     );
   };
