@@ -430,8 +430,11 @@ function ChatDetailScreenInner() {
     }
   }, [activityStatus, streamingContent, generatingType, isStreaming]);
 
+  const lastLoadMoreRef = useRef(0);
   const loadMoreMessages = async () => {
-    if (loadingMoreRef.current || !hasMore || isNewChat) return;
+    const now = Date.now();
+    if (loadingMoreRef.current || !hasMore || isNewChat || (now - lastLoadMoreRef.current < 2000)) return;
+    lastLoadMoreRef.current = now;
     const convId = conversationId || id || "";
     if (!convId) return;
     
@@ -1436,7 +1439,7 @@ function ChatDetailScreenInner() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: isDark ? '#0f172a' : '#fff' }]}>
+    <KeyboardAvoidingView style={[styles.container, { backgroundColor: isDark ? '#0f172a' : '#fff' }]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={0}>
 
 
       {showSearch && (
@@ -1631,7 +1634,7 @@ function ChatDetailScreenInner() {
         </TouchableOpacity>
       </Modal>
 
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
