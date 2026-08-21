@@ -381,7 +381,7 @@ export default function ChatListScreen() {
           try {
             const currentUser = useAuthStore.getState().user;
             const userId = currentUser?.id || '';
-            console.log("[FAB] Creating conversation, userId:", userId);
+            console.log("[FAB] API_BASE:", require("../src/api/client").webApiClient.defaults.baseURL); console.log("[FAB] OPEN_API_BASE:", require("../src/api/client").openApiClient.defaults.baseURL); console.log("[FAB] Creating conversation, userId:", userId);
             const conv = await chatApi.createConversation(DEFAULT_BOT_ID, '', userId);
             console.log("[FAB] Create result:", JSON.stringify(conv));
             if (conv?.id) {

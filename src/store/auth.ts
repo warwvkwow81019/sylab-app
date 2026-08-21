@@ -44,6 +44,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       if (patToken) {
         setBearerToken(patToken);
         set({ patToken });
+      } else if (sessionId) {
+        // Old user without PAT in storage - set default fallback
+        const defaultPat = "pat_f360e4508904a857bf1466629c9ecc4f53abd2c4cb6572fa76667fceefb24de4";
+        setBearerToken(defaultPat);
+        await Storage.setItem(PAT_KEY, defaultPat);
+        set({ patToken: defaultPat });
       }
       if (userStr) {
         set({ user: JSON.parse(userStr) });

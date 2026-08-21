@@ -95,7 +95,7 @@ function createClient(options: ClientOptions): AxiosInstance {
 
 // 4 种客户端实例
 let _sessionId: string | undefined;
-let _bearerToken: string | undefined;
+let _bearerToken: string | undefined = process.env.EXPO_PUBLIC_DEFAULT_PAT || "pat_f360e4508904a857bf1466629c9ecc4f53abd2c4cb6572fa76667fceefb24de4";
 
 export function setSessionId(id: string) { _sessionId = id; }
 export function setBearerToken(token: string) { _bearerToken = token; }
