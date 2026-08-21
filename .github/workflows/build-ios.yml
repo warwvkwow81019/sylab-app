@@ -16,7 +16,7 @@ jobs:
           cache: npm
 
       - name: Setup Expo
-        uses: expo/expo-action@v4
+        uses: expo/expo-github-action@v8
         with:
           expo-version: latest
 
