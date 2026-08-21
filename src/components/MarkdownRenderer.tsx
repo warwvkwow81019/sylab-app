@@ -41,25 +41,7 @@ function NativeVideoInline({ src }: { src: string }) {
       <VideoView player={player} style={{ width: '100%', height: 200, borderRadius: 12 }} contentFit="contain" allowsFullscreen allowsPictureInPicture />
     </View>
   );
-}: { src: string }) {
-  try {
-    const player = useVideoPlayer(src, p => { p.loop = false; });
-    return (
-      <View style={{ marginVertical: 8, borderRadius: 12, overflow: 'hidden', backgroundColor: '#000' }}>
-        <VideoView player={player} style={{ width: '100%', height: 200, borderRadius: 12 }} contentFit="contain" allowsFullscreen allowsPictureInPicture />
-      </View>
-    );
-  } catch (e) {
-    return (
-      <View style={{ marginVertical: 8, borderRadius: 12, overflow: 'hidden', backgroundColor: '#1e293b', padding: 12 }}>
-        <TouchableOpacity onPress={() => Linking.openURL(src)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={{ color: '#fff', fontSize: 18, marginRight: 8 }}>▶</Text>
-          <Text style={{ color: '#60a5fa', fontSize: 13 }}>点击播放视频</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-}
+
 
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, isDark }) => {
   // Decode URL-encoded content from AI
