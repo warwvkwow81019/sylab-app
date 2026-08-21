@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, FlatList, KeyboardAvoidingView, Platform, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Alert, Dimensions, StatusBar, TextInput, Animated, ScrollView, Linking } from 'react-native';
+import { View, Text, FlatList, KeyboardAvoidingView, Platform, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Alert, Dimensions, StatusBar, TextInput, Animated, ScrollView, Linking, Keyboard } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import NetInfo from '@react-native-community/netinfo';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
@@ -443,6 +443,19 @@ function ChatDetailScreenInner() {
     });
     return () => unsub();
   }, []);
+
+  // Keyboard height tracking for iOS input avoidance
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  useEffect(() => {
+    const showSub = Keyboard.addListener('keyboardDidShow', (e) => {
+      setKeyboardHeight(e.endCoordinates.height);
+    });
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardHeight(0);
+    });
+    return () => { showSub.remove(); hideSub.remove(); };
+  }, []);
+
 
   const lastScrollTimeRef = useRef(0);
   // Auto-scroll when activity status or streaming content changes
@@ -1469,7 +1482,7 @@ function ChatDetailScreenInner() {
   };
 
   return (
-    <KeyboardAvoidingView style={[styles.container, { backgroundColor: isDark ? '#0f172a' : '#fff' }]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={0}>
+    <View style={[styles.container, { backgroundColor: isDark ? '#0f172a' : '#fff' }]}>
 
 
       {showSearch && (
@@ -1570,15 +1583,15 @@ function ChatDetailScreenInner() {
         </TouchableOpacity>
       )}
 
-      {/* Dynamic typing indicator above input */}
-      <TypingIndicator
-        statusText={activityStatus}
-        visible={isStreaming}
-        botName={botName}
-        currentTool={toolCalls.length > 0 ? toolCalls[toolCalls.length - 1] : null}
-      />
-
-      <ChatInput
+      {/* Dynamic typing indicator + input with keyboard avoidance */}
+      <View style={{ marginBottom: keyboardHeight }}>
+        <TypingIndicator
+          statusText={activityStatus}
+          visible={isStreaming}
+          botName={botName}
+          currentTool={toolCalls.length > 0 ? toolCalls[toolCalls.length - 1] : null}
+        />
+        <ChatInput
         onSend={handleSend}
         onStop={handleStop}
         isStreaming={isStreaming}
@@ -1589,6 +1602,8 @@ function ChatDetailScreenInner() {
         onClearQuote={() => setQuotedMessage(null)}
         initialText={prompt as string | undefined}
       />
+
+      </View>
 
       {/* Bot selector modal */}
       <Modal
@@ -1664,7 +1679,7 @@ function ChatDetailScreenInner() {
         </TouchableOpacity>
       </Modal>
 
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
