@@ -1110,7 +1110,7 @@ function ChatDetailScreenInner() {
         },
         onMessageComplete: () => { /* streaming ends via onComplete */ },
         onError: (err) => {
-          console.warn('[Chat] SSE error:', err.message, 'queueTaskId:', queueTaskId);
+          console.error('[Chat] SSE error FULL:', err.message, err.stack, 'queueTaskId:', queueTaskId, 'convId:', effectiveConvId, 'botId:', currentBotId);
           if (queueTaskId && activeTaskRef.current) {
             // SSE disconnected but queue task may still be running - switch to polling
             console.log('[ChatQueue] SSE disconnected, switching to queue polling for task:', queueTaskId);
