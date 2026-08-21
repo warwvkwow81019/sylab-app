@@ -418,10 +418,15 @@ function ChatDetailScreenInner() {
     return () => unsub();
   }, []);
 
+  const lastScrollTimeRef = useRef(0);
   // Auto-scroll when activity status or streaming content changes
   useEffect(() => {
     if (useChatStore.getState().isStreaming) {
-      setTimeout(() => scrollToBottom(), 100);
+      const now = Date.now();
+      if (now - lastScrollTimeRef.current > 300) {
+        lastScrollTimeRef.current = now;
+        setTimeout(() => scrollToBottom(), 100);
+      }
     }
   }, [activityStatus, streamingContent, generatingType, isStreaming]);
 
@@ -1475,7 +1480,7 @@ function ChatDetailScreenInner() {
           ref={flatListRef}
           data={(searchQuery ? messages.filter((m: any) => m && (m.content || "").toLowerCase().includes(searchQuery.toLowerCase())) : messages).filter((m: any) => m && m.id)}
           renderItem={renderItem}
-          keyExtractor={(item) => item?.id || `msg_${Math.random()}`}
+          keyExtractor={(item, index) => item?.id || `msg_${index}`}
           contentContainerStyle={styles.listContent}
           ListFooterComponent={renderFooter}
           ListHeaderComponent={loadingMore ? (
