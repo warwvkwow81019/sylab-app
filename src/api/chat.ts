@@ -3,7 +3,7 @@
  * - 聊天 (OpenAPI, Bearer PAT): /v3/chat/*
  * - 会话 (OpenAPI, Bearer PAT): /v1/conversation(s)/*
  */
-import { webApiClient } from './client';
+import { openApiClient } from './client';
 import { API_PATHS } from '../constants';
 import type { SnowflakeId } from '../types/api';
 
@@ -54,13 +54,13 @@ export const chatApi = {
 
   /** 会话列表 (需要 bot_id) */
   listConversations: (botId: string, params?: { page_num?: number; page_size?: number; user_id?: string }) =>
-    webApiClient
+    openApiClient
       .get(API_PATHS.CONVERSATIONS, { params: { bot_id: botId, ...params } })
       .then((r) => normalizeListResponse(r.data)),
 
   /** 创建会话 */
   createConversation: (botId: string, name?: string, userId?: string) =>
-    webApiClient
+    openApiClient
       .post(API_PATHS.CONVERSATION_CREATE, { bot_id: botId, name: name || '', user_id: userId || '' })
       .then((r) => {
         const data = r.data;
@@ -72,13 +72,13 @@ export const chatApi = {
 
   /** 获取会话详情 */
   getConversation: (conversationId: SnowflakeId) =>
-    webApiClient
+    openApiClient
       .get(API_PATHS.CONVERSATION_RETRIEVE, { params: { conversation_id: conversationId } })
       .then((r) => r.data),
 
   /** 更新会话（如修改名称） */
   updateConversation: (conversationId: SnowflakeId, data: { name?: string }) =>
-    webApiClient
+    openApiClient
       .put(`/v1/conversations/${conversationId}`, data)
       .then((r) => r.data),
 
@@ -87,7 +87,7 @@ export const chatApi = {
     conversationId: SnowflakeId,
     params?: { page_num?: number; page_size?: number },
   ) =>
-    webApiClient
+    openApiClient
       .post(API_PATHS.CONVERSATION_MESSAGE_LIST, {
         conversation_id: conversationId,
         ...params,
@@ -98,7 +98,7 @@ export const chatApi = {
 
   /** 取消聊天 (停止生成) */
   cancelChat: (conversationId: SnowflakeId, chatId: SnowflakeId) =>
-    webApiClient
+    openApiClient
       .post(API_PATHS.CHAT_CANCEL, {
         conversation_id: conversationId,
         chat_id: chatId,
@@ -107,7 +107,7 @@ export const chatApi = {
 
   /** 删除会话 */
   deleteConversation: (conversationId: SnowflakeId) =>
-    webApiClient
+    openApiClient
       .delete(API_PATHS.CONVERSATION_DELETE(conversationId))
       .then((r) => r.data),
 };
