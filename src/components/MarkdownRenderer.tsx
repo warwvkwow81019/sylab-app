@@ -41,6 +41,7 @@ function NativeVideoInline({ src }: { src: string }) {
       <VideoView player={player} style={{ width: '100%', height: 200, borderRadius: 12 }} contentFit="contain" allowsFullscreen allowsPictureInPicture />
     </View>
   );
+}
 
 
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, isDark }) => {
