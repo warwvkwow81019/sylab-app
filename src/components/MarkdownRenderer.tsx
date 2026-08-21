@@ -22,6 +22,30 @@ const webWrapCSS = Platform.OS === 'web' ? `
  * 支持：标题、粗体、斜体、代码块、行内代码、列表、引用、链接
  */
 
+// Error boundary for video player to prevent native crashes
+class VideoErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <View style={{ marginVertical: 8, padding: 16, backgroundColor: '#f3f4f6', borderRadius: 12, alignItems: 'center' }}>
+          <Text style={{ color: '#6b7280', fontSize: 13 }}>视频加载失败</Text>
+        </View>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 // Inline video player component
 function VideoPlayerInline({ src, videoKey }: { src: string; videoKey: string }) {
   if (Platform.OS === 'web') {
@@ -31,10 +55,16 @@ function VideoPlayerInline({ src, videoKey }: { src: string; videoKey: string })
       </View>
     );
   }
-  return <NativeVideoInline src={src} />;
+  return (
+    <VideoErrorBoundary>
+      <NativeVideoInline src={src} />
+    </VideoErrorBoundary>
+  );
 }
 
 function NativeVideoInline({ src }: { src: string }) {
+  // Guard against invalid source
+  if (!src || typeof src !== 'string') return null;
   const player = useVideoPlayer(src, p => { p.loop = false; });
   return (
     <View style={{ marginVertical: 8, borderRadius: 12, overflow: 'hidden', backgroundColor: '#000' }}>
