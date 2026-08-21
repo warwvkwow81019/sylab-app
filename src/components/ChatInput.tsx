@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import * as DocumentPicker from 'expo-document-picker';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Platform, Alert, ActivityIndicator } from 'react-native';
 import { Colors, Spacing, BorderRadius, FontSize } from '../constants/theme';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,6 +14,7 @@ interface AttachedFile {
   size: number;
   type: string;
   blob?: Blob;
+  uri?: string;
 }
 
 interface QuotedMessage {
@@ -90,7 +92,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     setAttachedFiles([]);
   };
 
-  const handleFileSelect = () => {
+  const handleFileSelect = async () => {
     if (Platform.OS === 'web') {
       const input = document.createElement('input');
       input.type = 'file';
@@ -106,6 +108,24 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         setAttachedFiles(prev => [...prev, ...newFiles]);
       };
       input.click();
+    } else {
+      try {
+        const result = await DocumentPicker.getDocumentAsync({
+          multiple: true,
+          type: '*/*',
+          copyToCacheDirectory: true,
+        });
+        if (result.canceled) return;
+        const newFiles: AttachedFile[] = result.assets.map((asset: any) => ({
+          name: asset.name || 'unknown',
+          size: asset.size || 0,
+          type: asset.mimeType || 'application/octet-stream',
+          uri: asset.uri,
+        }));
+        setAttachedFiles(prev => [...prev, ...newFiles]);
+      } catch (e) {
+        console.error('[ChatInput] Native file picker error:', e);
+      }
     }
   };
 
@@ -116,9 +136,19 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   const uploadToCoze = async (file: AttachedFile): Promise<string | null> => {
     try {
       const formData = new FormData();
-      const blob = file.blob || new Blob([]);
-      const fileObj = new File([blob], file.name, { type: file.type || 'application/octet-stream' });
-      formData.append('file', fileObj);
+      if (Platform.OS === 'web' || file.blob) {
+        const blob = file.blob || new Blob([]);
+        const fileObj = new File([blob], file.name, { type: file.type || 'application/octet-stream' });
+        formData.append('file', fileObj);
+      } else if (file.uri) {
+        formData.append('file', {
+          uri: file.uri,
+          name: file.name,
+          type: file.type || 'application/octet-stream',
+        } as any);
+      } else {
+        formData.append('file', new Blob([]));
+      }
       formData.append('purpose', 'assistants');
       const resp = await fetch('http://36.137.84.216:9091/v1/files/upload', {
         method: 'POST',

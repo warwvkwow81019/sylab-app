@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, FlatList, KeyboardAvoidingView, Platform, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Alert, Dimensions, StatusBar, TextInput, Animated, ScrollView } from 'react-native';
+import { View, Text, FlatList, KeyboardAvoidingView, Platform, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Alert, Dimensions, StatusBar, TextInput, Animated, ScrollView, Linking } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
@@ -230,7 +230,12 @@ function CompletedVideoCard({ videoUrl, isDark }: { videoUrl: string; isDark: bo
           <Ionicons name="videocam-outline" size={24} color="#8B5CF6" />
           <Text style={{ color: isDark ? '#f1f5f9' : '#1f2937', fontSize: 14, fontWeight: '600', marginLeft: 8 }}>视频已生成完成</Text>
         </View>
-        <TouchableOpacity onPress={() => { /* TODO: open video URL */ }} style={{ marginTop: 8, padding: 8, backgroundColor: '#8B5CF6', borderRadius: 8 }}>
+        <TouchableOpacity onPress={() => {
+            if (videoUrl) {
+              if (Platform.OS === 'web') { window.open(videoUrl, '_blank'); }
+              else { Linking.openURL(videoUrl); }
+            }
+          }} style={{ marginTop: 8, padding: 8, backgroundColor: '#8B5CF6', borderRadius: 8 }}>
           <Text style={{ color: '#fff', fontSize: 12, textAlign: 'center' }}>点击查看视频</Text>
         </TouchableOpacity>
       </View>
@@ -1427,10 +1432,6 @@ function ChatDetailScreenInner() {
 
   return (
     <View style={[styles.container, { backgroundColor: isDark ? '#0f172a' : '#fff' }]}>
-      {/* DEBUG BANNER - v10 */}
-      <View style={{backgroundColor: '#ff0000', padding: 8, alignItems: 'center'}}>
-        <Text style={{color: '#ffffff', fontSize: 14, fontWeight: 'bold'}}>✓ v10 LOADED - Page Rendering OK</Text>
-      </View>
 
 
       {showSearch && (
