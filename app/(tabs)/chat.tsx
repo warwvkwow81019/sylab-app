@@ -167,10 +167,8 @@ export default function ChatListScreen() {
       const result = await chatApi.listConversations(DEFAULT_BOT_ID, listParams);
       const rawConvs = result.items || [];
 
-      // Backend filters by user_id, but keep client-side filter as safety net
-      const filteredConvs = currentUserId
-        ? rawConvs.filter((c: any) => c.user_id === currentUserId)
-        : rawConvs;
+      // Show all conversations from backend (some old convos have empty user_id)
+      const filteredConvs = rawConvs;
 
       if (filteredConvs.length === 0) {
         setConversations([]);
