@@ -45,9 +45,9 @@ jobs:
             COMPILER_INDEX_STORE_ENABLE=NO \
             archive 2>&1 | tee build.log | xcbeautify || true
           echo "=== Build log tail ==="
-          grep -E "error:|fatal|BUILD FAILED|The following build commands failed" build.log | tail -30
+          grep -E "error:|fatal|BUILD FAILED|The following build commands failed" build.log | tail -30 || echo "(no errors found)"
           echo "=== Checking xcarchive ==="
-          ls -la build/sylab.xcarchive/Products/Applications/sylab.app/ 2>/dev/null || echo "NO APP BUNDLE"
+          ls -la build/sylab.xcarchive/Products/Applications/sylab.app/ || { echo "NO APP BUNDLE"; find build -name "*.app" -type d; exit 1; }
 
       - name: Package unsigned IPA
         run: |
