@@ -241,7 +241,41 @@ function CompletedVideoCard({ videoUrl, isDark }: { videoUrl: string; isDark: bo
   return <NativeVideoPlayer videoUrl={videoUrl} isDark={isDark} />;
 }
 
+// Error boundary for native video player
+class NativeVideoErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <View style={{ marginHorizontal: 12, marginVertical: 6, padding: 20, backgroundColor: '#f3f4f6', borderRadius: 16, alignItems: 'center' }}>
+          <Ionicons name="videocam-off-outline" size={28} color="#9ca3af" />
+          <Text style={{ color: '#6b7280', fontSize: 13, marginTop: 8 }}>视频播放不可用</Text>
+        </View>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 function NativeVideoPlayer({ videoUrl, isDark }: { videoUrl: string; isDark: boolean }) {
+  if (!videoUrl || typeof videoUrl !== 'string') return null;
+  return (
+    <NativeVideoErrorBoundary>
+      <NativeVideoPlayerInner videoUrl={videoUrl} isDark={isDark} />
+    </NativeVideoErrorBoundary>
+  );
+}
+
+function NativeVideoPlayerInner({ videoUrl, isDark }: { videoUrl: string; isDark: boolean }) {
   const player = useVideoPlayer(videoUrl, p => { p.loop = false; });
   return (
     <View style={{ marginHorizontal: 12, marginVertical: 6 }}>
