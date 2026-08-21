@@ -157,7 +157,7 @@ export default function ProfileScreen() {
       } as any);
 
       const authToken = useAuthStore.getState().patToken;
-      const baseUrl = 'http://36.137.84.216:9091';
+      const baseUrl = 'http://36.137.84.216';
       const resp = await fetch(`${baseUrl}/api/web/user/update/upload_avatar/`, {
         method: 'POST',
         headers: {
