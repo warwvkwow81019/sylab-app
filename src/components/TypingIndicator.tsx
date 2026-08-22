@@ -17,10 +17,30 @@ interface TypingIndicatorProps {
 
 function getToolLabel(toolName: string): string {
   const n = toolName.toLowerCase();
-  if (n.includes("image") || n.includes("draw") || n.includes("paint") || n.includes("dall"))
+  // 非生成类图片/视频工具先精确匹配，避免误判为生图/生视频
+  const isImageUnderstand = n.includes("understand_image") || n.includes("analyze_image") || n.includes("vision") || n.includes("ocr") || n.includes("describe_image");
+  const isImageSearch = n.includes("search_image") || n.includes("image_search");
+  const isScreenshot = n.includes("screenshot") || n.includes("take_screenshot") || n.includes("capture_screen");
+  const isBgRemove = n.includes("remove_background") || n.includes("rembg") || n.includes("cutout");
+  const isVideoStatus = n.includes("video_status") || n.includes("probe_video");
+  const isImageGen = !isImageUnderstand && !isImageSearch && !isScreenshot && !isBgRemove &&
+    (n.includes("generate_image") || n.includes("text2image") || n.includes("txt2img") || n.includes("draw") || n.includes("paint") || n.includes("dall"));
+  const isVideoGen = !isVideoStatus &&
+    (n.includes("generate_video") || n.includes("text2video") || n.includes("txt2vid") || n.includes("animate") || n.includes("sora"));
+  if (isImageGen)
     return "生成图片";
-  if (n.includes("video") || n.includes("animate") || n.includes("sora"))
+  if (isVideoGen)
     return "生成视频";
+  if (isImageUnderstand)
+    return "识别图片";
+  if (isImageSearch)
+    return "搜索图片";
+  if (isScreenshot)
+    return "截取屏幕";
+  if (isBgRemove)
+    return "处理图片";
+  if (isVideoStatus)
+    return "查询视频进度";
   if (n.includes("search") || n.includes("web_search") || n.includes("browse"))
     return "搜索";
   if (n.includes("query") || n.includes("fetch") || n.includes("get") || n.includes("lookup"))
