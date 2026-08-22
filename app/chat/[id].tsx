@@ -1092,7 +1092,7 @@ function ChatDetailScreenInner() {
             const pendingFiles = getPendingFiles();
             if (pendingFiles.length > 0) {
               for (const pf of pendingFiles) {
-                fetch('http://36.137.84.216:9091/project-files/api/files/upload', {
+                fetch('https://measures-customize-compounds-crm.trycloudflare.com/project-files/api/files/upload', {
                   method: 'POST',
                   headers: {
                     'X-Conversation-Id': realConvId,
@@ -1275,7 +1275,7 @@ function ChatDetailScreenInner() {
     // Poll every 10 seconds
     const poll = async () => {
       try {
-        const baseUrl = 'http://36.137.84.216:9092';
+        const baseUrl = 'https://measures-customize-compounds-crm.trycloudflare.com';
         const resp = await fetch(`${baseUrl}/video/status/${taskId}`);
         const data = await resp.json();
         const parsed = typeof data.data === 'string' ? JSON.parse(data.data || '{}') : (data.data || data);

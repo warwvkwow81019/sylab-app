@@ -65,8 +65,8 @@
       "router": {
         "origin": false
       },
-      "EXPO_PUBLIC_API_BASE": "http://36.137.84.216:9091",
-      "EXPO_PUBLIC_OPEN_API_BASE": "http://36.137.84.216:9091",
+      "EXPO_PUBLIC_API_BASE": "https://measures-customize-compounds-crm.trycloudflare.com",
+      "EXPO_PUBLIC_OPEN_API_BASE": "https://measures-customize-compounds-crm.trycloudflare.com",
       "EXPO_PUBLIC_ENABLE_API_LOG": "true"
     },
     "owner": "ahuaj"
