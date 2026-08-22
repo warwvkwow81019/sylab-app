@@ -178,20 +178,20 @@ export default function ChatListScreen() {
       }
 
       const enriched: EnrichedConversation[] = [];
-      for (const conv of filteredConvs) {
+      // Parallel fetch with 5s timeout per conversation
+      const fetchConvPreview = async (conv: any): Promise<EnrichedConversation | null> => {
         let displayTitle = conv.name || '';
         let lastMessagePreview = '';
         let msgCount = 0;
-
         try {
-          const msgResult = await chatApi.getMessages(conv.id);
-          const msgs = msgResult.items || [];
+          const msgPromise = chatApi.getMessages(conv.id);
+          const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000));
+          const msgResult = await Promise.race([msgPromise, timeoutPromise]);
+          const msgs = (msgResult as any).items || [];
           msgCount = msgs.length;
-
           if (msgs.length > 0) {
             const latestMsg = msgs[0];
             lastMessagePreview = stripMarkdown(latestMsg.content || '');
-
             if (!displayTitle) {
               const firstUserMsg = [...msgs].reverse().find((m: any) => m.role === 'user');
               if (firstUserMsg?.content) {
@@ -200,22 +200,19 @@ export default function ChatListScreen() {
             }
           }
         } catch (e) {
-          console.warn(`[ChatList] getMessages failed for ${conv.id}:`, e);
+          // timeout or error - still show conversation without preview
         }
-
-        // Skip conversations with 0 messages AND no custom name (empty/stale)
-        if (msgCount === 0 && !conv.name) {
-          continue;
-        }
-
-        enriched.push({
+        if (msgCount === 0 && !conv.name) return null;
+        return {
           ...conv,
           displayTitle: displayTitle || DEFAULT_BOT_NAME,
           lastMessagePreview: lastMessagePreview || '暂无消息',
-        });
-      }
+        };
+      };
 
-      setConversations(enriched);
+      const results = await Promise.all(filteredConvs.map(fetchConvPreview));
+      const valid = results.filter(Boolean) as EnrichedConversation[];
+      setConversations(valid);
     } catch (e) {
       console.warn('[ChatList] fetchConversations error:', e);
       setConversations([]);

@@ -535,7 +535,7 @@ function ChatDetailScreenInner() {
     try {
       const nextPage = page + 1;
       const result = await chatApi.getMessages(convId, { page_num: nextPage, page_size: 50 });
-      const msgs = (result.items || []).reverse();
+      const msgs = (result.items || []).filter((m: any) => m && m.id && (m.role === 'user' || (m.content && m.content.trim()))).reverse();
       if (msgs.length === 0) {
         setHasMore(false);
       } else {
@@ -631,7 +631,7 @@ function ChatDetailScreenInner() {
         } else {
           setConversationId(id);
           const result = await chatApi.getMessages(id, { page_num: 1, page_size: 50 });
-          const msgs = result.items || [];
+          const msgs = (result.items || []).filter((m: any) => m && m.id && (m.role === 'user' || (m.content && m.content.trim())));
           msgs.reverse();
           if (!cancelled) {
             
@@ -1425,6 +1425,7 @@ function ChatDetailScreenInner() {
 
   const renderItem = ({ item }: { item: ChatMessage }) => {
     if (!item || !item.id) return null;
+    if (item.role === 'assistant' && (!item.content || !item.content.trim())) return null;
     const isFailed = failedMessages.has(item.id);
     
     // Check if this message has an active video task

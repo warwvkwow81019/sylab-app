@@ -190,8 +190,8 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isDark, u
 
   if (onLongPress) {
     return (
-      <View style={styles.row}>
-        <TouchableOpacity activeOpacity={0.8} onLongPress={() => onLongPress(message)} delayLongPress={400} style={styles.bubbleWrapper}>
+      <View style={[styles.row, { justifyContent: isUser ? 'flex-end' : 'flex-start' }]}>
+        <TouchableOpacity activeOpacity={0.8} onLongPress={() => onLongPress(message)} delayLongPress={400} style={[styles.bubbleWrapper, { maxWidth: '85%', alignItems: isUser ? 'flex-end' : 'flex-start' }]}>
           {bubbleContent}
         </TouchableOpacity>
       </View>
@@ -199,8 +199,8 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isDark, u
   }
 
   return (
-    <View style={styles.row}>
-      <View style={styles.bubbleWrapper}>
+    <View style={[styles.row, { justifyContent: isUser ? 'flex-end' : 'flex-start' }]}>
+      <View style={[styles.bubbleWrapper, { maxWidth: '85%', alignItems: isUser ? 'flex-end' : 'flex-start' }]}>
         {bubbleContent}
       </View>
     </View>
