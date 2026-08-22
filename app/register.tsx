@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from "react-native";
+import { SafeAlert } from "../src/utils/safeAlert";
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuthStore } from '../src/store/auth';
@@ -33,7 +34,7 @@ export default function RegisterScreen() {
   // Send verification code
   const handleSendCode = async () => {
     if (!email.trim() || !email.includes('@')) {
-      Alert.alert('提示', '请输入有效的邮箱地址');
+      SafeAlert.alert('提示', '请输入有效的邮箱地址');
       return;
     }
 
@@ -41,7 +42,7 @@ export default function RegisterScreen() {
     try {
       const resp = await authApi.sendVerificationCode(email.trim().toLowerCase());
       if (resp.code === 0) {
-        Alert.alert('发送成功', '验证码已发送到您的邮箱，请查收');
+        SafeAlert.alert('发送成功', '验证码已发送到您的邮箱，请查收');
         setCodeSent(true);
         setCountdown(60);
         
@@ -56,10 +57,10 @@ export default function RegisterScreen() {
           });
         }, 1000);
       } else {
-        Alert.alert('发送失败', resp.msg || '请稍后重试');
+        SafeAlert.alert('发送失败', resp.msg || '请稍后重试');
       }
     } catch (error: any) {
-      Alert.alert('发送失败', error.message || '网络错误');
+      SafeAlert.alert('发送失败', error.message || '网络错误');
     } finally {
       setSendingCode(false);
     }
@@ -68,49 +69,49 @@ export default function RegisterScreen() {
   // Verify code
   const handleVerifyCode = async () => {
     if (!verifyCode.trim() || verifyCode.length !== 6) {
-      Alert.alert('提示', '请输入6位验证码');
+      SafeAlert.alert('提示', '请输入6位验证码');
       return;
     }
 
     try {
       const resp = await authApi.verifyCode(email.trim().toLowerCase(), verifyCode.trim());
       if (resp.verified) {
-        Alert.alert('验证成功', '邮箱验证通过');
+        SafeAlert.alert('验证成功', '邮箱验证通过');
         setCodeVerified(true);
       } else {
-        Alert.alert('验证失败', resp.msg || '验证码错误');
+        SafeAlert.alert('验证失败', resp.msg || '验证码错误');
       }
     } catch (error: any) {
-      Alert.alert('验证失败', error.message || '网络错误');
+      SafeAlert.alert('验证失败', error.message || '网络错误');
     }
   };
 
   // Register
   const handleRegister = async () => {
     if (!email.trim() || !password.trim()) {
-      Alert.alert('提示', '请填写完整信息');
+      SafeAlert.alert('提示', '请填写完整信息');
       return;
     }
     if (!codeVerified) {
-      Alert.alert('提示', '请先完成邮箱验证');
+      SafeAlert.alert('提示', '请先完成邮箱验证');
       return;
     }
     if (password.length < 6) {
-      Alert.alert('提示', '密码至少6位');
+      SafeAlert.alert('提示', '密码至少6位');
       return;
     }
     if (password !== confirmPassword) {
-      Alert.alert('提示', '两次密码输入不一致');
+      SafeAlert.alert('提示', '两次密码输入不一致');
       return;
     }
 
     try {
       await register(email.trim().toLowerCase(), password);
-      Alert.alert('注册成功', '欢迎加入 sylab！', [
+      SafeAlert.alert('注册成功', '欢迎加入 sylab！', [
         { text: '好的', onPress: () => router.replace('/(tabs)') }
       ]);
     } catch (error: any) {
-      Alert.alert('注册失败', error.message || '该邮箱可能已被注册');
+      SafeAlert.alert('注册失败', error.message || '该邮箱可能已被注册');
     }
   };
 

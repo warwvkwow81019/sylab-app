@@ -1,6 +1,7 @@
 import { useAuthStore } from "../../src/store/auth";
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { SafeAlert } from "../../src/utils/safeAlert";
 import { useRouter } from 'expo-router';
 import { Colors, Spacing, BorderRadius, FontSize, Shadows } from '../../src/constants/theme';
 import { useTheme } from '../../src/hooks/useTheme';
@@ -33,7 +34,7 @@ export default function ScheduleScreen() {
         router.push(`/chat/${convId}?bot_id=${botId}${promptParam}` as any);
       }
     } catch (e: any) {
-      Alert.alert('提示', `${toolLabel} 功能正在准备中`);
+      SafeAlert.alert('提示', `${toolLabel} 功能正在准备中`);
     }
   };
 

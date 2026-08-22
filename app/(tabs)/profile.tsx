@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal, TextInput, Alert, Image, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal, TextInput, Alert, Image, ActivityIndicator, Platform } from "react-native";
+import { SafeAlert } from "../../src/utils/safeAlert";
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
@@ -93,7 +94,7 @@ export default function ProfileScreen() {
     if (Platform.OS === 'web') {
       setWebAlert({ title, message, buttons: buttons || [{ text: '确定' }] });
     } else {
-      Alert.alert(title, message, buttons?.map(b => ({ text: b.text, onPress: b.onPress, style: b.style as any })) || undefined);
+      SafeAlert.alert(title, message, buttons?.map(b => ({ text: b.text, onPress: b.onPress, style: b.style as any })) || undefined);
     }
   };
   const [editName, setEditName] = useState('');

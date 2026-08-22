@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, RefreshControl, Modal, TextInput, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, RefreshControl, Modal, TextInput, Alert } from "react-native";
+import { SafeAlert } from "../src/utils/safeAlert";
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { workflowApi } from '../src/api/workflow';
@@ -51,18 +52,18 @@ export default function WorkflowsScreen() {
 
   const handleCreate = async () => {
     if (!newName.trim()) {
-      Alert.alert('\u63d0\u793a', '\u8bf7\u8f93\u5165\u5de5\u4f5c\u6d41\u540d\u79f0');
+      SafeAlert.alert('\u63d0\u793a', '\u8bf7\u8f93\u5165\u5de5\u4f5c\u6d41\u540d\u79f0');
       return;
     }
     setCreating(true);
     try {
       // Workflow creation would go through the API
-      Alert.alert('\u63d0\u793a', '\u5de5\u4f5c\u6d41\u521b\u5efa\u8bf7\u5230 sylab \u5e73\u53f0\u64cd\u4f5c\uff0c\u6b64\u5904\u4ec5\u652f\u6301\u67e5\u770b');
+      SafeAlert.alert('\u63d0\u793a', '\u5de5\u4f5c\u6d41\u521b\u5efa\u8bf7\u5230 sylab \u5e73\u53f0\u64cd\u4f5c\uff0c\u6b64\u5904\u4ec5\u652f\u6301\u67e5\u770b');
       setShowCreateModal(false);
       setNewName('');
       setNewDesc('');
     } catch (e) {
-      Alert.alert('\u9519\u8bef', '\u521b\u5efa\u5de5\u4f5c\u6d41\u5931\u8d25');
+      SafeAlert.alert('\u9519\u8bef', '\u521b\u5efa\u5de5\u4f5c\u6d41\u5931\u8d25');
     } finally {
       setCreating(false);
     }

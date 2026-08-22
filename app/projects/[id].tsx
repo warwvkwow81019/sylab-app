@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl, Alert, Platform } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl, Alert, Platform } from "react-native";
+import { SafeAlert } from "../../src/utils/safeAlert";
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -125,7 +126,7 @@ export default function ProjectFilesScreen() {
     if (Platform.OS === 'web') {
       if (!confirm(`确定要删除「${file.name}」吗？`)) return;
     } else {
-      Alert.alert('确认删除', `确定要删除「${file.name}」吗？`, [
+      SafeAlert.alert('确认删除', `确定要删除「${file.name}」吗？`, [
         { text: '取消', style: 'cancel' },
         { text: '删除', style: 'destructive', onPress: () => doDelete(file) },
       ]);
@@ -144,7 +145,7 @@ export default function ProjectFilesScreen() {
       if (Platform.OS === 'web') {
         alert('删除失败: ' + (e.message || '未知错误'));
       } else {
-        Alert.alert('删除失败', e.message || '未知错误');
+        SafeAlert.alert('删除失败', e.message || '未知错误');
       }
     } finally {
       setDeleting(null);

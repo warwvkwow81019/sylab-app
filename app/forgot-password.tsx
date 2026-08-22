@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, ActivityIndicator } from "react-native";
+import { SafeAlert } from "../src/utils/safeAlert";
 import { useRouter } from 'expo-router';
 import { Colors, Spacing, BorderRadius, FontSize } from '../src/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,13 +18,13 @@ export default function ForgotPasswordScreen() {
 
   const handleSendCode = async () => {
     if (!email.trim()) {
-      Alert.alert('提示', '请输入邮箱地址');
+      SafeAlert.alert('提示', '请输入邮箱地址');
       return;
     }
     setLoading(true);
     try {
       await authApi.sendVerificationCode(email);
-      Alert.alert('发送成功', '验证码已发送到你的邮箱，请查收');
+      SafeAlert.alert('发送成功', '验证码已发送到你的邮箱，请查收');
       setStep('code');
       setCountdown(60);
       const timer = setInterval(() => {
@@ -33,7 +34,7 @@ export default function ForgotPasswordScreen() {
         });
       }, 1000);
     } catch (e: any) {
-      Alert.alert('发送失败', e.message || '请稍后重试');
+      SafeAlert.alert('发送失败', e.message || '请稍后重试');
     } finally {
       setLoading(false);
     }
@@ -41,15 +42,15 @@ export default function ForgotPasswordScreen() {
 
   const handleResetPassword = async () => {
     if (!code.trim()) {
-      Alert.alert('提示', '请输入验证码');
+      SafeAlert.alert('提示', '请输入验证码');
       return;
     }
     if (newPassword.length < 6) {
-      Alert.alert('提示', '密码至少6位');
+      SafeAlert.alert('提示', '密码至少6位');
       return;
     }
     if (newPassword !== confirmPassword) {
-      Alert.alert('提示', '两次密码不一致');
+      SafeAlert.alert('提示', '两次密码不一致');
       return;
     }
 
@@ -64,13 +65,13 @@ export default function ForgotPasswordScreen() {
           setStep('done');
         } catch (resetErr: any) {
           // If reset API doesn't exist yet, inform user
-          Alert.alert('提示', '密码重置功能正在开发中，请使用验证码重新注册或使用原密码登录');
+          SafeAlert.alert('提示', '密码重置功能正在开发中，请使用验证码重新注册或使用原密码登录');
         }
       } else {
-        Alert.alert('验证失败', '验证码错误或已过期');
+        SafeAlert.alert('验证失败', '验证码错误或已过期');
       }
     } catch (e: any) {
-      Alert.alert('验证失败', e.message || '请检查验证码');
+      SafeAlert.alert('验证失败', e.message || '请检查验证码');
     } finally {
       setLoading(false);
     }

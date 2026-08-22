@@ -99,10 +99,8 @@ function RootLayoutNav() {
 export default function RootLayout() {
   const restore = useAuthStore((s) => s.restore);
   
-  console.log("[DEBUG] RootLayout rendering...");
 
   useEffect(() => {
-    console.log("[DEBUG] RootLayout useEffect - calling restore()");
     restore();
   }, []);
 

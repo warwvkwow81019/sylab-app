@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, RefreshControl, TextInput, ActivityIndicator, Alert, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, RefreshControl, TextInput, ActivityIndicator, Alert, Platform } from "react-native";
+import { SafeAlert } from "../../src/utils/safeAlert";
 import { FlatList, Swipeable } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
 import { Colors, Spacing, BorderRadius, FontSize, Shadows } from '../../src/constants/theme';
@@ -154,7 +155,7 @@ export default function ChatListScreen() {
     if (Platform.OS === "web") {
       try { (window as any).alert?.(title + "\n" + message); } catch {}
     } else {
-      Alert.alert(title, message);
+      SafeAlert.alert(title, message);
     }
   };
 
@@ -268,7 +269,7 @@ export default function ChatListScreen() {
         doDelete();
       }
     } else {
-      Alert.alert(
+      SafeAlert.alert(
         "删除对话",
         "删除对话「" + conv.displayTitle + "」？此操作不可恢复。",
         [
@@ -379,7 +380,6 @@ export default function ChatListScreen() {
           try {
             const currentUser = useAuthStore.getState().user;
             const userId = currentUser?.id || '';
-            console.log("[FAB] API_BASE:", require("../src/api/client").webApiClient.defaults.baseURL); console.log("[FAB] OPEN_API_BASE:", require("../src/api/client").openApiClient.defaults.baseURL); console.log("[FAB] Creating conversation, userId:", userId);
             const conv = await chatApi.createConversation(DEFAULT_BOT_ID, '', userId);
             console.log("[FAB] Create result:", JSON.stringify(conv));
             if (conv?.id) {

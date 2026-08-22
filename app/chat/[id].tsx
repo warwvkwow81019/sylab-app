@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, FlatList, KeyboardAvoidingView, Platform, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Alert, Dimensions, StatusBar, TextInput, Animated, ScrollView, Linking, Keyboard } from 'react-native';
+import { View, Text, FlatList, KeyboardAvoidingView, Platform, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Alert, Dimensions, StatusBar, TextInput, Animated, ScrollView, Linking, Keyboard } from "react-native";
+import { SafeAlert } from "../../src/utils/safeAlert";
 // expo-video dynamically imported to prevent native crash on iOS 26
 import NetInfo from '@react-native-community/netinfo';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
@@ -795,7 +796,7 @@ function ChatDetailScreenInner() {
       }, 100);
     } else {
       SafeClipboard.setString(plainText);
-      Alert.alert('已复制');
+      SafeAlert.alert('已复制');
     }
   };
 
@@ -1415,7 +1416,6 @@ function ChatDetailScreenInner() {
     return (
       <View style={styles.container}>
         <View style={{backgroundColor: '#ff9900', padding: 8, alignItems: 'center'}}>
-          <Text style={{color: '#ffffff', fontSize: 14, fontWeight: 'bold'}}>⏳ v10 LOADING STATE</Text>
         </View>
         <SkeletonLoader type="chat-detail" visible={loading} />
       </View>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, RefreshControl, Alert, Modal, TextInput } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, RefreshControl, Alert, Modal, TextInput } from "react-native";
+import { SafeAlert } from "../src/utils/safeAlert";
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -126,7 +127,7 @@ export default function CreditsScreen() {
   const handleRecharge = async () => {
     const amount = parseInt(rechargeAmount);
     if (!amount || amount <= 0) {
-      Alert.alert('提示', '请输入有效的充值金额');
+      SafeAlert.alert('提示', '请输入有效的充值金额');
       return;
     }
     if (!user?.id) return;
@@ -134,15 +135,15 @@ export default function CreditsScreen() {
     try {
       const result = await creditsApi.recharge(user.id, amount);
       if (result.status === 'ok') {
-        Alert.alert('充值成功', `成功充值 ${amount} 积分`);
+        SafeAlert.alert('充值成功', `成功充值 ${amount} 积分`);
         setShowRechargeModal(false);
         setRechargeAmount('');
         fetchData();
       } else {
-        Alert.alert('充值失败', result.message || '未知错误');
+        SafeAlert.alert('充值失败', result.message || '未知错误');
       }
     } catch (error: any) {
-      Alert.alert('充值失败', error.response?.data?.message || error.message || '网络错误');
+      SafeAlert.alert('充值失败', error.response?.data?.message || error.message || '网络错误');
     } finally {
       setRecharging(false);
     }
@@ -150,7 +151,7 @@ export default function CreditsScreen() {
 
   const handleRedeem = async () => {
     if (!cardCode.trim()) {
-      Alert.alert('提示', '请输入卡密');
+      SafeAlert.alert('提示', '请输入卡密');
       return;
     }
     if (!user?.id) return;
@@ -158,15 +159,15 @@ export default function CreditsScreen() {
     try {
       const result = await creditsApi.redeemCard(user.id, cardCode.trim());
       if (result.success) {
-        Alert.alert('兑换成功', `成功兑换 ${result.amount || ''} 积分`);
+        SafeAlert.alert('兑换成功', `成功兑换 ${result.amount || ''} 积分`);
         setShowRedeemModal(false);
         setCardCode('');
         fetchData();
       } else {
-        Alert.alert('兑换失败', result.message || '卡密无效');
+        SafeAlert.alert('兑换失败', result.message || '卡密无效');
       }
     } catch (error: any) {
-      Alert.alert('兑换失败', error.response?.data?.message || error.message || '网络错误');
+      SafeAlert.alert('兑换失败', error.response?.data?.message || error.message || '网络错误');
     } finally {
       setRedeeming(false);
     }

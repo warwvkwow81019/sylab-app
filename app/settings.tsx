@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, Modal, Platform } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, Modal, Platform } from "react-native";
+import { SafeAlert } from "../src/utils/safeAlert";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -53,7 +54,7 @@ export default function SettingsScreen() {
         window.alert(title + '\n' + message);
       }
     } else {
-      Alert.alert(title, message, buttons as any);
+      SafeAlert.alert(title, message, buttons as any);
     }
   };
 

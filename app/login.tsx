@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Platform, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Platform, ScrollView } from "react-native";
+import { SafeAlert } from "../src/utils/safeAlert";
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuthStore } from '../src/store/auth';
@@ -15,14 +16,14 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!account.trim() || !password.trim()) {
-      Alert.alert('提示', '请输入账号和密码');
+      SafeAlert.alert('提示', '请输入账号和密码');
       return;
     }
     try {
       await login(account, password);
       router.replace('/(tabs)');
     } catch (error: any) {
-      Alert.alert('登录失败', error.message || '请检查账号密码');
+      SafeAlert.alert('登录失败', error.message || '请检查账号密码');
     }
   };
 

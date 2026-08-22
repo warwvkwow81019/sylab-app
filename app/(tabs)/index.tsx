@@ -12,6 +12,7 @@ import {
   PanResponder,
   Animated,
 } from "react-native";
+import { SafeAlert } from "../../src/utils/safeAlert";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import {
@@ -202,7 +203,7 @@ export default function ProjectsScreen() {
     if (Platform.OS === "web") {
       try { (window as any).alert?.(title + "\n" + message); } catch {}
     } else {
-      Alert.alert(title, message);
+      SafeAlert.alert(title, message);
     }
   };
 
@@ -301,7 +302,7 @@ export default function ProjectsScreen() {
     if (Platform.OS === "web") {
       if (window.confirm("删除项目「" + item.displayTitle + "」？此操作不可恢复。")) doDelete();
     } else {
-      Alert.alert("删除项目", "删除项目「" + item.displayTitle + "」？此操作不可恢复。", [
+      SafeAlert.alert("删除项目", "删除项目「" + item.displayTitle + "」？此操作不可恢复。", [
         { text: "取消", style: "cancel" },
         { text: "删除", style: "destructive", onPress: doDelete },
       ]);
