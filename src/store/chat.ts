@@ -99,18 +99,38 @@ export const useChatStore = create<ChatState>((set) => ({
     // Detect generation type from tool name
     const lowerName = name.toLowerCase();
     let genType: 'image' | 'video' | 'general' | null = null;
-    if (lowerName.includes('image') || lowerName.includes('draw') || lowerName.includes('paint') || lowerName.includes('dall')) {
+    // 非生成类图片/视频工具先排除，避免误判为生图/生视频
+    const isImageUnderstand = lowerName.includes('understand_image') || lowerName.includes('analyze_image') || lowerName.includes('vision') || lowerName.includes('ocr') || lowerName.includes('describe_image');
+    const isImageSearch = lowerName.includes('search_image') || lowerName.includes('image_search');
+    const isScreenshot = lowerName.includes('screenshot') || lowerName.includes('take_screenshot') || lowerName.includes('capture_screen');
+    const isBgRemove = lowerName.includes('remove_background') || lowerName.includes('rembg') || lowerName.includes('cutout');
+    const isVideoStatus = lowerName.includes('video_status') || lowerName.includes('probe_video');
+    const isImageGen = !isImageUnderstand && !isImageSearch && !isScreenshot && !isBgRemove &&
+      (lowerName.includes('generate_image') || lowerName.includes('text2image') || lowerName.includes('txt2img') || lowerName.includes('draw') || lowerName.includes('paint') || lowerName.includes('dall'));
+    const isVideoGen = !isVideoStatus &&
+      (lowerName.includes('generate_video') || lowerName.includes('text2video') || lowerName.includes('txt2vid') || lowerName.includes('animate') || lowerName.includes('sora'));
+    if (isImageGen) {
       genType = 'image';
-    } else if (lowerName.includes('video') || lowerName.includes('animate') || lowerName.includes('sora')) {
+    } else if (isVideoGen) {
       genType = 'video';
     }
 
     // Generate status text from tool name
     let statusText = '正在处理中…';
-    if (lowerName.includes('image') || lowerName.includes('draw') || lowerName.includes('paint') || lowerName.includes('dall'))
+    if (isImageGen)
       statusText = '正在生成图片…';
-    else if (lowerName.includes('video') || lowerName.includes('animate') || lowerName.includes('sora'))
+    else if (isVideoGen)
       statusText = '正在生成视频…';
+    else if (isImageUnderstand)
+      statusText = '正在识别图片…';
+    else if (isImageSearch)
+      statusText = '正在搜索图片…';
+    else if (isScreenshot)
+      statusText = '正在截取屏幕…';
+    else if (isBgRemove)
+      statusText = '正在处理图片…';
+    else if (isVideoStatus)
+      statusText = '正在查询视频进度…';
     else if (lowerName.includes('search') || lowerName.includes('web_search') || lowerName.includes('browse'))
       statusText = '正在搜索中…';
     else if (lowerName.includes('query') || lowerName.includes('fetch') || lowerName.includes('lookup'))
