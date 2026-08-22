@@ -924,24 +924,23 @@ function ChatDetailScreenInner() {
     const localConvId = conversationId;
     let localAiAccum = "";
 
-    // === Chat Queue: submit task for background resilience ===
+    // === Chat Queue: submit task for background resilience (fire-and-forget, don't block SSE) ===
     let queueTaskId: string | null = null;
-    try {
-      const queueResp = await chatQueueApi.submit({
-        bot_id: currentBotId,
-        user_id: user?.id || 'app_user',
-        conversation_id: effectiveConvId || undefined,
-        additional_messages: additionalMsgs,
-        stream: true,
-        auto_save_history: true,
-        bearer_token: patToken || '',
-      }, patToken || '');
+    chatQueueApi.submit({
+      bot_id: currentBotId,
+      user_id: user?.id || 'app_user',
+      conversation_id: effectiveConvId || undefined,
+      additional_messages: additionalMsgs,
+      stream: true,
+      auto_save_history: true,
+      bearer_token: patToken || '',
+    }, patToken || '').then((queueResp) => {
       queueTaskId = queueResp.task_id;
       registerTask(queueTaskId, effectiveConvId || '');
       console.log('[ChatQueue] Task submitted:', queueTaskId);
-    } catch (qe) {
-      console.warn('[ChatQueue] Submit failed, falling back to direct SSE:', qe);
-    }
+    }).catch((qe) => {
+      console.warn('[ChatQueue] Submit failed (non-blocking):', qe);
+    });
 
 
 
