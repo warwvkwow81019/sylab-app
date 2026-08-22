@@ -348,8 +348,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     }
 
     let msgText = text.trim();
-    if (uploadedNames.length > 0) {
-      const fileNames = uploadedNames.map(n => `\u{1F4CE}${n}`).join(' ');
+    const displayNames = uploadedNames.length > 0 ? uploadedNames : attachedFiles.map(f => f.name);
+    if (displayNames.length > 0) {
+      const fileNames = displayNames.map(n => `\u{1F4CE}${n}`).join(' ');
       msgText = msgText ? `${msgText}\n${fileNames}` : fileNames;
     }
 

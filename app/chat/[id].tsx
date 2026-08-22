@@ -818,7 +818,7 @@ function ChatDetailScreenInner() {
   const effectiveConvId = conversationId || id || '';
 
   const handleSend = async (text: string, _files?: any[], fileIds?: string[]) => {
-    if (!text.trim() || !patToken) return;
+    if (!patToken) return; if (!text.trim() && (!fileIds || fileIds.length === 0)) return;
 
     // Ensure conversationId is set; create conversation if needed
     let currentConvId = conversationId || id;
@@ -842,7 +842,7 @@ function ChatDetailScreenInner() {
     
     // If already streaming, queue the message
     if (useChatStore.getState().isStreaming) {
-      messageQueueRef.current.push({ text, files: _files, fileIds }); console.log("[Queue] message QUEUED:", text.substring(0,30), "total:", messageQueueRef.current.length);
+      messageQueueRef.current.push({ text, files: _files, fileIds }); console.log("[Queue] message QUEUED:", (text || "").substring(0,30), "total:", messageQueueRef.current.length);
       // Still add user message to display immediately
       const userMsg: ChatMessage = {
         id: `msg_${Date.now()}`,
