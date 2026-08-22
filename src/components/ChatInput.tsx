@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import * as DocumentPicker from 'expo-document-picker';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Platform, Alert, ActivityIndicator } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Platform, Alert, ActivityIndicator, Modal, FlatList } from 'react-native';
 import { Colors, Spacing, BorderRadius, FontSize } from '../constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -53,6 +54,22 @@ const stripMd = (text: string): string => {
     .trim();
 };
 
+// Read a native file URI into a Blob (for project-files raw upload)
+const uriToBlob = async (uri: string): Promise<Blob> => {
+  const resp = await fetch(uri);
+  return await resp.blob();
+};
+
+// Derive a filename from a URI
+const fileNameFromUri = (uri: string, fallback: string): string => {
+  try {
+    const parts = uri.split('/');
+    const last = parts[parts.length - 1];
+    if (last && last.includes('.')) return last.split('?')[0];
+  } catch {}
+  return fallback;
+};
+
 export const ChatInput: React.FC<ChatInputProps> = ({
   onSend, onStop, isStreaming, isDark, placeholder,
   onFileUploaded, conversationId, patToken,
@@ -60,7 +77,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 }) => {
   const [text, setText] = useState('');
 
-  // Set initial text from props (e.g., from tool center prompts)
   React.useEffect(() => {
     if (initialText && !text) {
       setText(initialText);
@@ -68,6 +84,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   }, [initialText]);
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [showAttachMenu, setShowAttachMenu] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const [inputHeight, setInputHeight] = useState(40);
 
@@ -82,7 +99,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     setInputHeight(newHeight);
     el.style.height = newHeight + 'px';
   }, [text]);
-  const fileInputRef = useRef<any>(null);
 
   const handleSend = () => {
     const trimmed = text.trim();
@@ -92,20 +108,26 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     setAttachedFiles([]);
   };
 
-  const handleFileSelect = async () => {
+  const addFiles = (newFiles: AttachedFile[]) => {
+    if (newFiles.length > 0) {
+      setAttachedFiles(prev => [...prev, ...newFiles]);
+    }
+  };
+
+  const handleDocumentPicker = async () => {
+    setShowAttachMenu(false);
     if (Platform.OS === 'web') {
       const input = document.createElement('input');
       input.type = 'file';
       input.multiple = true;
       input.onchange = (e: any) => {
         const files = Array.from(e.target.files || []) as File[];
-        const newFiles: AttachedFile[] = files.map(f => ({
+        addFiles(files.map(f => ({
           name: f.name,
           size: f.size,
           type: f.type,
           blob: f as Blob,
-        }));
-        setAttachedFiles(prev => [...prev, ...newFiles]);
+        })));
       };
       input.click();
     } else {
@@ -116,16 +138,98 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           copyToCacheDirectory: true,
         });
         if (result.canceled) return;
-        const newFiles: AttachedFile[] = result.assets.map((asset: any) => ({
+        addFiles(result.assets.map((asset: any) => ({
           name: asset.name || 'unknown',
           size: asset.size || 0,
           type: asset.mimeType || 'application/octet-stream',
           uri: asset.uri,
-        }));
-        setAttachedFiles(prev => [...prev, ...newFiles]);
+        })));
       } catch (e) {
-        console.error('[ChatInput] Native file picker error:', e);
+        console.error('[ChatInput] Document picker error:', e);
       }
+    }
+  };
+
+  const handleImagePicker = async () => {
+    setShowAttachMenu(false);
+    if (Platform.OS === 'web') {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.multiple = true;
+      input.accept = 'image/*';
+      input.onchange = (e: any) => {
+        const files = Array.from(e.target.files || []) as File[];
+        addFiles(files.map(f => ({
+          name: f.name,
+          size: f.size,
+          type: f.type || 'image/jpeg',
+          blob: f as Blob,
+        })));
+      };
+      input.click();
+      return;
+    }
+    try {
+      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!perm.granted) {
+        Alert.alert('需要权限', '请在设置中允许访问照片库');
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsMultipleSelection: true,
+        quality: 0.9,
+      });
+      if (result.canceled) return;
+      addFiles(result.assets.map((asset: any) => ({
+        name: asset.fileName || fileNameFromUri(asset.uri, `photo_${Date.now()}.jpg`),
+        size: asset.fileSize || 0,
+        type: asset.mimeType || 'image/jpeg',
+        uri: asset.uri,
+      })));
+    } catch (e) {
+      console.error('[ChatInput] Image picker error:', e);
+    }
+  };
+
+  const handleCamera = async () => {
+    setShowAttachMenu(false);
+    if (Platform.OS === 'web') {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.capture = 'environment';
+      input.onchange = (e: any) => {
+        const files = Array.from(e.target.files || []) as File[];
+        addFiles(files.map(f => ({
+          name: f.name,
+          size: f.size,
+          type: f.type || 'image/jpeg',
+          blob: f as Blob,
+        })));
+      };
+      input.click();
+      return;
+    }
+    try {
+      const perm = await ImagePicker.requestCameraPermissionsAsync();
+      if (!perm.granted) {
+        Alert.alert('需要权限', '请在设置中允许访问相机');
+        return;
+      }
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ['images'],
+        quality: 0.9,
+      });
+      if (result.canceled) return;
+      addFiles(result.assets.map((asset: any) => ({
+        name: asset.fileName || `photo_${Date.now()}.jpg`,
+        size: asset.fileSize || 0,
+        type: asset.mimeType || 'image/jpeg',
+        uri: asset.uri,
+      })));
+    } catch (e) {
+      console.error('[ChatInput] Camera error:', e);
     }
   };
 
@@ -141,6 +245,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         const fileObj = new File([blob], file.name, { type: file.type || 'application/octet-stream' });
         formData.append('file', fileObj);
       } else if (file.uri) {
+        // Native: React Native FormData accepts {uri, name, type}
         formData.append('file', {
           uri: file.uri,
           name: file.name,
@@ -157,9 +262,12 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       });
       if (resp.ok) {
         const result = await resp.json();
-        return result.data?.id || null;
+        const fileId = result.data?.id || result.id || null;
+        console.log('[ChatInput] Coze upload OK, file_id:', fileId);
+        return fileId;
       }
-      console.error('[ChatInput] Coze upload failed:', resp.status);
+      const errText = await resp.text().catch(() => '');
+      console.error('[ChatInput] Coze upload failed:', resp.status, errText);
       return null;
     } catch (e) {
       console.error('[ChatInput] Coze upload error:', e);
@@ -173,35 +281,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       handleSend();
       return;
     }
-    if (!effectiveConvId) {
-      const cozeFileIds: string[] = [];
-      setUploading(true);
-      try {
-        for (const file of attachedFiles) {
-          const fileId = await uploadToCoze(file);
-          if (fileId) cozeFileIds.push(fileId);
-        }
-      } catch (e) {
-        console.error('[ChatInput] Coze upload failed (no convId):', e);
-      } finally {
-        setUploading(false);
-      }
-      // Store file blobs for later upload to project-files when convId is obtained
-      _pendingFileBlobs = attachedFiles.map(f => ({
-        blob: f.blob || new Blob([]),
-        name: f.name,
-        type: f.type || 'application/octet-stream',
-      }));
-      let msgText = text.trim();
-      if (attachedFiles.length > 0) {
-        const fileNames = attachedFiles.map(f => `\u{1F4CE}${f.name}`).join(' ');
-        msgText = msgText ? `${msgText}\n${fileNames}` : fileNames;
-      }
-      onSend(msgText, [], cozeFileIds.length > 0 ? cozeFileIds : undefined);
-      setText('');
-      setAttachedFiles([]);
-      return;
-    }
 
     setUploading(true);
     const uploadedNames: string[] = [];
@@ -209,26 +288,41 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
     try {
       for (const file of attachedFiles) {
-        if (!file.blob) continue;
-        const formData = new Blob([file.blob]);
-        const resp = await fetch(
-          `https://measures-customize-compounds-crm.trycloudflare.com/project-files/api/files/upload`,
-          {
-            method: 'POST',
-            headers: {
-              'X-Conversation-Id': effectiveConvId,
-              'X-File-Name': file.name,
-              'Content-Type': file.type || 'application/octet-stream',
-            },
-            body: formData,
+        // 1. Upload to project-files (conversation file storage)
+        try {
+          let blob: Blob;
+          if (file.blob) {
+            blob = file.blob;
+          } else if (file.uri) {
+            blob = await uriToBlob(file.uri);
+          } else {
+            blob = new Blob([]);
           }
-        );
-        if (resp.ok) {
-          const result = await resp.json();
-          const savedName = result.data?.name || file.name;
-          uploadedNames.push(savedName);
-          onFileUploaded?.({ name: file.name, url: result.data?.url });
+          const resp = await fetch(
+            'https://measures-customize-compounds-crm.trycloudflare.com/project-files/api/files/upload',
+            {
+              method: 'POST',
+              headers: {
+                'X-Conversation-Id': effectiveConvId || 'pending',
+                'X-File-Name': file.name,
+                'Content-Type': file.type || 'application/octet-stream',
+              },
+              body: blob,
+            }
+          );
+          if (resp.ok) {
+            const result = await resp.json();
+            const savedName = result.data?.name || file.name;
+            uploadedNames.push(savedName);
+            onFileUploaded?.({ name: file.name, url: result.data?.url });
+          } else {
+            console.warn('[ChatInput] project-files upload failed:', resp.status);
+          }
+        } catch (pe) {
+          console.warn('[ChatInput] project-files upload error:', pe);
         }
+
+        // 2. Upload to Coze file API (so AI can see it)
         const fileId = await uploadToCoze(file);
         if (fileId) {
           cozeFileIds.push(fileId);
@@ -238,6 +332,19 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       console.error('[ChatInput] 文件上传失败:', e);
     } finally {
       setUploading(false);
+    }
+
+    // Store pending blobs for later sync (new conversation case)
+    if (!effectiveConvId) {
+      _pendingFileBlobs = await Promise.all(
+        attachedFiles.map(async (f) => {
+          let blob = f.blob;
+          if (!blob && f.uri) {
+            try { blob = await uriToBlob(f.uri); } catch { blob = new Blob([]); }
+          }
+          return { blob: blob || new Blob([]), name: f.name, type: f.type || 'application/octet-stream' };
+        })
+      );
     }
 
     let msgText = text.trim();
@@ -258,6 +365,12 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
   const quoteLabel = quotedMessage ? (quotedMessage.role === 'user' ? '我' : 'AI') : '';
   const quotePreview = quotedMessage ? stripMd(quotedMessage.content).substring(0, 100) : '';
+
+  const attachMenuItems = [
+    { icon: 'image-outline', label: '照片', color: '#3b82f6', action: handleImagePicker },
+    { icon: 'camera-outline', label: '拍照', color: '#10b981', action: handleCamera },
+    { icon: 'document-outline', label: '文件', color: '#f59e0b', action: handleDocumentPicker },
+  ];
 
   return (
     <View style={[styles.container, { backgroundColor: bgColor, borderTopColor: borderColor }]}>
@@ -281,11 +394,11 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           {attachedFiles.map((file, index) => (
             <View key={index} style={styles.attachmentChip}>
               <Ionicons
-                name={file.type.startsWith('image/') ? 'image' : 'document'}
+                name={file.type.startsWith('image/') ? 'image' : file.type.startsWith('video/') ? 'videocam' : 'document'}
                 size={14}
                 color={Colors.primary}
               />
-              <Text style={styles.attachmentName} >{file.name}</Text>
+              <Text style={styles.attachmentName}>{file.name}</Text>
               <TouchableOpacity onPress={() => removeFile(index)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                 <Ionicons name="close-circle" size={16} color={Colors.textTertiary} />
               </TouchableOpacity>
@@ -297,10 +410,10 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       <View style={[styles.inputRow, { backgroundColor: isDark ? Colors.surfaceSecondaryDark : '#eef0f4' }]}>
         <TouchableOpacity
           style={styles.attachBtn}
-          onPress={handleFileSelect}
+          onPress={() => setShowAttachMenu(true)}
           activeOpacity={0.7}
         >
-          <Ionicons name="attach" size={22} color={Colors.textSecondary} />
+          <Ionicons name="add" size={26} color={Colors.textSecondary} />
         </TouchableOpacity>
 
         <TextInput
@@ -311,7 +424,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           placeholder={placeholder || '输入消息...'}
           placeholderTextColor={Colors.textTertiary}
           multiline
-          onContentSizeChange={() => {}}
           maxLength={10000}
           returnKeyType="send"
           onSubmitEditing={handleUploadAndSend}
@@ -322,7 +434,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               handleUploadAndSend();
             }
           }}
-          
         />
 
         {isStreaming && (
@@ -343,6 +454,35 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           )}
         </TouchableOpacity>
       </View>
+
+      <Modal
+        visible={showAttachMenu}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowAttachMenu(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowAttachMenu(false)}
+        >
+          <View style={styles.attachMenu}>
+            {attachMenuItems.map((item) => (
+              <TouchableOpacity
+                key={item.label}
+                style={styles.attachMenuItem}
+                onPress={item.action}
+                activeOpacity={0.7}
+              >
+                <View style={[styles.attachMenuIcon, { backgroundColor: item.color + '18' }]}>
+                  <Ionicons name={item.icon as any} size={22} color={item.color} />
+                </View>
+                <Text style={styles.attachMenuLabel}>{item.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };
@@ -360,23 +500,10 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     borderLeftColor: Colors.primary,
   },
-  quoteIconWrap: {
-    marginRight: 8,
-  },
-  quoteContent: {
-    flex: 1,
-    marginRight: 8,
-  },
-  quoteLabel: {
-    fontSize: 11,
-    color: Colors.primary,
-    fontWeight: '600',
-    marginBottom: 2,
-  },
-  quoteText: {
-    fontSize: 13,
-    color: Colors.textSecondary,
-  },
+  quoteIconWrap: { marginRight: 8 },
+  quoteContent: { flex: 1, marginRight: 8 },
+  quoteLabel: { fontSize: 11, color: Colors.primary, fontWeight: '600', marginBottom: 2 },
+  quoteText: { fontSize: 13, color: Colors.textSecondary },
   attachments: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -407,4 +534,35 @@ const styles = StyleSheet.create({
   input: { flex: 1, fontSize: FontSize.md, maxHeight: 120, lineHeight: 20, paddingVertical: 2 },
   sendBtn: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center', marginLeft: Spacing.sm },
   stopBtn: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center', marginLeft: Spacing.sm },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-end',
+  },
+  attachMenu: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    paddingTop: 20,
+    paddingBottom: 36,
+    paddingHorizontal: 24,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    justifyContent: 'space-around',
+  },
+  attachMenuItem: {
+    alignItems: 'center',
+    gap: 8,
+  },
+  attachMenuIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  attachMenuLabel: {
+    fontSize: 13,
+    color: Colors.text,
+    fontWeight: '500',
+  },
 });
