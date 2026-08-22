@@ -150,7 +150,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         formData.append('file', new Blob([]));
       }
       formData.append('purpose', 'assistants');
-      const resp = await fetch('http://36.137.84.216:9091/v1/files/upload', {
+      const resp = await fetch('http://36.137.84.216/v1/files/upload', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${patToken || ''}` },
         body: formData,
@@ -212,7 +212,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         if (!file.blob) continue;
         const formData = new Blob([file.blob]);
         const resp = await fetch(
-          `http://36.137.84.216:9091/project-files/api/files/upload`,
+          `http://36.137.84.216/project-files/api/files/upload`,
           {
             method: 'POST',
             headers: {

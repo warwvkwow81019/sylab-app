@@ -4,8 +4,8 @@ import Constants from 'expo-constants';
 import type { CreditBalance, CreditTransaction, ModelPricing, ActionPricing, CardRedeemResponse, ApiResponse } from '../types/api';
 
 const API_BASE = Platform.OS === 'web'
-  ? 'http://36.137.84.216:9091'
-  : (Constants.expoConfig?.extra?.EXPO_PUBLIC_API_BASE || 'http://36.137.84.216:9091');
+  ? 'http://36.137.84.216'
+  : (Constants.expoConfig?.extra?.EXPO_PUBLIC_API_BASE || 'http://36.137.84.216');
 
 // 积分服务用独立的 axios 实例，不需要 bearer/session 认证，用 user_id 做标识
 const creditsClient = axios.create({

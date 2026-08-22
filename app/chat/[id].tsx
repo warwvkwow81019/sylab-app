@@ -1092,7 +1092,7 @@ function ChatDetailScreenInner() {
             const pendingFiles = getPendingFiles();
             if (pendingFiles.length > 0) {
               for (const pf of pendingFiles) {
-                fetch('http://36.137.84.216:9091/project-files/api/files/upload', {
+                fetch('http://36.137.84.216/project-files/api/files/upload', {
                   method: 'POST',
                   headers: {
                     'X-Conversation-Id': realConvId,
