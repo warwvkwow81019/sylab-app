@@ -246,7 +246,7 @@ export default function ChatListScreen() {
         await chatApi.deleteConversation(conv.id);
         // 硬删除：物理清除云端数据（对话+消息）
         try {
-          const API_BASE = 'http://36.137.84.216:9091';
+          const API_BASE = 'http://36.137.84.216';
           await fetch(`${API_BASE}/sylab-api/api/sylab/conversation/${conv.id}`, {
             method: 'DELETE',
           });
@@ -378,6 +378,16 @@ export default function ChatListScreen() {
           if (creatingRef.current) return;
           creatingRef.current = true;
           try {
+            let diag = '';
+            try {
+              const testResp = await fetch('http://36.137.84.216:9091/v1/conversations?bot_id=' + DEFAULT_BOT_ID, {
+                method: 'GET',
+                headers: { 'Authorization': 'Bearer pat_f360e4508904a857bf1466629c9ecc4f53abd2c4cb6572fa76667fceefb24de4' }
+              });
+              diag = 'fetch:OK(' + testResp.status + ')';
+            } catch (fe: any) {
+              diag = 'fetch:ERR(' + (fe?.message || String(fe)) + ')';
+            }
             const currentUser = useAuthStore.getState().user;
             const userId = currentUser?.id || '';
             const conv = await chatApi.createConversation(DEFAULT_BOT_ID, '', userId);
@@ -391,8 +401,13 @@ export default function ChatListScreen() {
           } catch (e: any) {
             const errMsg = String(e?.response?.data?.msg || e?.response?.data?.message || e?.message || String(e) || "未知错误");
             const errStatus = e?.response?.status ? " (HTTP " + e.response.status + ")" : "";
-            console.error("[FAB] Error details:", { msg: errMsg, status: errStatus, data: e?.response?.data });
-            showAlert('创建失败', errMsg + errStatus);
+            const errCode = e?.code ? " [code:" + e.code + "]" : "";
+            const errErrno = e?.errno ? " [errno:" + e.errno + "]" : "";
+            const errSyscall = e?.syscall ? " [syscall:" + e.syscall + "]" : "";
+            const errHost = e?.config?.url ? " [url:" + e.config.url + "]" : "";
+            const detail = errMsg + errStatus + errCode + errErrno + errSyscall + errHost;
+            console.error("[FAB] Error details:", { msg: errMsg, status: errStatus, code: e?.code, errno: e?.errno, syscall: e?.syscall, url: e?.config?.url, fullErr: JSON.stringify(e, Object.getOwnPropertyNames(e)) });
+            showAlert('创建失败', diag + ' | ' + detail);
           } finally {
             setTimeout(() => { creatingRef.current = false; }, 1500);
           }
