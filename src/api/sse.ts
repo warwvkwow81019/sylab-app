@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 
-const API_BASE = Constants.expoConfig?.extra?.EXPO_PUBLIC_API_BASE || 'http://36.137.84.216';
+const API_BASE = Constants.expoConfig?.extra?.EXPO_PUBLIC_API_BASE || 'http://36.137.84.216:9091';
 
 export interface TokenUsage {
   input: number;

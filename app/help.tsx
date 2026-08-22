@@ -19,7 +19,7 @@ export default function HelpScreen() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
   const handleContact = () => {
-    Linking.openURL('http://36.137.84.216').catch(() => {});
+    Linking.openURL('http://36.137.84.216:9091').catch(() => {});
   };
 
   return (
