@@ -434,6 +434,7 @@ function ChatDetailScreenInner() {
     setMessages, appendDelta, appendToolCall, finishStreaming,
     clearStreaming, setError, startStreaming,
     activityStatus, generatingType,
+    setActivityStatus,
   } = useChatStore();
 
   const [loading, setLoading] = useState(true);
