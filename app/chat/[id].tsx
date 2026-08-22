@@ -584,9 +584,19 @@ function ChatDetailScreenInner() {
   const lastProcessedConvRef = useRef<string | null>(null);
 
   useEffect(() => {
-      
+    // Abort any in-flight stream from a previous conversation before switching
+    if (streamRef.current) {
+      try { streamRef.current.abort(); } catch (e) {}
+      streamRef.current = null;
+    }
+    // Reset streaming state so stale "connecting" indicator never carries over
+    if (useChatStore.getState().isStreaming) {
+      console.log('[Chat] Resetting stale streaming state on conversation switch');
+      useChatStore.getState().clearStreaming();
+    }
+
     let cancelled = false;
-    
+
     const init = async () => {
       console.log('[Chat] Init called, id:', id, 'user:', !!user, 'isRestoring:', isRestoring);
       if (!id) { 
@@ -670,7 +680,15 @@ function ChatDetailScreenInner() {
     };
     
     init();
-    return () => { cancelled = true; if (ssePollingTimerRef.current) { clearTimeout(ssePollingTimerRef.current); ssePollingTimerRef.current = null; } /* don't clearStreaming - streaming may resume after remount */ };
+    return () => {
+      cancelled = true;
+      if (ssePollingTimerRef.current) { clearTimeout(ssePollingTimerRef.current); ssePollingTimerRef.current = null; }
+      // Abort SSE when navigating away from this chat screen
+      if (streamRef.current) {
+        try { streamRef.current.abort(); } catch (e) {}
+        streamRef.current = null;
+      }
+    };
   }, [id, user, isRestoring]);
 
 

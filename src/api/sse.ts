@@ -75,13 +75,31 @@ export function sendMessageStream(
     try {
       callbacks.onStatus?.('connecting');
       console.log('[SSE] POST', url);
-      
-      const response = await fetch(url, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(reqBody),
-        signal: controller.signal,
-      });
+
+      // Connect timeout: abort if response headers not received within 30s
+      const connectTimeout = setTimeout(() => {
+        if (!aborted) {
+          console.error('[SSE] Connect timeout (30s), aborting');
+          controller.abort();
+        }
+      }, 30000);
+
+      let response: Response;
+      try {
+        response = await fetch(url, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(reqBody),
+          signal: controller.signal,
+        });
+      } catch (fetchErr: any) {
+        clearTimeout(connectTimeout);
+        if (fetchErr.name === 'AbortError') {
+          throw new Error('连接超时，请检查网络后重试');
+        }
+        throw fetchErr;
+      }
+      clearTimeout(connectTimeout);
 
       console.log('[SSE] response status:', response.status, response.statusText);
 
@@ -229,7 +247,8 @@ export function sendMessageStream(
       callbacks.onStatus?.('complete');
     } catch (error: any) {
       if (error.name === 'AbortError') {
-        console.log('[SSE] Aborted by user');
+        console.log('[SSE] Aborted');
+        callbacks.onError(new Error('连接已中断'));
         return;
       }
       console.error('[SSE] Error:', error.message);
