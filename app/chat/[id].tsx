@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, FlatList, KeyboardAvoidingView, Platform, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Alert, Dimensions, StatusBar, TextInput, Animated, ScrollView, Linking, Keyboard } from 'react-native';
-import { useVideoPlayer, VideoView } from 'expo-video';
+// expo-video dynamically imported to prevent native crash on iOS 26
 import NetInfo from '@react-native-community/netinfo';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { Colors, Spacing, BorderRadius, FontSize } from '../../src/constants/theme';
@@ -267,16 +267,46 @@ class NativeVideoErrorBoundary extends React.Component<
 }
 
 function NativeVideoPlayer({ videoUrl, isDark }: { videoUrl: string; isDark: boolean }) {
+  const [videoModule, setVideoModule] = useState<{ useVideoPlayer: any; VideoView: any } | null>(null);
+  const [loadError, setLoadError] = useState(false);
+
+  useEffect(() => {
+    if (!videoUrl || Platform.OS === 'web') return;
+    let mounted = true;
+    import('expo-video').then(mod => {
+      if (mounted) setVideoModule({ useVideoPlayer: mod.useVideoPlayer, VideoView: mod.VideoView });
+    }).catch(() => {
+      if (mounted) setLoadError(true);
+    });
+    return () => { mounted = false; };
+  }, [videoUrl]);
+
   if (!videoUrl || typeof videoUrl !== 'string') return null;
+  if (loadError) {
+    return (
+      <View style={{ marginHorizontal: 12, marginVertical: 6, padding: 20, backgroundColor: '#f3f4f6', borderRadius: 16, alignItems: 'center' }}>
+        <Ionicons name="videocam-off-outline" size={28} color="#9ca3af" />
+        <Text style={{ color: '#6b7280', fontSize: 13, marginTop: 8 }}>视频播放不可用</Text>
+      </View>
+    );
+  }
+  if (!videoModule) {
+    return (
+      <View style={{ marginHorizontal: 12, marginVertical: 6, padding: 20, backgroundColor: isDark ? '#1e293b' : '#fff', borderRadius: 16, alignItems: 'center' }}>
+        <ActivityIndicator size="small" color="#8B5CF6" />
+        <Text style={{ color: isDark ? '#94a3b8' : '#6b7280', fontSize: 13, marginTop: 8 }}>加载视频播放器...</Text>
+      </View>
+    );
+  }
   return (
     <NativeVideoErrorBoundary>
-      <NativeVideoPlayerInner videoUrl={videoUrl} isDark={isDark} />
+      <NativeVideoPlayerInner videoUrl={videoUrl} isDark={isDark} useVideoPlayer={videoModule.useVideoPlayer} VideoView={videoModule.VideoView} />
     </NativeVideoErrorBoundary>
   );
 }
 
-function NativeVideoPlayerInner({ videoUrl, isDark }: { videoUrl: string; isDark: boolean }) {
-  const player = useVideoPlayer(videoUrl, p => { p.loop = false; });
+function NativeVideoPlayerInner({ videoUrl, isDark, useVideoPlayer, VideoView }: { videoUrl: string; isDark: boolean; useVideoPlayer: any; VideoView: any }) {
+  const player = useVideoPlayer(videoUrl, (p: any) => { p.loop = false; });
   return (
     <View style={{ marginHorizontal: 12, marginVertical: 6 }}>
       <View style={{ backgroundColor: isDark ? '#1e293b' : '#fff', borderRadius: 16, padding: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 2 }}>
@@ -1809,3 +1839,4 @@ export default function ChatDetailScreen() {
     </ChatErrorBoundary>
   );
 }
+

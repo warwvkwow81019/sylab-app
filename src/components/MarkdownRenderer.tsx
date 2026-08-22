@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Linking, Platform } from 'react-native';
-import { useVideoPlayer, VideoView } from 'expo-video';
+// expo-video dynamically imported to prevent native crash on iOS 26
 import { Colors, Spacing, BorderRadius, FontSize } from '../constants/theme';
 
 interface MarkdownRendererProps {
@@ -46,8 +46,22 @@ class VideoErrorBoundary extends React.Component<
   }
 }
 
-// Inline video player component
+// Inline video player component - dynamic import to prevent native crash on page load
 function VideoPlayerInline({ src, videoKey }: { src: string; videoKey: string }) {
+  const [videoModule, setVideoModule] = React.useState<{ useVideoPlayer: any; VideoView: any } | null>(null);
+  const [loadError, setLoadError] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!src || Platform.OS === 'web') return;
+    let mounted = true;
+    import('expo-video').then(mod => {
+      if (mounted) setVideoModule({ useVideoPlayer: mod.useVideoPlayer, VideoView: mod.VideoView });
+    }).catch(() => {
+      if (mounted) setLoadError(true);
+    });
+    return () => { mounted = false; };
+  }, [src]);
+
   if (Platform.OS === 'web') {
     return (
       <View style={{ marginVertical: 8, borderRadius: 12, overflow: 'hidden' }}>
@@ -55,17 +69,29 @@ function VideoPlayerInline({ src, videoKey }: { src: string; videoKey: string })
       </View>
     );
   }
+  if (loadError) {
+    return (
+      <View style={{ marginVertical: 8, padding: 20, backgroundColor: '#f3f4f6', borderRadius: 12, alignItems: 'center' }}>
+        <Text style={{ color: '#6b7280', fontSize: 13 }}>视频播放不可用</Text>
+      </View>
+    );
+  }
+  if (!videoModule) {
+    return (
+      <View style={{ marginVertical: 8, padding: 20, backgroundColor: '#f3f4f6', borderRadius: 12, alignItems: 'center' }}>
+        <Text style={{ color: '#9ca3af', fontSize: 13 }}>加载视频...</Text>
+      </View>
+    );
+  }
   return (
     <VideoErrorBoundary>
-      <NativeVideoInline src={src} />
+      <NativeVideoInline src={src} useVideoPlayer={videoModule.useVideoPlayer} VideoView={videoModule.VideoView} />
     </VideoErrorBoundary>
   );
 }
 
-function NativeVideoInline({ src }: { src: string }) {
-  // Guard against invalid source
-  if (!src || typeof src !== 'string') return null;
-  const player = useVideoPlayer(src, p => { p.loop = false; });
+function NativeVideoInline({ src, useVideoPlayer, VideoView }: { src: string; useVideoPlayer: any; VideoView: any }) {
+  const player = useVideoPlayer(src, (p: any) => { p.loop = false; });
   return (
     <View style={{ marginVertical: 8, borderRadius: 12, overflow: 'hidden', backgroundColor: '#000' }}>
       <VideoView player={player} style={{ width: '100%', height: 200, borderRadius: 12 }} contentFit="contain" allowsFullscreen allowsPictureInPicture />
@@ -471,3 +497,4 @@ const styles = StyleSheet.create({
   quoteText: { fontSize: FontSize.md, fontStyle: 'italic' },
   listItem: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: Spacing.xs },
 });
+
