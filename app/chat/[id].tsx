@@ -1005,6 +1005,9 @@ function ChatDetailScreenInner() {
         onComplete: (chatId, convId, tokens) => {
           try {
           // Clear queue task - SSE completed normally
+          if (queueTaskId) {
+            chatQueueApi.cancel(queueTaskId).catch(e => console.warn('[ChatQueue] Cancel on complete failed:', e));
+          }
           clearTask();
           // Use closure-captured content (immune to store/state resets)
           const capturedAiContent = localAiAccum || useChatStore.getState().streamingContent;
@@ -1182,8 +1185,9 @@ function ChatDetailScreenInner() {
         onError: (err) => {
           console.error('[Chat] SSE error FULL:', err.message, err.stack, 'queueTaskId:', queueTaskId, 'convId:', effectiveConvId, 'botId:', currentBotId);
           if (queueTaskId && activeTaskRef.current) {
-            // SSE disconnected but queue task may still be running - switch to polling
-            console.log('[ChatQueue] SSE disconnected, switching to queue polling for task:', queueTaskId);
+            // SSE disconnected - activate standby queue task to fetch response from backend
+            console.log('[ChatQueue] SSE disconnected, starting queue task:', queueTaskId);
+            chatQueueApi.start(queueTaskId).catch(e => console.warn('[ChatQueue] Start failed:', e));
             const pollQueue = async () => {
               const task = activeTaskRef.current;
               if (!task || task.taskId !== queueTaskId) return;

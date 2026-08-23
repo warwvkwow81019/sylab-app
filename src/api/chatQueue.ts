@@ -66,6 +66,11 @@ export const chatQueueApi = {
     return resp.json();
   },
 
+  start: async (taskId: string): Promise<void> => {
+    // Start processing only when primary SSE fails (standby mode)
+    await fetch(`${QUEUE_BASE}/start/${taskId}`, { method: 'POST' });
+  },
+
   cancel: async (taskId: string): Promise<void> => {
     await fetch(`${QUEUE_BASE}/cancel/${taskId}`, { method: 'DELETE' });
   },
