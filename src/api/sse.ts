@@ -76,13 +76,13 @@ export function sendMessageStream(
       callbacks.onStatus?.('connecting');
       console.log('[SSE] POST', url);
 
-      // Connect timeout: abort if response headers not received within 30s
+      // Connect timeout: abort if response headers not received within 90s
       const connectTimeout = setTimeout(() => {
         if (!aborted) {
-          console.error('[SSE] Connect timeout (30s), aborting');
+          console.error('[SSE] Connect timeout (90s), aborting');
           controller.abort();
         }
-      }, 30000);
+      }, 90000);
 
       let response: Response;
       try {
