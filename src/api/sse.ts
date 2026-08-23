@@ -73,7 +73,11 @@ export function sendMessageStream(
 
   (async () => {
     try {
-      callbacks.onStatus?.('connecting');
+      // Keep 'thinking' status while establishing connection; only switch to
+      // 'connecting' if it takes more than 2s (slow network).
+      let connectingTimer = setTimeout(() => {
+        callbacks.onStatus?.('connecting');
+      }, 2000);
       console.log('[SSE] POST', url);
 
       // Connect timeout: abort if response headers not received within 90s
@@ -94,12 +98,14 @@ export function sendMessageStream(
         });
       } catch (fetchErr: any) {
         clearTimeout(connectTimeout);
+        clearTimeout(connectingTimer);
         if (fetchErr.name === 'AbortError') {
           throw new Error('连接超时，请检查网络后重试');
         }
         throw fetchErr;
       }
       clearTimeout(connectTimeout);
+      clearTimeout(connectingTimer);
 
       console.log('[SSE] response status:', response.status, response.statusText);
 
@@ -275,6 +281,8 @@ function parseSseText(
   let currentEvent = '';
   let lastChatId = chatId;
   let lastConvId = conversationId;
+  let fullContent = '';
+  let tokenUsage: TokenUsage | undefined;
 
   for (const line of lines) {
     const trimmed = line.trim();
@@ -285,14 +293,25 @@ function parseSseText(
       if (!dataStr || dataStr === '[DONE]') continue;
       try {
         const data = JSON.parse(dataStr);
-              console.log("[SSE_DBG] event:", currentEvent, "type:", data?.type, "role:", data?.role, "ctLen:", String(data?.content||"").length);
         if (data.chat_id) lastChatId = data.chat_id;
         if (data.conversation_id) lastConvId = data.conversation_id;
         if (data.id && !lastChatId && currentEvent.startsWith('conversation.chat.')) {
           lastChatId = data.id;
         }
         if (currentEvent === 'conversation.message.delta' && data.content) {
+          fullContent += data.content;
           callbacks.onDelta(data.content);
+        }
+        if (currentEvent === 'conversation.message.completed' && data.role === 'assistant' && data.meta_data) {
+          try {
+            const ext = data.meta_data;
+            const inputT = parseInt(ext.input_tokens || '0') || 0;
+            const outputT = parseInt(ext.output_tokens || '0') || 0;
+            const totalT = parseInt(ext.token || '0') || 0;
+            if (totalT > 0 || inputT > 0 || outputT > 0) {
+              tokenUsage = { input: inputT, output: outputT, total: totalT || (inputT + outputT) };
+            }
+          } catch {}
         }
         if (currentEvent === 'conversation.chat.failed') {
           callbacks.onError(new Error(data.last_error?.msg || '聊天处理失败'));
@@ -301,7 +320,7 @@ function parseSseText(
       } catch {}
     }
   }
-  callbacks.onComplete(lastChatId, lastConvId);
+  callbacks.onComplete(lastChatId, lastConvId, tokenUsage);
   callbacks.onStatus?.('complete');
 }
 
