@@ -584,9 +584,19 @@ function ChatDetailScreenInner() {
   const lastProcessedConvRef = useRef<string | null>(null);
 
   useEffect(() => {
-      
+    // Abort any in-flight stream from a previous conversation before switching
+    if (streamRef.current) {
+      try { streamRef.current.abort(); } catch (e) {}
+      streamRef.current = null;
+    }
+    // Reset streaming state so stale "connecting" indicator never carries over
+    if (useChatStore.getState().isStreaming) {
+      console.log('[Chat] Resetting stale streaming state on conversation switch');
+      useChatStore.getState().clearStreaming();
+    }
+
     let cancelled = false;
-    
+
     const init = async () => {
       console.log('[Chat] Init called, id:', id, 'user:', !!user, 'isRestoring:', isRestoring);
       if (!id) { 
@@ -670,7 +680,15 @@ function ChatDetailScreenInner() {
     };
     
     init();
-    return () => { cancelled = true; if (ssePollingTimerRef.current) { clearTimeout(ssePollingTimerRef.current); ssePollingTimerRef.current = null; } /* don't clearStreaming - streaming may resume after remount */ };
+    return () => {
+      cancelled = true;
+      if (ssePollingTimerRef.current) { clearTimeout(ssePollingTimerRef.current); ssePollingTimerRef.current = null; }
+      // Abort SSE when navigating away from this chat screen
+      if (streamRef.current) {
+        try { streamRef.current.abort(); } catch (e) {}
+        streamRef.current = null;
+      }
+    };
   }, [id, user, isRestoring]);
 
 
@@ -818,7 +836,7 @@ function ChatDetailScreenInner() {
   const effectiveConvId = conversationId || id || '';
 
   const handleSend = async (text: string, _files?: any[], fileIds?: string[]) => {
-    if (!text.trim() || !patToken) return;
+    if (!patToken) return; if (!text.trim() && (!fileIds || fileIds.length === 0)) return;
 
     // Ensure conversationId is set; create conversation if needed
     let currentConvId = conversationId || id;
@@ -842,7 +860,7 @@ function ChatDetailScreenInner() {
     
     // If already streaming, queue the message
     if (useChatStore.getState().isStreaming) {
-      messageQueueRef.current.push({ text, files: _files, fileIds }); console.log("[Queue] message QUEUED:", text.substring(0,30), "total:", messageQueueRef.current.length);
+      messageQueueRef.current.push({ text, files: _files, fileIds }); console.log("[Queue] message QUEUED:", (text || "").substring(0,30), "total:", messageQueueRef.current.length);
       // Still add user message to display immediately
       const userMsg: ChatMessage = {
         id: `msg_${Date.now()}`,
@@ -924,24 +942,23 @@ function ChatDetailScreenInner() {
     const localConvId = conversationId;
     let localAiAccum = "";
 
-    // === Chat Queue: submit task for background resilience ===
+    // === Chat Queue: submit task for background resilience (fire-and-forget, don't block SSE) ===
     let queueTaskId: string | null = null;
-    try {
-      const queueResp = await chatQueueApi.submit({
-        bot_id: currentBotId,
-        user_id: user?.id || 'app_user',
-        conversation_id: effectiveConvId || undefined,
-        additional_messages: additionalMsgs,
-        stream: true,
-        auto_save_history: true,
-        bearer_token: patToken || '',
-      }, patToken || '');
+    chatQueueApi.submit({
+      bot_id: currentBotId,
+      user_id: user?.id || 'app_user',
+      conversation_id: effectiveConvId || undefined,
+      additional_messages: additionalMsgs,
+      stream: true,
+      auto_save_history: true,
+      bearer_token: patToken || '',
+    }, patToken || '').then((queueResp) => {
       queueTaskId = queueResp.task_id;
       registerTask(queueTaskId, effectiveConvId || '');
       console.log('[ChatQueue] Task submitted:', queueTaskId);
-    } catch (qe) {
-      console.warn('[ChatQueue] Submit failed, falling back to direct SSE:', qe);
-    }
+    }).catch((qe) => {
+      console.warn('[ChatQueue] Submit failed (non-blocking):', qe);
+    });
 
 
 
@@ -1093,7 +1110,7 @@ function ChatDetailScreenInner() {
             const pendingFiles = getPendingFiles();
             if (pendingFiles.length > 0) {
               for (const pf of pendingFiles) {
-                fetch('https://measures-customize-compounds-crm.trycloudflare.com/project-files/api/files/upload', {
+                fetch('https://upload-korean-guide-dan.trycloudflare.com/project-files/api/files/upload', {
                   method: 'POST',
                   headers: {
                     'X-Conversation-Id': realConvId,
@@ -1276,7 +1293,7 @@ function ChatDetailScreenInner() {
     // Poll every 10 seconds
     const poll = async () => {
       try {
-        const baseUrl = 'https://measures-customize-compounds-crm.trycloudflare.com';
+        const baseUrl = 'https://upload-korean-guide-dan.trycloudflare.com';
         const resp = await fetch(`${baseUrl}/video/status/${taskId}`);
         const data = await resp.json();
         const parsed = typeof data.data === 'string' ? JSON.parse(data.data || '{}') : (data.data || data);

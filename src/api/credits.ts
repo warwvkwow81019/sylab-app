@@ -4,8 +4,8 @@ import Constants from 'expo-constants';
 import type { CreditBalance, CreditTransaction, ModelPricing, ActionPricing, CardRedeemResponse, ApiResponse } from '../types/api';
 
 const API_BASE = Platform.OS === 'web'
-  ? 'https://measures-customize-compounds-crm.trycloudflare.com'
-  : (Constants.expoConfig?.extra?.EXPO_PUBLIC_API_BASE || 'https://measures-customize-compounds-crm.trycloudflare.com');
+  ? 'https://upload-korean-guide-dan.trycloudflare.com'
+  : (Constants.expoConfig?.extra?.EXPO_PUBLIC_API_BASE || 'https://upload-korean-guide-dan.trycloudflare.com');
 
 // 积分服务用独立的 axios 实例，不需要 bearer/session 认证，用 user_id 做标识
 const creditsClient = axios.create({

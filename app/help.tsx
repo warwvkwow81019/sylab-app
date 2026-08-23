@@ -19,7 +19,7 @@ export default function HelpScreen() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
   const handleContact = () => {
-    Linking.openURL('https://measures-customize-compounds-crm.trycloudflare.com').catch(() => {});
+    Linking.openURL('https://upload-korean-guide-dan.trycloudflare.com').catch(() => {});
   };
 
   return (

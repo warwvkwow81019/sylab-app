@@ -5,7 +5,7 @@
  */
 
 // 文件服务基础路径（通过 nginx 代理到 9093 端口）
-const FILES_BASE = 'https://measures-customize-compounds-crm.trycloudflare.com/project-files';
+const FILES_BASE = 'https://upload-korean-guide-dan.trycloudflare.com/project-files';
 
 export interface ProjectFile {
   name: string;

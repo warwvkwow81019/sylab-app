@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Platform, Alert, ActivityIndicator, Modal, FlatList } from 'react-native';
 import { Colors, Spacing, BorderRadius, FontSize } from '../constants/theme';
 import { Ionicons } from '@expo/vector-icons';
@@ -237,25 +238,39 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     setAttachedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
+  const UPLOAD_URL = 'https://upload-korean-guide-dan.trycloudflare.com/v1/files/upload';
+
   const uploadToCoze = async (file: AttachedFile): Promise<string | null> => {
     try {
-      const formData = new FormData();
-      if (Platform.OS === 'web' || file.blob) {
-        const blob = file.blob || new Blob([]);
-        const fileObj = new File([blob], file.name, { type: file.type || 'application/octet-stream' });
-        formData.append('file', fileObj);
-      } else if (file.uri) {
-        // Native: React Native FormData accepts {uri, name, type}
-        formData.append('file', {
-          uri: file.uri,
-          name: file.name,
-          type: file.type || 'application/octet-stream',
-        } as any);
-      } else {
-        formData.append('file', new Blob([]));
+      // Native (iOS/Android): use FileSystem.uploadAsync which builds multipart reliably.
+      // React Native FormData with {uri,name,type} often fails to send file bytes on iOS.
+      if (Platform.OS !== 'web' && file.uri) {
+        const uploadResp = await FileSystem.uploadAsync(UPLOAD_URL, file.uri, {
+          httpMethod: 'POST',
+          uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+          fieldName: 'file',
+          mimeType: file.type || 'application/octet-stream',
+          headers: { 'Authorization': `Bearer ${patToken || ''}` },
+          parameters: { purpose: 'assistants' },
+        });
+        console.log('[ChatInput] native upload status:', uploadResp.status, 'name:', file.name);
+        if (uploadResp.status >= 200 && uploadResp.status < 300) {
+          const result = JSON.parse(uploadResp.body);
+          const fileId = result?.data?.id || result?.id || null;
+          console.log('[ChatInput] Coze upload OK (native), file_id:', fileId);
+          return fileId;
+        }
+        console.error('[ChatInput] Coze native upload failed:', uploadResp.status, (uploadResp.body || '').substring(0, 300));
+        return null;
       }
+
+      // Web: FormData with Blob
+      const formData = new FormData();
+      const blob = file.blob || new Blob([]);
+      const fileObj = new File([blob], file.name, { type: file.type || 'application/octet-stream' });
+      formData.append('file', fileObj);
       formData.append('purpose', 'assistants');
-      const resp = await fetch('https://measures-customize-compounds-crm.trycloudflare.com/v1/files/upload', {
+      const resp = await fetch(UPLOAD_URL, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${patToken || ''}` },
         body: formData,
@@ -263,7 +278,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       if (resp.ok) {
         const result = await resp.json();
         const fileId = result.data?.id || result.id || null;
-        console.log('[ChatInput] Coze upload OK, file_id:', fileId);
+        console.log('[ChatInput] Coze upload OK (web), file_id:', fileId);
         return fileId;
       }
       const errText = await resp.text().catch(() => '');
@@ -299,7 +314,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             blob = new Blob([]);
           }
           const resp = await fetch(
-            'https://measures-customize-compounds-crm.trycloudflare.com/project-files/api/files/upload',
+            'https://upload-korean-guide-dan.trycloudflare.com/project-files/api/files/upload',
             {
               method: 'POST',
               headers: {
@@ -348,9 +363,18 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     }
 
     let msgText = text.trim();
-    if (uploadedNames.length > 0) {
-      const fileNames = uploadedNames.map(n => `\u{1F4CE}${n}`).join(' ');
+    const displayNames = uploadedNames.length > 0 ? uploadedNames : attachedFiles.map(f => f.name);
+    if (displayNames.length > 0) {
+      const fileNames = displayNames.map(n => `\u{1F4CE}${n}`).join(' ');
       msgText = msgText ? `${msgText}\n${fileNames}` : fileNames;
+    }
+
+    if (cozeFileIds.length === 0 && attachedFiles.length > 0) {
+      Alert.alert(
+        '附件上传失败',
+        '文件未能上传到服务器（可能是网络或隧道不稳定）。请重试，或换用截图/较小的文件。',
+        [{ text: '知道了' }]
+      );
     }
 
     onSend(msgText, [], cozeFileIds.length > 0 ? cozeFileIds : undefined);
