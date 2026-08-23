@@ -1619,6 +1619,11 @@ function ChatDetailScreenInner() {
           inverted={false}
           extraData={videoTasks}
           onScroll={handleScroll}
+          onContentSizeChange={() => {
+            if (useChatStore.getState().isStreaming) {
+              flatListRef.current?.scrollToEnd({ animated: false });
+            }
+          }}
           scrollEventThrottle={Platform.OS === 'web' ? 0 : 100}
         />
       )}
@@ -1761,7 +1766,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', paddingTop: Platform.OS === 'web' ? 0 : 0, paddingBottom: Platform.OS === 'web' ? 0 : Spacing.sm },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   emptyArea: { flex: 1, justifyContent: 'center' },
-  listContent: { paddingVertical: Spacing.md },
+  listContent: { paddingVertical: Spacing.md, paddingBottom: 90 },
   errorBar: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: '#fef2f2',

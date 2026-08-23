@@ -288,16 +288,16 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
           <View style={{ borderWidth: 1, borderColor, borderRadius: BorderRadius.md, overflow: 'hidden' }}>
             <View style={{ flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 8, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: borderColor }}>
               {headers.map((cell, ci) => (
-                <View key={`th-${ci}`} style={{ minWidth: 80, paddingHorizontal: 8, alignItems: alignments[ci] === 'center' ? 'center' : alignments[ci] === 'right' ? 'flex-end' : 'flex-start' }}>
-                  <Text style={{ fontSize: FontSize.sm, fontWeight: '700', color: textColor }}>{cell}</Text>
+                <View key={`th-${ci}`} style={{ minWidth: 100, maxWidth: 280, paddingHorizontal: 8, flexShrink: 1, alignItems: alignments[ci] === 'center' ? 'center' : alignments[ci] === 'right' ? 'flex-end' : 'flex-start' }}>
+                  <Text style={{ fontSize: FontSize.sm, fontWeight: '700', color: textColor, flex: 1, flexWrap: 'wrap' }}>{cell}</Text>
                 </View>
               ))}
             </View>
             {dataRows.map((row, ri) => (
               <View key={`tr-${ri}`} style={{ flexDirection: 'row', paddingVertical: 6, paddingHorizontal: 8, borderBottomWidth: ri < dataRows.length - 1 ? 0.5 : 0, borderBottomColor: borderColor }}>
                 {row.map((cell, ci) => (
-                  <View key={`td-${ri}-${ci}`} style={{ minWidth: 80, paddingHorizontal: 8, alignItems: alignments[ci] === 'center' ? 'center' : alignments[ci] === 'right' ? 'flex-end' : 'flex-start' }}>
-                    <Text style={{ fontSize: FontSize.sm, color: textColor }}>{cell}</Text>
+                  <View key={`td-${ri}-${ci}`} style={{ minWidth: 100, maxWidth: 280, paddingHorizontal: 8, flexShrink: 1, alignItems: alignments[ci] === 'center' ? 'center' : alignments[ci] === 'right' ? 'flex-end' : 'flex-start' }}>
+                    <Text style={{ fontSize: FontSize.sm, color: textColor, flex: 1, flexWrap: 'wrap' }}>{cell}</Text>
                   </View>
                 ))}
               </View>
@@ -305,20 +305,28 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
           </View>
         </View>
       ) : (
-        <ScrollView horizontal showsHorizontalScrollIndicator={true} key={`table-${startIdx}`} style={{ marginVertical: Spacing.sm }}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={true}
+          directionalLockEnabled
+          nestedScrollEnabled
+          key={`table-${startIdx}`}
+          style={{ marginVertical: Spacing.sm }}
+          contentContainerStyle={{ flexGrow: 1 }}
+        >
           <View style={{ borderWidth: 1, borderColor, borderRadius: BorderRadius.md, overflow: 'hidden' }}>
             <View style={{ flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 8, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: borderColor }}>
               {headers.map((cell, ci) => (
-                <View key={`th-${ci}`} style={{ minWidth: 80, paddingHorizontal: 8, alignItems: alignments[ci] === 'center' ? 'center' : alignments[ci] === 'right' ? 'flex-end' : 'flex-start' }}>
-                  <Text style={{ fontSize: FontSize.sm, fontWeight: '700', color: textColor }}>{cell}</Text>
+                <View key={`th-${ci}`} style={{ minWidth: 100, maxWidth: 280, paddingHorizontal: 8, flexShrink: 1, alignItems: alignments[ci] === 'center' ? 'center' : alignments[ci] === 'right' ? 'flex-end' : 'flex-start' }}>
+                  <Text style={{ fontSize: FontSize.sm, fontWeight: '700', color: textColor, flex: 1, flexWrap: 'wrap' }}>{cell}</Text>
                 </View>
               ))}
             </View>
             {dataRows.map((row, ri) => (
               <View key={`tr-${ri}`} style={{ flexDirection: 'row', paddingVertical: 6, paddingHorizontal: 8, borderBottomWidth: ri < dataRows.length - 1 ? 0.5 : 0, borderBottomColor: borderColor }}>
                 {row.map((cell, ci) => (
-                  <View key={`td-${ri}-${ci}`} style={{ minWidth: 80, paddingHorizontal: 8, alignItems: alignments[ci] === 'center' ? 'center' : alignments[ci] === 'right' ? 'flex-end' : 'flex-start' }}>
-                    <Text style={{ fontSize: FontSize.sm, color: textColor }}>{cell}</Text>
+                  <View key={`td-${ri}-${ci}`} style={{ minWidth: 100, maxWidth: 280, paddingHorizontal: 8, flexShrink: 1, alignItems: alignments[ci] === 'center' ? 'center' : alignments[ci] === 'right' ? 'flex-end' : 'flex-start' }}>
+                    <Text style={{ fontSize: FontSize.sm, color: textColor, flex: 1, flexWrap: 'wrap' }}>{cell}</Text>
                   </View>
                 ))}
               </View>
