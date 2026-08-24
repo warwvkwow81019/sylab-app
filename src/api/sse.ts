@@ -73,11 +73,7 @@ export function sendMessageStream(
 
   (async () => {
     try {
-      // Keep 'thinking' status while establishing connection; only switch to
-      // 'connecting' if it takes more than 2s (slow network).
-      let connectingTimer = setTimeout(() => {
-        callbacks.onStatus?.('connecting');
-      }, 4000);
+      // No 'connecting' status - keep showing 'thinking' until stream starts
       console.log('[SSE] POST', url);
 
       // Connect timeout: abort if response headers not received within 90s
@@ -98,14 +94,12 @@ export function sendMessageStream(
         });
       } catch (fetchErr: any) {
         clearTimeout(connectTimeout);
-        clearTimeout(connectingTimer);
         if (fetchErr.name === 'AbortError') {
           throw new Error('连接超时，请检查网络后重试');
         }
         throw fetchErr;
       }
       clearTimeout(connectTimeout);
-      clearTimeout(connectingTimer);
 
       console.log('[SSE] response status:', response.status, response.statusText);
 
@@ -174,9 +168,23 @@ export function sendMessageStream(
               }
 
               // Handle delta events
-              if (currentEvent === 'conversation.message.delta' && data.content) {
-                callbacks.onDelta(data.content);
-                if (data.role === "assistant") fullAssistantContent += data.content;
+              if (currentEvent === 'conversation.message.delta') {
+                if (data.content) {
+                  callbacks.onDelta(data.content);
+                  if (data.role === "assistant") fullAssistantContent += data.content;
+                  callbacks.onStatus?.('streaming');
+                }
+                if (data.type === 'function_call' && data.content) {
+                  try {
+                    const tc = JSON.parse(data.content);
+                    const name = tc.function?.name || tc.name || 'unknown';
+                    callbacks.onToolCallStart?.(name);
+                    callbacks.onToolCall?.(name, tc.function?.arguments || tc.arguments || '{}');
+                  } catch {}
+                }
+                if (data.reasoning_content && !data.content) {
+                  callbacks.onStatus?.('thinking');
+                }
               }
               // Handle tool calls
               else if (currentEvent === 'conversation.message.completed') {

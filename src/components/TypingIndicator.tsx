@@ -104,12 +104,11 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({ statusText, vi
   let displayText = "";
   // Map English SSE status to Chinese
   const statusMap: Record<string, string> = {
-    connecting: "正在连接",
     streaming: "正在回复",
     complete: "回复完成",
     queued: "排队中",
     processing: "处理中",
-    thinking: "正在思考",
+    thinking: "正在思考理解…",
   };
   if (currentTool && currentTool.name) {
     const label = getToolLabel(currentTool.name);
