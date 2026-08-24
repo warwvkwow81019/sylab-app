@@ -470,6 +470,8 @@ function ChatDetailScreenInner() {
   const [replyToMap, setReplyToMap] = useState<Record<string, { role: string; content: string }>>({});
   const lastUserMsgRef = useRef<ChatMessage | null>(null);
   const pendingFilesRef = useRef<Array<{blob: Blob, name: string, type: string}>>([]);
+  // Track when last tool completed, to keep "X完成" visible briefly
+  const lastToolCompleteRef = useRef<number>(0);
 
   // Pagination
   const [page, setPage] = useState(1);
@@ -983,6 +985,9 @@ function ChatDetailScreenInner() {
           if (toolName) appendToolCall(toolName, '');
         },
         onToolCall: (name, args, result) => {
+          if (result) {
+            lastToolCompleteRef.current = Date.now();
+          }
           appendToolCall(name, args, result);
           // Detect video task_id from tool result and start polling immediately
           if (result && (name === 'video_generate' || name === 'generate_video')) {
@@ -1261,14 +1266,26 @@ function ChatDetailScreenInner() {
           const store = useChatStore.getState();
           const current = store.activityStatus;
           const hasRunningTool = store.toolCalls.some(tc => !tc.result);
+          const now = Date.now();
+          const sinceToolComplete = now - lastToolCompleteRef.current;
+          // Keep "X完成" visible for at least 1.2s so user sees the transition
+          const completionVisible = current.endsWith("完成") && sinceToolComplete < 1200;
           if (status === "streaming") {
-            // AI is outputting text now
+            // AI is outputting text now - always switch (content is streaming)
             setActivityStatus("正在输入回复…");
           } else if (status === "thinking") {
-            // AI is reasoning (DeepSeek thinking chain)
-            // Don't overwrite tool status if a tool is running
-            if (!hasRunningTool) {
+            // Don't overwrite if a tool is running or completion just showed
+            if (!hasRunningTool && !completionVisible) {
               setActivityStatus("正在思考理解…");
+            }
+            // If completion visible, schedule a fallback update after window
+            if (completionVisible) {
+              setTimeout(() => {
+                const s = useChatStore.getState();
+                if (!s.toolCalls.some(tc => !tc.result) && s.activityStatus.endsWith("完成")) {
+                  setActivityStatus("正在思考理解…");
+                }
+              }, 1200 - sinceToolComplete);
             }
           } else if (status === "complete") {
             setActivityStatus("");
