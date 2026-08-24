@@ -962,6 +962,7 @@ function ChatDetailScreenInner() {
 
 
 
+    setActivityStatus("thinking");
     streamRef.current = sendMessageStream(
       {
         bot_id: currentBotId,
@@ -1537,7 +1538,6 @@ function ChatDetailScreenInner() {
               botAvatar={botAvatar}
               userAvatar={userAvatar}
               isDark={isDark}
-              replyToMessage={lastUserMsgRef.current ? { role: lastUserMsgRef.current.role, content: lastUserMsgRef.current.content || '' } : null}
             />
           </View>
         );

@@ -77,7 +77,7 @@ export function sendMessageStream(
       // 'connecting' if it takes more than 2s (slow network).
       let connectingTimer = setTimeout(() => {
         callbacks.onStatus?.('connecting');
-      }, 2000);
+      }, 4000);
       console.log('[SSE] POST', url);
 
       // Connect timeout: abort if response headers not received within 90s

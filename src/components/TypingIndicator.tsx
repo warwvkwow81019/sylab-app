@@ -109,6 +109,7 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({ statusText, vi
     complete: "回复完成",
     queued: "排队中",
     processing: "处理中",
+    thinking: "正在思考",
   };
   if (currentTool && currentTool.name) {
     const label = getToolLabel(currentTool.name);
@@ -120,7 +121,7 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({ statusText, vi
   } else if (statusText) {
     displayText = statusMap[statusText] || statusText;
   } else {
-    displayText = "正在思考";
+    displayText = "正在思考理解…";
   }
 
   const icon = currentTool && !currentTool.result ? "hammer" : "sparkles";
