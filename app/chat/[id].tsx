@@ -1257,7 +1257,24 @@ function ChatDetailScreenInner() {
         },
         onStatus: (status) => {
           console.log('[SSE status]', status);
-          if (status) setActivityStatus(status);
+          if (!status) return;
+          const store = useChatStore.getState();
+          const current = store.activityStatus;
+          const hasRunningTool = store.toolCalls.some(tc => !tc.result);
+          if (status === "streaming") {
+            // AI is outputting text now
+            setActivityStatus("正在输入回复…");
+          } else if (status === "thinking") {
+            // AI is reasoning (DeepSeek thinking chain)
+            // Don't overwrite tool status if a tool is running
+            if (!hasRunningTool) {
+              setActivityStatus("正在思考理解…");
+            }
+          } else if (status === "complete") {
+            setActivityStatus("");
+          } else {
+            setActivityStatus(status);
+          }
         },
       }
     );
@@ -1668,7 +1685,15 @@ function ChatDetailScreenInner() {
           statusText={activityStatus}
           visible={isStreaming}
           botName={botName}
-          currentTool={toolCalls.length > 0 ? toolCalls[toolCalls.length - 1] : null}
+          currentTool={
+            // If AI is outputting text, hide tool badge so statusText ("正在输入回复…") shows
+            streamingContent
+              ? null
+              : // No text yet: show latest tool call (running or just completed)
+                toolCalls.length > 0
+                ? toolCalls[toolCalls.length - 1]
+                : null
+          }
         />
         <ChatInput
         onSend={handleSend}

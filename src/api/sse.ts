@@ -123,7 +123,8 @@ export function sendMessageStream(
       let buffer = '';
       let currentEvent = '';
 
-      callbacks.onStatus?.('streaming');
+      // Don't set 'streaming' yet - wait for first real content delta
+      // Status stays 'thinking' until AI actually starts outputting text
       console.log('[SSE] Stream started, reading...');
 
       while (true) {
