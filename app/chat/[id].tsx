@@ -945,7 +945,9 @@ function ChatDetailScreenInner() {
     let localAiAccum = "";
 
     // === Chat Queue: submit task for background resilience (fire-and-forget, don't block SSE) ===
-    let queueTaskId: string | null = null;
+    const queueTaskIdRef = useRef<string | null>(null);
+    let queueSubmitResolve: ((id: string) => void) | null = null;
+    const queueSubmitPromise = new Promise<string>((res) => { queueSubmitResolve = res; });
     chatQueueApi.submit({
       bot_id: currentBotId,
       user_id: user?.id || 'app_user',
@@ -955,11 +957,13 @@ function ChatDetailScreenInner() {
       auto_save_history: true,
       bearer_token: patToken || '',
     }, patToken || '').then((queueResp) => {
-      queueTaskId = queueResp.task_id;
-      registerTask(queueTaskId, effectiveConvId || '');
-      console.log('[ChatQueue] Task submitted:', queueTaskId);
+      queueTaskIdRef.current = queueResp.task_id;
+      registerTask(queueResp.task_id, effectiveConvId || '');
+      console.log('[ChatQueue] Task submitted:', queueResp.task_id);
+      if (queueSubmitResolve) queueSubmitResolve(queueResp.task_id);
     }).catch((qe) => {
       console.warn('[ChatQueue] Submit failed (non-blocking):', qe);
+      if (queueSubmitResolve) queueSubmitResolve('');
     });
 
 
@@ -979,10 +983,6 @@ function ChatDetailScreenInner() {
         onDelta: (delta) => {
           localAiAccum += delta;
           appendDelta(delta);
-        },
-        onToolCallStart: (toolName) => {
-          console.log("[ToolStart]", toolName);
-          if (toolName) appendToolCall(toolName, '');
         },
         onToolCall: (name, args, result) => {
           if (result) {
@@ -1011,9 +1011,31 @@ function ChatDetailScreenInner() {
         onComplete: (chatId, convId, tokens) => {
           try {
           // Clear queue task - SSE completed normally
-          if (queueTaskId) {
-            chatQueueApi.cancel(queueTaskId).catch(e => console.warn('[ChatQueue] Cancel on complete failed:', e));
-          }
+          // Cancel standby queue task: wait briefly for submit promise to resolve,
+          // then cancel with a retry so a fast SSE completion can never cause duplicate messages.
+          (async () => {
+            try {
+              const tid = await Promise.race([
+                queueSubmitPromise,
+                new Promise<string>((r) => setTimeout(() => r(queueTaskIdRef.current || ''), 3000)),
+              ]);
+              const taskId = tid || queueTaskIdRef.current;
+              if (taskId) {
+                for (let attempt = 0; attempt < 3; attempt++) {
+                  try {
+                    await chatQueueApi.cancel(taskId);
+                    console.log('[ChatQueue] Cancelled standby task:', taskId);
+                    break;
+                  } catch (ce) {
+                    console.warn('[ChatQueue] Cancel attempt', attempt + 1, 'failed:', ce);
+                    await new Promise((r) => setTimeout(r, 400));
+                  }
+                }
+              }
+            } catch (e) {
+              console.warn('[ChatQueue] Cancel flow error:', e);
+            }
+          })();
           clearTask();
           // Use closure-captured content (immune to store/state resets)
           const capturedAiContent = localAiAccum || useChatStore.getState().streamingContent;
@@ -1189,19 +1211,19 @@ function ChatDetailScreenInner() {
         },
         onMessageComplete: () => { /* streaming ends via onComplete */ },
         onError: (err) => {
-          console.error('[Chat] SSE error FULL:', err.message, err.stack, 'queueTaskId:', queueTaskId, 'convId:', effectiveConvId, 'botId:', currentBotId);
-          if (queueTaskId && activeTaskRef.current) {
+          console.error('[Chat] SSE error FULL:', err.message, err.stack, 'queueTaskId:', queueTaskIdRef.current, 'convId:', effectiveConvId, 'botId:', currentBotId);
+          if (queueTaskIdRef.current && activeTaskRef.current) {
             // SSE disconnected - activate standby queue task to fetch response from backend
             console.log('[ChatQueue] SSE disconnected, starting queue task:', queueTaskId);
-            chatQueueApi.start(queueTaskId).catch(e => console.warn('[ChatQueue] Start failed:', e));
+            chatQueueApi.start(queueTaskIdRef.current!).catch(e => console.warn('[ChatQueue] Start failed:', e));
             const pollQueue = async () => {
               const task = activeTaskRef.current;
-              if (!task || task.taskId !== queueTaskId) return;
+              if (!task || task.taskId !== queueTaskIdRef.current) return;
               try {
-                const status = await chatQueueApi.getStatus(queueTaskId);
+                const status = await chatQueueApi.getStatus(queueTaskIdRef.current!);
                 if (status.status === 'completed') {
                   // Fetch remaining events and apply them
-                  const { events } = await chatQueueApi.getEvents(queueTaskId, task.lastEventIndex);
+                  const { events } = await chatQueueApi.getEvents(queueTaskIdRef.current!, task.lastEventIndex);
                   for (const event of events) {
                     task.lastEventIndex = event.index + 1;
                     if (event.event_type === 'conversation.message.delta' && event.data?.content) {
@@ -1235,7 +1257,7 @@ function ChatDetailScreenInner() {
                   }
                 } else {
                   // Still processing - get incremental events and keep polling
-                  const { events } = await chatQueueApi.getEvents(queueTaskId, task.lastEventIndex);
+                  const { events } = await chatQueueApi.getEvents(queueTaskIdRef.current!, task.lastEventIndex);
                   for (const event of events) {
                     task.lastEventIndex = event.index + 1;
                     if (event.event_type === 'conversation.message.delta' && event.data?.content) {
