@@ -407,6 +407,7 @@ function ChatDetailScreenInner() {
   const flatListRef = useRef<FlatList>(null);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
   const streamRef = useRef<{ abort: () => void } | null>(null);
+  const queueTaskIdRef = useRef<string | null>(null);
   const ssePollingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const { registerTask, clearTask, activeTaskRef, getActiveTask } = useChatQueue(id as string);
 
@@ -945,7 +946,6 @@ function ChatDetailScreenInner() {
     let localAiAccum = "";
 
     // === Chat Queue: submit task for background resilience (fire-and-forget, don't block SSE) ===
-    const queueTaskIdRef = useRef<string | null>(null);
     let queueSubmitResolve: ((id: string) => void) | null = null;
     const queueSubmitPromise = new Promise<string>((res) => { queueSubmitResolve = res; });
     chatQueueApi.submit({
