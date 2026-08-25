@@ -3,7 +3,7 @@
  * 当 SSE 直连断开时，通过任务队列恢复/获取消息
  */
 
-const QUEUE_BASE = 'https://api.symsgf.xyz/chat-queue';
+const QUEUE_BASE = 'http://36.137.84.216:9091/chat-queue';
 
 export interface QueueSubmitRequest {
   bot_id: string;

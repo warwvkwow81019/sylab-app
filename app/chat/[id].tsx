@@ -1141,7 +1141,7 @@ function ChatDetailScreenInner() {
             const pendingFiles = getPendingFiles();
             if (pendingFiles.length > 0) {
               for (const pf of pendingFiles) {
-                fetch('https://api.symsgf.xyz/project-files/api/files/upload', {
+                fetch('http://36.137.84.216:9091/project-files/api/files/upload', {
                   method: 'POST',
                   headers: {
                     'X-Conversation-Id': realConvId,
@@ -1354,7 +1354,7 @@ function ChatDetailScreenInner() {
     // Poll every 10 seconds
     const poll = async () => {
       try {
-        const baseUrl = 'https://api.symsgf.xyz';
+        const baseUrl = 'http://36.137.84.216:9091';
         const resp = await fetch(`${baseUrl}/video/status/${taskId}`);
         const data = await resp.json();
         const parsed = typeof data.data === 'string' ? JSON.parse(data.data || '{}') : (data.data || data);
