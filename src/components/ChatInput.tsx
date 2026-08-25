@@ -238,7 +238,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     setAttachedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  const UPLOAD_URL = 'https://upload-korean-guide-dan.trycloudflare.com/v1/files/upload';
+  const UPLOAD_URL = 'https://api.symsgf.xyz/v1/files/upload';
 
   const uploadToCoze = async (file: AttachedFile): Promise<string | null> => {
     try {
@@ -314,7 +314,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             blob = new Blob([]);
           }
           const resp = await fetch(
-            'https://upload-korean-guide-dan.trycloudflare.com/project-files/api/files/upload',
+            'https://api.symsgf.xyz/project-files/api/files/upload',
             {
               method: 'POST',
               headers: {

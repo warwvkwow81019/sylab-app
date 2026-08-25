@@ -158,7 +158,7 @@ export default function ProfileScreen() {
       } as any);
 
       const authToken = useAuthStore.getState().patToken;
-      const baseUrl = 'https://upload-korean-guide-dan.trycloudflare.com';
+      const baseUrl = 'https://api.symsgf.xyz';
       const resp = await fetch(`${baseUrl}/api/web/user/update/upload_avatar/`, {
         method: 'POST',
         headers: {

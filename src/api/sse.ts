@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 
-const API_BASE = Constants.expoConfig?.extra?.EXPO_PUBLIC_API_BASE || 'https://upload-korean-guide-dan.trycloudflare.com';
+const API_BASE = Constants.expoConfig?.extra?.EXPO_PUBLIC_API_BASE || 'https://api.symsgf.xyz';
 
 export interface TokenUsage {
   input: number;

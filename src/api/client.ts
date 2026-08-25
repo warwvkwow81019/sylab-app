@@ -2,8 +2,8 @@ import axios, { AxiosInstance, AxiosError } from 'axios';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
-const API_BASE = Constants.expoConfig?.extra?.EXPO_PUBLIC_API_BASE || 'https://upload-korean-guide-dan.trycloudflare.com';
-const OPEN_API_BASE = Constants.expoConfig?.extra?.EXPO_PUBLIC_OPEN_API_BASE || 'https://upload-korean-guide-dan.trycloudflare.com';
+const API_BASE = Constants.expoConfig?.extra?.EXPO_PUBLIC_API_BASE || 'https://api.symsgf.xyz';
+const OPEN_API_BASE = Constants.expoConfig?.extra?.EXPO_PUBLIC_OPEN_API_BASE || 'https://api.symsgf.xyz';
 const ENABLE_LOG = Constants.expoConfig?.extra?.EXPO_PUBLIC_ENABLE_API_LOG === 'true';
 
 type AuthMode = 'none' | 'session' | 'bearer' | 'apikey';

@@ -243,7 +243,7 @@ export default function ChatListScreen() {
         await chatApi.deleteConversation(conv.id);
         // 硬删除：物理清除云端数据（对话+消息）
         try {
-          const API_BASE = 'https://upload-korean-guide-dan.trycloudflare.com';
+          const API_BASE = 'https://api.symsgf.xyz';
           await fetch(`${API_BASE}/sylab-api/api/sylab/conversation/${conv.id}`, {
             method: 'DELETE',
           });
