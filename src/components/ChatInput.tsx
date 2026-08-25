@@ -238,7 +238,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     setAttachedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  const UPLOAD_URL = 'http://36.137.84.216:9091/v1/files/upload';
+  const UPLOAD_URL = 'https://s.symsgf.xyz/v1/files/upload';
 
   const uploadToCoze = async (file: AttachedFile): Promise<string | null> => {
     try {
@@ -314,7 +314,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             blob = new Blob([]);
           }
           const resp = await fetch(
-            'http://36.137.84.216:9091/project-files/api/files/upload',
+            'https://s.symsgf.xyz/project-files/api/files/upload',
             {
               method: 'POST',
               headers: {
