@@ -155,17 +155,20 @@ export function sendMessageStream(
 
               // delta: only real content text triggers streaming
               if (currentEvent === 'conversation.message.delta') {
-                if (data.content) {
-                  callbacks.onDelta(data.content);
-                  if (data.role === "assistant") fullAssistantContent += data.content;
+                // Support both top-level and nested message_item
+                const dMsg = data.message_item || data;
+                if (dMsg.content) {
+                  callbacks.onDelta(dMsg.content);
+                  if (dMsg.role === "assistant") fullAssistantContent += dMsg.content;
                   callbacks.onStatus?.('streaming');
                 }
-                if (data.reasoning_content && !data.content) {
+                if (dMsg.reasoning_content && !dMsg.content) {
                   callbacks.onStatus?.('thinking');
                 }
                 // Detect tool_calls in delta (some formats)
-                if (data.tool_calls && Array.isArray(data.tool_calls)) {
-                  for (const tc of data.tool_calls) {
+                const tcList = dMsg.tool_calls || data.tool_calls;
+                if (tcList && Array.isArray(tcList)) {
+                  for (const tc of tcList) {
                     const name = tc.function?.name || tc.name || 'unknown';
                     const args = tc.function?.arguments || tc.arguments || '{}';
                     if (name && name !== 'unknown') {
@@ -177,10 +180,12 @@ export function sendMessageStream(
               }
               // message.completed: token usage + function_call + tool_response
               else if (currentEvent === 'conversation.message.completed') {
-                if (data.role === 'assistant' && data.meta_data) {
+                // Support both top-level and nested message_item
+                const dMsg = data.message_item || data;
+                if (dMsg.role === 'assistant' && (dMsg.ext || data.meta_data)) {
                   callbacks.onMessageComplete?.();
                   try {
-                    const ext = data.meta_data;
+                    const ext = dMsg.ext ? (typeof dMsg.ext === 'string' ? JSON.parse(dMsg.ext) : dMsg.ext) : data.meta_data;
                     const inputT = parseInt(ext.input_tokens || '0') || 0;
                     const outputT = parseInt(ext.output_tokens || '0') || 0;
                     const totalT = parseInt(ext.token || '0') || 0;
@@ -189,28 +194,33 @@ export function sendMessageStream(
                     }
                   } catch {}
                 }
-                if (!lastTokenUsage && data.role === 'assistant' && fullAssistantContent.length > 0) {
+                if (!lastTokenUsage && dMsg.role === 'assistant' && fullAssistantContent.length > 0) {
                   const outputTokens = estimateTokens(fullAssistantContent);
                   const inputTokens = Math.round(outputTokens * 2);
                   lastTokenUsage = { input: inputTokens, output: outputTokens, total: inputTokens + outputTokens };
                 }
                 // function_call arrives as a completed message (type=function_call, role=assistant)
-                const msgType = data.type || data.message_type || data.message_item?.type || '';
-                if (msgType === 'function_call' || data.role === 'tool') {
+                const msgType = dMsg.type || dMsg.message_type || data.type || data.message_type || '';
+                if (msgType === 'function_call') {
                   try {
                     let tc: any = {};
-                    try { tc = JSON.parse(data.content || '{}'); } catch { tc = {}; }
-                    const name = tc.function?.name || tc.name || data.meta_data?.tool_name || 'unknown';
+                    try { tc = JSON.parse(dMsg.content || '{}'); } catch { tc = {}; }
+                    const name = tc.function?.name || tc.name || dMsg.meta_data?.tool_name || data.meta_data?.tool_name || 'unknown';
                     const args = tc.function?.arguments || tc.arguments || '{}';
                     console.log('[SSE] Tool call detected:', name);
                     callbacks.onToolCall?.(name, args);
                   } catch (e) { console.warn('[SSE] function_call parse error:', e); }
                 }
                 // tool_response: mark previous tool call as done
-                if (msgType === 'tool_response' || data.role === 'tool_response') {
+                if (msgType === 'tool_response') {
                   try {
-                    const toolName = data.meta_data?.tool_name || data.meta_data?.plugin || '';
-                    callbacks.onToolCall?.(toolName, '', data.content);
+                    let toolName = '';
+                    // Try to extract tool name from content (tool responses often include it)
+                    const content = dMsg.content || '';
+                    if (dMsg.meta_data?.tool_name) toolName = dMsg.meta_data.tool_name;
+                    else if (data.meta_data?.tool_name) toolName = data.meta_data.tool_name;
+                    // Fallback: don't pass empty name - appendToolCall will find latest pending
+                    callbacks.onToolCall?.(toolName, '', content);
                   } catch {}
                 }
               }
