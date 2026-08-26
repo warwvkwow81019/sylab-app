@@ -1,19 +1,20 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Platform } from 'react-native';
 
-// Convert HTTP server URLs to HTTPS tunnel for iOS ATS
-function normalizeImageUrl(url: string): string {
-  if (!url) return url;
-  return url
-    .replace(/http:\/\/36\.137\.84\.216:9091/g, https://s.symsgf.xyz)
-    .replace(/http:\/\/127\.0\.0\.1:9091/g, https://s.symsgf.xyz)
-    .replace(/http:\/\/localhost:9091/g, https://s.symsgf.xyz);
-}
-
 import { Colors, Spacing, BorderRadius, FontSize } from '../constants/theme';
 import { MarkdownRenderer } from './MarkdownRenderer';
 import { Ionicons } from '@expo/vector-icons';
 import type { ChatMessage, ToolCall } from '../types/api';
+
+
+// Convert HTTP server URLs to HTTPS tunnel for iOS ATS
+function normalizeImageUrl(url: string): string {
+  if (!url) return url;
+  return url
+    .replace(/http:\/\/36\.137\.84\.216:9091/g, "https://s.symsgf.xyz")
+    .replace(/http:\/\/127\.0\.0\.1:9091/g, "https://s.symsgf.xyz")
+    .replace(/http:\/\/localhost:9091/g, "https://s.symsgf.xyz");
+}
 
 interface MessageBubbleProps {
   message: ChatMessage;
