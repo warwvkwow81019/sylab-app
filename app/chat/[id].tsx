@@ -79,6 +79,20 @@ class ChatErrorBoundary extends React.Component<
 let _sessionMessages: any[] = [];
 // Nuclear backup: Map<convId, messages[]> - survives any reset
 const _messageBackup = new Map<string, any[]>();
+// Dedup tracker for user messages: key = convId|content|2secBucket
+const _recentUserMsgs = new Set<string>();
+function _isDuplicateUserMsg(convId: string, text: string, timestamp: number): boolean {
+  const secBucket = Math.floor(timestamp / 2000);
+  const key = `${convId}|${(text || '').trim()}|${secBucket}`;
+  if (_recentUserMsgs.has(key)) return true;
+  _recentUserMsgs.add(key);
+  if (_recentUserMsgs.size > 100) {
+    const arr = Array.from(_recentUserMsgs);
+    _recentUserMsgs.clear();
+    arr.slice(-50).forEach(k => _recentUserMsgs.add(k));
+  }
+  return false;
+}
 
 // Helper: match credit transactions to assistant messages by time proximity
 const matchTransactionsToMessages = (
@@ -469,7 +483,6 @@ function ChatDetailScreenInner() {
   // Message queue for continuous sending
   const messageQueueRef = useRef<Array<{ text: string; files?: any[]; fileIds?: string[] }>>([]);
   // Track which user message each AI reply is responding to
-  const [replyToMap, setReplyToMap] = useState<Record<string, { role: string; content: string }>>({});
   const lastUserMsgRef = useRef<ChatMessage | null>(null);
   const pendingFilesRef = useRef<Array<{blob: Blob, name: string, type: string}>>([]);
   // Track when last tool completed, to keep "X完成" visible briefly
@@ -730,7 +743,15 @@ function ChatDetailScreenInner() {
           chatQueueApi.connectStream(task.taskId, {
             onDelta: (text) => appendDelta(text),
             onComplete: (chatId) => {
-              finishStreaming(chatId || `msg_${Date.now()}`);
+              const cid = chatId || `msg_${Date.now()}`;
+              const cap = useChatStore.getState().streamingContent;
+              useChatStore.setState({ isStreaming: false, streamingContent: '', streamingMessageId: null, activityStatus: '', generatingType: null });
+              if (cap) {
+                const _cur = useChatStore.getState().messages;
+                if (!_cur.some(m => m.id === cid || (m.role === 'assistant' && m.content === cap))) {
+                  setMessages([..._cur, { id: cid, conversation_id: id || '', role: 'assistant', type: 'text', content: cap, content_type: 'markdown', created_at: String(Date.now()), updated_at: String(Date.now()) }]);
+                }
+              }
               clearTask();
             },
             onError: (err) => {
@@ -776,14 +797,22 @@ function ChatDetailScreenInner() {
           // Task completed while we were away - fetch results
           console.log('[ChatQueue] Task completed while away, recovering results');
           startStreaming();
+          let awayAccum = '';
           const { events } = await chatQueueApi.getEvents(task.taskId, task.lastEventIndex);
           for (const event of events) {
             task.lastEventIndex = event.index + 1;
             if (event.event_type === 'conversation.message.delta' && event.data?.content) {
-              appendDelta(event.data.content);
+              awayAccum += event.data.content;
             }
           }
-          finishStreaming(status.chat_id || `msg_${Date.now()}`);
+          const awayId = status.chat_id || `msg_${Date.now()}`;
+          useChatStore.setState({ isStreaming: false, streamingContent: '', streamingMessageId: null, activityStatus: '', generatingType: null });
+          if (awayAccum) {
+            const _cur = useChatStore.getState().messages;
+            if (!_cur.some(m => m.id === awayId || (m.role === 'assistant' && m.content === awayAccum))) {
+              setMessages([..._cur, { id: awayId, conversation_id: id || '', role: 'assistant', type: 'text', content: awayAccum, content_type: 'markdown', created_at: String(Date.now()), updated_at: String(Date.now()) }]);
+            }
+          }
           clearTask();
         } else if (status.status === 'failed') {
           setError(status.error || 'Background task failed');
@@ -877,10 +906,12 @@ function ChatDetailScreenInner() {
         updated_at: String(Date.now()),
       };
       lastUserMsgRef.current = userMsg;
-      const _prevA = useChatStore.getState().messages;
-      if (!_prevA.some(m => m.id === userMsg.id || (m.role === 'user' && m.content === userMsg.content && Math.abs(Number(m.created_at) - Number(userMsg.created_at)) < 2000))) {
-        setMessages([..._prevA, userMsg]);
-        _sessionMessages = [..._sessionMessages, userMsg];
+      if (!_isDuplicateUserMsg(effectiveConvId, userMsg.content, Number(userMsg.created_at))) {
+        const _prevA = useChatStore.getState().messages;
+        if (!_prevA.some(m => m.id === userMsg.id)) {
+          setMessages([..._prevA, userMsg]);
+          _sessionMessages = [..._sessionMessages, userMsg];
+        }
       }
       return;
     }
@@ -920,10 +951,12 @@ function ChatDetailScreenInner() {
       updated_at: String(Date.now()),
     };
     lastUserMsgRef.current = userMsg;
-    const _prevB = useChatStore.getState().messages;
-    if (!_prevB.some(m => m.id === userMsg.id || (m.role === 'user' && m.content === userMsg.content && Math.abs(Number(m.created_at) - Number(userMsg.created_at)) < 2000))) {
-      setMessages([..._prevB, userMsg]);
-      _sessionMessages = [..._sessionMessages, userMsg];
+    if (!_isDuplicateUserMsg(effectiveConvId, userMsg.content, Number(userMsg.created_at))) {
+      const _prevB = useChatStore.getState().messages;
+      if (!_prevB.some(m => m.id === userMsg.id)) {
+        setMessages([..._prevB, userMsg]);
+        _sessionMessages = [..._sessionMessages, userMsg];
+      }
     }
       // Save to nuclear backup immediately
       const backupKey = effectiveConvId || 'pending';
@@ -1056,10 +1089,18 @@ function ChatDetailScreenInner() {
           // Use closure-captured content (immune to store/state resets)
           const capturedAiContent = localAiAccum || useChatStore.getState().streamingContent;
           const aiMsgId = chatId || `msg_${Date.now()}`;
-          // FIX: Add final AI message BEFORE finishStreaming to prevent render gap
+          // Capture toolCalls from store BEFORE clearing streaming state
+          const savedToolCalls = useChatStore.getState().toolCalls;
+          // Clear streaming state FIRST so the streaming footer disappears immediately
+          // Then add the final message - this prevents both showing at once (duplicate)
+          useChatStore.setState({
+            isStreaming: false,
+            streamingContent: '',
+            streamingMessageId: null,
+            activityStatus: '',
+            generatingType: null,
+          });
           if (capturedAiContent) {
-            // Capture toolCalls from store BEFORE finishStreaming clears them
-            const savedToolCalls = useChatStore.getState().toolCalls;
             const aiMsg: ChatMessage = {
               id: aiMsgId,
               conversation_id: convId || effectiveConvId || '',
@@ -1071,17 +1112,16 @@ function ChatDetailScreenInner() {
               created_at: String(Date.now()),
               updated_at: String(Date.now()),
             };
-            const _cur = useChatStore.getState().messages; setMessages([..._cur.filter(m => m.id !== aiMsgId), aiMsg]);
+            // Deduplicate: remove any existing message with same id OR same assistant content within 5s
+            const _cur = useChatStore.getState().messages;
+            const _now = Date.now();
+            const filtered = _cur.filter(m =>
+              m.id !== aiMsgId &&
+              !(m.role === 'assistant' && m.content === capturedAiContent && Math.abs(Number(m.created_at) - _now) < 5000)
+            );
+            setMessages([...filtered, aiMsg]);
           }
-          finishStreaming(aiMsgId);
           console.log("[Chat] onComplete: localAi:", localAiAccum.length, "localUser:", localUserContent.length, "sessionMsgs:", _sessionMessages.length, "tokens:", tokens);
-          // Save reply-to mapping
-          if (lastUserMsgRef.current) {
-            setReplyToMap(prev => ({
-              ...prev,
-              [aiMsgId]: { role: lastUserMsgRef.current!.role, content: lastUserMsgRef.current!.content || '' },
-            }));
-          }
           // Token-based billing: deduct credits based on actual token usage
           const currentAiMsgId = aiMsgId;
           if (tokens && tokens.total > 0) {
@@ -1542,7 +1582,6 @@ function ChatDetailScreenInner() {
           userAvatar={userAvatar}
           isDark={isDark}
           onLongPress={handleLongPress} 
-          replyToMessage={replyToMap[item.id] || null}
           cost={messageCosts.get(item.id)}
         />
         {activeTask && <VideoGenerationOverlay status={activeTask.status} progress={activeTask.progress || 0} />}
