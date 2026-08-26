@@ -3,6 +3,15 @@ import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Linking, P
 // expo-video dynamically imported to prevent native crash on iOS 26
 import { Colors, Spacing, BorderRadius, FontSize } from '../constants/theme';
 
+// Convert HTTP server URLs to HTTPS tunnel URLs to bypass iOS ATS
+function normalizeImageUrl(url: string): string {
+  if (!url) return url;
+  return url
+    .replace(/http:\/\/36\.137\.84\.216:9091/g, 'https://s.symsgf.xyz')
+    .replace(/http:\/\/127\.0\.0\.1:9091/g, 'https://s.symsgf.xyz')
+    .replace(/http:\/\/localhost:9091/g, 'https://s.symsgf.xyz');
+}
+
 interface MarkdownRendererProps {
   content: string;
   isDark?: boolean;
@@ -161,7 +170,7 @@ const renderImgTag = (tag: string, key: string): React.ReactNode => {
   const alt = altMatch ? altMatch[1] : '';
   return (
     <View key={key} style={[styles.imgContainer]}>
-      <Image source={{ uri: src }} style={styles.img} resizeMode="cover" />
+      <Image source={{ uri: normalizeImageUrl(src) }} style={styles.img} resizeMode="cover" />
       {alt ? <Text style={{ fontSize: 11, color: '#94a3b8', marginTop: 4, textAlign: 'center' }}>{alt}</Text> : null}
     </View>
   );
@@ -428,7 +437,7 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
         const src = mdImgMatch[2];
         elements.push(
           <View key={`md-img-${i}`} style={[styles.imgContainer]}>
-            <Image source={{ uri: src }} style={styles.img} resizeMode="cover" />
+            <Image source={{ uri: normalizeImageUrl(src) }} style={styles.img} resizeMode="cover" />
             {alt ? <Text style={{ fontSize: 11, color: '#94a3b8', marginTop: 4, textAlign: 'center' }}>{alt}</Text> : null}
           </View>
         );

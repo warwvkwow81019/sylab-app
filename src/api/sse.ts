@@ -163,6 +163,17 @@ export function sendMessageStream(
                 if (data.reasoning_content && !data.content) {
                   callbacks.onStatus?.('thinking');
                 }
+                // Detect tool_calls in delta (some formats)
+                if (data.tool_calls && Array.isArray(data.tool_calls)) {
+                  for (const tc of data.tool_calls) {
+                    const name = tc.function?.name || tc.name || 'unknown';
+                    const args = tc.function?.arguments || tc.arguments || '{}';
+                    if (name && name !== 'unknown') {
+                      console.log('[SSE] Tool call from delta:', name);
+                      callbacks.onToolCall?.(name, args);
+                    }
+                  }
+                }
               }
               // message.completed: token usage + function_call + tool_response
               else if (currentEvent === 'conversation.message.completed') {
@@ -183,18 +194,20 @@ export function sendMessageStream(
                   const inputTokens = Math.round(outputTokens * 2);
                   lastTokenUsage = { input: inputTokens, output: outputTokens, total: inputTokens + outputTokens };
                 }
-                // function_call arrives here in Coze Studio SSE
-                if (data.type === 'function_call') {
+                // function_call arrives as a completed message (type=function_call, role=assistant)
+                const msgType = data.type || data.message_type || data.message_item?.type || '';
+                if (msgType === 'function_call' || data.role === 'tool') {
                   try {
-                    const tc = JSON.parse(data.content || '{}');
-                    const name = tc.function?.name || tc.name || 'unknown';
+                    let tc: any = {};
+                    try { tc = JSON.parse(data.content || '{}'); } catch { tc = {}; }
+                    const name = tc.function?.name || tc.name || data.meta_data?.tool_name || 'unknown';
                     const args = tc.function?.arguments || tc.arguments || '{}';
-                    // Single call: appendToolCall handles both start (args present) and result matching
+                    console.log('[SSE] Tool call detected:', name);
                     callbacks.onToolCall?.(name, args);
-                  } catch {}
+                  } catch (e) { console.warn('[SSE] function_call parse error:', e); }
                 }
                 // tool_response: mark previous tool call as done
-                if (data.type === 'tool_response') {
+                if (msgType === 'tool_response' || data.role === 'tool_response') {
                   try {
                     const toolName = data.meta_data?.tool_name || data.meta_data?.plugin || '';
                     callbacks.onToolCall?.(toolName, '', data.content);

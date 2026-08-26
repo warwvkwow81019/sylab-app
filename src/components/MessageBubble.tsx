@@ -1,5 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Platform } from 'react-native';
+
+// Convert HTTP server URLs to HTTPS tunnel for iOS ATS
+function normalizeImageUrl(url: string): string {
+  if (!url) return url;
+  return url
+    .replace(/http:\/\/36\.137\.84\.216:9091/g, https://s.symsgf.xyz)
+    .replace(/http:\/\/127\.0\.0\.1:9091/g, https://s.symsgf.xyz)
+    .replace(/http:\/\/localhost:9091/g, https://s.symsgf.xyz);
+}
+
 import { Colors, Spacing, BorderRadius, FontSize } from '../constants/theme';
 import { MarkdownRenderer } from './MarkdownRenderer';
 import { Ionicons } from '@expo/vector-icons';
@@ -172,7 +182,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isDark, u
         { backgroundColor: bubbleBg },
       ]}>
         {message.content_type === 'image_url' && message.content ? (
-          <Image source={{ uri: message.content }} style={styles.messageImage} />
+          <Image source={{ uri: normalizeImageUrl(message.content) }} style={styles.messageImage} />
         ) : isUser ? (
           <Text style={[styles.userText, { color: textColor }]} selectable>{message.content}</Text>
         ) : (
