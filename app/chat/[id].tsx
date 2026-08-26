@@ -965,6 +965,10 @@ function ChatDetailScreenInner() {
     }
     startStreaming();
 
+    // Track SSE state for onError guard (prevents queue starting when SSE is actually working)
+    let sseReceivedData = false;
+    let sseCompleted = false;
+
     const aiContent = finalContent;
 
     // Build additional_messages: combine files + text into object_string for multimodal support
@@ -1030,6 +1034,7 @@ function ChatDetailScreenInner() {
       patToken || "",
       {
         onDelta: (delta) => {
+          sseReceivedData = true;
           localAiAccum += delta;
           appendDelta(delta);
         },
@@ -1058,6 +1063,7 @@ function ChatDetailScreenInner() {
           }
         },
         onComplete: (chatId, convId, tokens) => {
+          sseCompleted = true;
           try {
           // Clear queue task - SSE completed normally
           // Cancel standby queue task: wait briefly for submit promise to resolve,
@@ -1267,18 +1273,36 @@ function ChatDetailScreenInner() {
         },
         onMessageComplete: () => { /* streaming ends via onComplete */ },
         onError: (err) => {
-          console.error('[Chat] SSE error FULL:', err.message, err.stack, 'queueTaskId:', queueTaskIdRef.current, 'convId:', effectiveConvId, 'botId:', currentBotId);
-          if (queueTaskIdRef.current && activeTaskRef.current) {
-            // SSE disconnected - activate standby queue task to fetch response from backend
-            console.log('[ChatQueue] SSE disconnected, starting queue task:', queueTaskIdRef.current);
+          console.error('[Chat] SSE error FULL:', err.message, err.stack, 'queueTaskId:', queueTaskIdRef.current, 'convId:', effectiveConvId, 'botId:', currentBotId, 'receivedData:', sseReceivedData, 'completed:', sseCompleted);
+          // GUARD 1: If onComplete already fired, never start queue (prevents duplicate request)
+          if (sseCompleted) {
+            console.log('[ChatQueue] SSE already completed, ignoring error');
+            return;
+          }
+
+          const activateQueue = () => {
+            if (sseCompleted) { console.log('[ChatQueue] SSE completed during delay, skipping'); return; }
+            if (!queueTaskIdRef.current || !activeTaskRef.current) {
+              // No queue task available - show error
+              setError(err.message);
+              finishStreaming(`msg_${Date.now()}`);
+              if (lastUserMsgRef.current) {
+                setFailedMessages(prev => new Set(prev).add(lastUserMsgRef.current!.id));
+              }
+              return;
+            }
+            // Start standby queue task to fetch response
+            console.log('[ChatQueue] Starting queue task:', queueTaskIdRef.current);
             chatQueueApi.start(queueTaskIdRef.current!).catch(e => console.warn('[ChatQueue] Start failed:', e));
+
+            // Poll queue for results
             const pollQueue = async () => {
+              if (sseCompleted) return;
               const task = activeTaskRef.current;
               if (!task || task.taskId !== queueTaskIdRef.current) return;
               try {
                 const status = await chatQueueApi.getStatus(queueTaskIdRef.current!);
                 if (status.status === 'completed') {
-                  // Fetch remaining events and apply them
                   const { events } = await chatQueueApi.getEvents(queueTaskIdRef.current!, task.lastEventIndex);
                   for (const event of events) {
                     task.lastEventIndex = event.index + 1;
@@ -1289,7 +1313,8 @@ function ChatDetailScreenInner() {
                   }
                   const aiMsgId = status.chat_id || `msg_${Date.now()}`;
                   if (localAiAccum) {
-                    const aiMsg: ChatMessage = {
+                    const _cur = useChatStore.getState().messages;
+                    setMessages([..._cur.filter(m => m.id !== aiMsgId), {
                       id: aiMsgId,
                       conversation_id: effectiveConvId || '',
                       role: 'assistant',
@@ -1298,11 +1323,9 @@ function ChatDetailScreenInner() {
                       content_type: 'markdown',
                       created_at: String(Date.now()),
                       updated_at: String(Date.now()),
-                    };
-                    const _cur = useChatStore.getState().messages;
-                    setMessages([..._cur.filter(m => m.id !== aiMsgId), aiMsg]);
+                    }]);
                   }
-                  finishStreaming(aiMsgId);
+                  useChatStore.setState({ isStreaming: false, streamingContent: '', streamingMessageId: null, activityStatus: '', generatingType: null });
                   clearTask();
                 } else if (status.status === 'failed') {
                   setError(status.error || 'Background task failed');
@@ -1312,7 +1335,6 @@ function ChatDetailScreenInner() {
                     setFailedMessages(prev => new Set(prev).add(lastUserMsgRef.current!.id));
                   }
                 } else {
-                  // Still processing - get incremental events and keep polling
                   const { events } = await chatQueueApi.getEvents(queueTaskIdRef.current!, task.lastEventIndex);
                   for (const event of events) {
                     task.lastEventIndex = event.index + 1;
@@ -1329,13 +1351,16 @@ function ChatDetailScreenInner() {
               }
             };
             ssePollingTimerRef.current = setTimeout(pollQueue, 2000);
+          };
+
+          // GUARD 2: If SSE already received data, it was actively working.
+          // Wait 2s before starting queue - onComplete may still fire.
+          if (sseReceivedData) {
+            console.log('[ChatQueue] SSE had data before error, waiting 2s before queue');
+            setTimeout(activateQueue, 2000);
           } else {
-            // No queue task - original error handling
-            setError(err.message);
-            finishStreaming(`msg_${Date.now()}`);
-            if (lastUserMsgRef.current) {
-              setFailedMessages(prev => new Set(prev).add(lastUserMsgRef.current!.id));
-            }
+            // No data received at all - start queue immediately
+            activateQueue();
           }
         },
         onStatus: (status) => {
