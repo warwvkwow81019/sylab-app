@@ -87,6 +87,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   const [uploading, setUploading] = useState(false);
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const inputRef = useRef<TextInput>(null);
+  const isSendingRef = useRef(false);
   const [inputHeight, setInputHeight] = useState(40);
 
   useEffect(() => {
@@ -102,11 +103,14 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   }, [text]);
 
   const handleSend = () => {
+    if (isSendingRef.current) return;
     const trimmed = text.trim();
     if (!trimmed && attachedFiles.length === 0) return;
+    isSendingRef.current = true;
     onSend(trimmed, attachedFiles.length > 0 ? attachedFiles : undefined);
     setText('');
     setAttachedFiles([]);
+    setTimeout(() => { isSendingRef.current = false; }, 500);
   };
 
   const addFiles = (newFiles: AttachedFile[]) => {
@@ -291,12 +295,14 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   const handleUploadAndSend = async () => {
+    if (isSendingRef.current) return;
     const effectiveConvId = conversationId || '';
     if (attachedFiles.length === 0) {
       handleSend();
       return;
     }
 
+    isSendingRef.current = true;
     setUploading(true);
     const uploadedNames: string[] = [];
     const cozeFileIds: string[] = [];
@@ -347,6 +353,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       console.error('[ChatInput] 文件上传失败:', e);
     } finally {
       setUploading(false);
+      setTimeout(() => { isSendingRef.current = false; }, 500);
     }
 
     // Store pending blobs for later sync (new conversation case)
