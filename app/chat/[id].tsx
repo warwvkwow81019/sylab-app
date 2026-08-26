@@ -408,6 +408,7 @@ function ChatDetailScreenInner() {
   const [showScrollBtn, setShowScrollBtn] = useState(false);
   const streamRef = useRef<{ abort: () => void } | null>(null);
   const queueTaskIdRef = useRef<string | null>(null);
+  const inFlightSendRef = useRef<string | null>(null);
   const ssePollingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const { registerTask, clearTask, activeTaskRef, getActiveTask } = useChatQueue(id as string);
 
@@ -876,8 +877,11 @@ function ChatDetailScreenInner() {
         updated_at: String(Date.now()),
       };
       lastUserMsgRef.current = userMsg;
-      setMessages([...useChatStore.getState().messages, userMsg]);
-      _sessionMessages = [..._sessionMessages, userMsg];
+      const _prevA = useChatStore.getState().messages;
+      if (!_prevA.some(m => m.id === userMsg.id || (m.role === 'user' && m.content === userMsg.content && Math.abs(Number(m.created_at) - Number(userMsg.created_at)) < 2000))) {
+        setMessages([..._prevA, userMsg]);
+        _sessionMessages = [..._sessionMessages, userMsg];
+      }
       return;
     }
     
@@ -886,6 +890,15 @@ function ChatDetailScreenInner() {
 
   const doSend = async (text: string, _files?: any[], fileIds?: string[], forcedConvId?: string, skipUserMsg?: boolean) => {
     const effectiveConvId = forcedConvId || conversationId || id || '';
+
+    // Dedupe in-flight identical sends (double tap / race between queue + direct send)
+    const sendFingerprint = effectiveConvId + '|' + (text || '').trim() + '|' + (fileIds ? fileIds.join(',') : '') + '|' + Date.now().toString().slice(0, -3);
+    if (inFlightSendRef.current === sendFingerprint) {
+      console.log('[Chat] doSend skipped duplicate in-flight:', sendFingerprint);
+      return;
+    }
+    inFlightSendRef.current = sendFingerprint;
+    setTimeout(() => { if (inFlightSendRef.current === sendFingerprint) inFlightSendRef.current = null; }, 4000);
 
     let finalContent = text;
     if (quotedMessage) {
@@ -907,8 +920,11 @@ function ChatDetailScreenInner() {
       updated_at: String(Date.now()),
     };
     lastUserMsgRef.current = userMsg;
-    setMessages([...useChatStore.getState().messages, userMsg]);
+    const _prevB = useChatStore.getState().messages;
+    if (!_prevB.some(m => m.id === userMsg.id || (m.role === 'user' && m.content === userMsg.content && Math.abs(Number(m.created_at) - Number(userMsg.created_at)) < 2000))) {
+      setMessages([..._prevB, userMsg]);
       _sessionMessages = [..._sessionMessages, userMsg];
+    }
       // Save to nuclear backup immediately
       const backupKey = effectiveConvId || 'pending';
       const existing = _messageBackup.get(backupKey) || [];
@@ -1214,7 +1230,7 @@ function ChatDetailScreenInner() {
           console.error('[Chat] SSE error FULL:', err.message, err.stack, 'queueTaskId:', queueTaskIdRef.current, 'convId:', effectiveConvId, 'botId:', currentBotId);
           if (queueTaskIdRef.current && activeTaskRef.current) {
             // SSE disconnected - activate standby queue task to fetch response from backend
-            console.log('[ChatQueue] SSE disconnected, starting queue task:', queueTaskId);
+            console.log('[ChatQueue] SSE disconnected, starting queue task:', queueTaskIdRef.current);
             chatQueueApi.start(queueTaskIdRef.current!).catch(e => console.warn('[ChatQueue] Start failed:', e));
             const pollQueue = async () => {
               const task = activeTaskRef.current;
