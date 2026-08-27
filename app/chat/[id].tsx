@@ -428,6 +428,21 @@ function ChatDetailScreenInner() {
   const router = useRouter();
   const flatListRef = useRef<FlatList>(null);
 
+  const { user, patToken, isRestoring } = useAuthStore();
+  const userName = (() => {
+    const n = user?.name || '';
+    return /^\d+$/.test(n.trim()) ? '用户' : (n || '用户');
+  })();
+  const userAvatar = user?.avatar_url || '';
+  const {
+    messages, isStreaming, streamingContent, streamingMessageId,
+    toolCalls, error,
+    setMessages, appendDelta, appendToolCall, finishStreaming,
+    clearStreaming, setError, startStreaming,
+    activityStatus, generatingType,
+    setActivityStatus,
+  } = useChatStore();
+
   // Auto-scroll when messages array changes (new message added)
   const messagesLength = messages.length;
   useEffect(() => {
@@ -459,20 +474,6 @@ function ChatDetailScreenInner() {
   };
 
 
-  const { user, patToken, isRestoring } = useAuthStore();
-  const userName = (() => {
-    const n = user?.name || '';
-    return /^\d+$/.test(n.trim()) ? '用户' : (n || '用户');
-  })();
-  const userAvatar = user?.avatar_url || '';
-  const {
-    messages, isStreaming, streamingContent, streamingMessageId,
-    toolCalls, error,
-    setMessages, appendDelta, appendToolCall, finishStreaming,
-    clearStreaming, setError, startStreaming,
-    activityStatus, generatingType,
-    setActivityStatus,
-  } = useChatStore();
 
   const [loading, setLoading] = useState(true);
   const [botName, setBotName] = useState(DEFAULT_BOT_NAME);
