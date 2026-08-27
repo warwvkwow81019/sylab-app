@@ -3,6 +3,7 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useAuthStore } from '../src/store/auth';
 import { Colors } from '../src/constants/theme';
 
@@ -58,6 +59,7 @@ function RootLayoutNav() {
   }
 
   return (
+    <SafeAreaProvider>
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="auto" />
       <Stack screenOptions={{ headerShown: false }}>
@@ -93,6 +95,7 @@ function RootLayoutNav() {
         />
       </Stack>
     </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
 
