@@ -1935,7 +1935,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', paddingTop: Platform.OS === 'web' ? 0 : 0, paddingBottom: Platform.OS === 'web' ? 0 : Spacing.sm },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   emptyArea: { flex: 1, justifyContent: 'center' },
-  listContent: { paddingVertical: Spacing.md, paddingBottom: 200 },
+  listContent: { paddingVertical: Spacing.md, paddingBottom: 280 },
   errorBar: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: '#fef2f2',

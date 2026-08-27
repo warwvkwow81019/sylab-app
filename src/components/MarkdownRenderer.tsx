@@ -320,22 +320,22 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
           directionalLockEnabled
           nestedScrollEnabled
           key={`table-${startIdx}`}
-          style={{ marginVertical: Spacing.sm }}
-          contentContainerStyle={{ paddingHorizontal: 0, flexGrow: 0 }}
+          style={{ marginVertical: Spacing.sm, width: '100%' }}
+          contentContainerStyle={{ paddingHorizontal: 0, flexGrow: 0, alignSelf: 'flex-start' }}
         >
-          <View style={{ borderWidth: 1, borderColor, borderRadius: BorderRadius.md, overflow: 'hidden', flexDirection: 'column', alignSelf: 'flex-start' }}>
-            <View style={{ flexDirection: 'row', alignSelf: 'flex-start', paddingVertical: 8, paddingHorizontal: 8, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: borderColor }}>
+          <View style={{ borderWidth: 1, borderColor, borderRadius: BorderRadius.md, overflow: 'hidden', flexDirection: 'column' }}>
+            <View style={{ flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 8, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: borderColor }}>
               {headers.map((cell, ci) => (
-                <View key={`th-${ci}`} style={{ minWidth: 140, maxWidth: 300, paddingHorizontal: 12, flexShrink: 0, alignItems: alignments[ci] === 'center' ? 'center' : alignments[ci] === 'right' ? 'flex-end' : 'flex-start' }}>
-                  <Text style={{ fontSize: FontSize.sm, fontWeight: '700', color: textColor, flexWrap: 'wrap' }}>{renderInline(cell, `th-${ci}`)}</Text>
+                <View key={`th-${ci}`} style={{ minWidth: 140, maxWidth: 300, paddingHorizontal: 12, flexShrink: 0, flexGrow: 0 }}>
+                  <Text style={{ fontSize: FontSize.sm, fontWeight: '700', color: textColor, flexWrap: 'wrap', width: '100%' }}>{renderInline(cell, `th-${ci}`)}</Text>
                 </View>
               ))}
             </View>
             {dataRows.map((row, ri) => (
-              <View key={`tr-${ri}`} style={{ flexDirection: 'row', alignSelf: 'flex-start', paddingVertical: 6, paddingHorizontal: 8, borderBottomWidth: ri < dataRows.length - 1 ? 0.5 : 0, borderBottomColor: borderColor }}>
+              <View key={`tr-${ri}`} style={{ flexDirection: 'row', paddingVertical: 6, paddingHorizontal: 8, borderBottomWidth: ri < dataRows.length - 1 ? 0.5 : 0, borderBottomColor: borderColor }}>
                 {row.map((cell, ci) => (
-                  <View key={`td-${ri}-${ci}`} style={{ minWidth: 140, maxWidth: 300, paddingHorizontal: 12, flexShrink: 0, alignItems: alignments[ci] === 'center' ? 'center' : alignments[ci] === 'right' ? 'flex-end' : 'flex-start' }}>
-                    <Text style={{ fontSize: FontSize.sm, color: textColor, flexWrap: 'wrap' }}>{renderInline(cell, `td-${ri}-${ci}`)}</Text>
+                  <View key={`td-${ri}-${ci}`} style={{ minWidth: 140, maxWidth: 300, paddingHorizontal: 12, flexShrink: 0, flexGrow: 0 }}>
+                    <Text style={{ fontSize: FontSize.sm, color: textColor, flexWrap: 'wrap', width: '100%' }}>{renderInline(cell, `td-${ri}-${ci}`)}</Text>
                   </View>
                 ))}
               </View>

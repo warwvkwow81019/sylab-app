@@ -165,9 +165,9 @@ export function sendMessageStream(
                   if (dMsg.role === "assistant") fullAssistantContent += dMsg.content;
                   callbacks.onStatus?.('streaming');
                 }
-                if (isAnswerType && dMsg.reasoning_content && !dMsg.content) {
-                  callbacks.onStatus?.('thinking');
-                }
+                // Reasoning deltas do NOT change status - thinking is already set at stream start.
+                // Triggering onStatus('thinking') here would override tool status ("正在搜索...") during tool execution.
+                // We only update status when actual answer content arrives (onStatus('streaming')).
                 // Detect tool_calls in delta (some formats)
                 const tcList = dMsg.tool_calls || data.tool_calls;
                 if (tcList && Array.isArray(tcList)) {
@@ -228,6 +228,7 @@ export function sendMessageStream(
                     else if (data.meta_data?.tool_name) toolName = data.meta_data.tool_name;
                     else if (extObj.tool_name) toolName = extObj.tool_name;
                     else if (extObj.plugin) toolName = extObj.plugin;
+                    // Pass empty toolName - appendToolCall will match the most recent unfinished tool call
                     callbacks.onToolCall?.(toolName, '', content);
                   } catch {}
                 }
