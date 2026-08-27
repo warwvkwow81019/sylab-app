@@ -1,1 +1,519 @@
-aW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgVmlldywgVGV4dCwgU3R5bGVTaGVldCwgU2Nyb2xsVmlldywgSW1hZ2UsIFRvdWNoYWJsZU9wYWNpdHksIExpbmtpbmcsIFBsYXRmb3JtIH0gZnJvbSAncmVhY3QtbmF0aXZlJzsKLy8gZXhwby12aWRlbyBkeW5hbWljYWxseSBpbXBvcnRlZCB0byBwcmV2ZW50IG5hdGl2ZSBjcmFzaCBvbiBpT1MgMjYKaW1wb3J0IHsgQ29sb3JzLCBTcGFjaW5nLCBCb3JkZXJSYWRpdXMsIEZvbnRTaXplIH0gZnJvbSAnLi4vY29uc3RhbnRzL3RoZW1lJzsKCi8vIENvbnZlcnQgSFRUUCBzZXJ2ZXIgVVJMcyB0byBIVFRQUyB0dW5uZWwgVVJMcyB0byBieXBhc3MgaU9TIEFUUwpmdW5jdGlvbiBub3JtYWxpemVJbWFnZVVybCh1cmw6IHN0cmluZyk6IHN0cmluZyB7CiAgaWYgKCF1cmwpIHJldHVybiB1cmw7CiAgcmV0dXJuIHVybAogICAgLnJlcGxhY2UoL2h0dHA6XC9cLzM2XC4xMzdcLjg0XC4yMTY6OTA5MS9nLCAnaHR0cHM6Ly9zLnN5bXNnZi54eXonKQogICAgLnJlcGxhY2UoL2h0dHA6XC9cLzEyN1wuMFwuMFwuMTo5MDkxL2csICdodHRwczovL3Muc3ltc2dmLnh5eicpCiAgICAucmVwbGFjZSgvaHR0cDpcL1wvbG9jYWxob3N0OjkwOTEvZywgJ2h0dHBzOi8vcy5zeW1zZ2YueHl6Jyk7Cn0KCmludGVyZmFjZSBNYXJrZG93blJlbmRlcmVyUHJvcHMgewogIGNvbnRlbnQ6IHN0cmluZzsKICBpc0Rhcms/OiBib29sZWFuOwp9CgoKY29uc3Qgd2ViV3JhcENTUyA9IFBsYXRmb3JtLk9TID09PSAnd2ViJyA/IGAKICAubWQtYnViYmxlIHAsIC5tZC1idWJibGUgbGksIC5tZC1idWJibGUgdGQsIC5tZC1idWJibGUgdGgsIC5tZC1idWJibGUgaDEsIC5tZC1idWJibGUgaDIsIC5tZC1idWJibGUgaDMsIC5tZC1idWJibGUgYmxvY2txdW90ZSB7IHdvcmQtd3JhcDogYnJlYWstd29yZDsgb3ZlcmZsb3ctd3JhcDogYnJlYWstd29yZDsgd2hpdGUtc3BhY2U6IHByZS13cmFwOyB9CiAgLm1kLWJ1YmJsZSBwIGEsIC5tZC1idWJibGUgcCBjb2RlIHsgd29yZC1icmVhazogYnJlYWstYWxsOyB9CiAgLm1kLXRhYmxlLXNjcm9sbCB7IG1heC13aWR0aDogMTAwJTsgb3ZlcmZsb3cteDogYXV0bzsgLXdlYmtpdC1vdmVyZmxvdy1zY3JvbGxpbmc6IHRvdWNoOyBzY3JvbGwtYmVoYXZpb3I6IHNtb290aDsgfQogIC5tZC10YWJsZS1zY3JvbGw6Oi13ZWJraXQtc2Nyb2xsYmFyIHsgaGVpZ2h0OiA0cHg7IH0KICAubWQtdGFibGUtc2Nyb2xsOjotd2Via2l0LXNjcm9sbGJhci10aHVtYiB7IGJhY2tncm91bmQ6ICNjYmQ1ZTE7IGJvcmRlci1yYWRpdXM6IDJweDsgfQpgIDogJyc7CgovKioKICog566A5piTIE1hcmtkb3duIOa4suafk+WZqAogKiDmlK/mjIHvvJrmoIfpopjjgIHnspfkvZPjgIHmlpzkvZPjgIHku6PnoIHlnZfjgIHooYzlhoXku6PnoIHjgIHliJfooajjgIHlvJXnlKjjgIHpk77mjqUKICovCgovLyBFcnJvciBib3VuZGFyeSBmb3IgdmlkZW8gcGxheWVyIHRvIHByZXZlbnQgbmF0aXZlIGNyYXNoZXMKY2xhc3MgVmlkZW9FcnJvckJvdW5kYXJ5IGV4dGVuZHMgUmVhY3QuQ29tcG9uZW50PAogIHsgY2hpbGRyZW46IFJlYWN0LlJlYWN0Tm9kZSB9LAogIHsgaGFzRXJyb3I6IGJvb2xlYW4gfQo+IHsKICBjb25zdHJ1Y3Rvcihwcm9wczogeyBjaGlsZHJlbjogUmVhY3QuUmVhY3ROb2RlIH0pIHsKICAgIHN1cGVyKHByb3BzKTsKICAgIHRoaXMuc3RhdGUgPSB7IGhhc0Vycm9yOiBmYWxzZSB9OwogIH0KICBzdGF0aWMgZ2V0RGVyaXZlZFN0YXRlRnJvbUVycm9yKCkgewogICAgcmV0dXJuIHsgaGFzRXJyb3I6IHRydWUgfTsKICB9CiAgcmVuZGVyKCkgewogICAgaWYgKHRoaXMuc3RhdGUuaGFzRXJyb3IpIHsKICAgICAgcmV0dXJuICgKICAgICAgICA8VmlldyBzdHlsZT17eyBtYXJnaW5WZXJ0aWNhbDogOCwgcGFkZGluZzogMTYsIGJhY2tncm91bmRDb2xvcjogJyNmM2Y0ZjYnLCBib3JkZXJSYWRpdXM6IDEyLCBhbGlnbkl0ZW1zOiAnY2VudGVyJyB9fT4KICAgICAgICAgIDxUZXh0IHN0eWxlPXt7IGNvbG9yOiAnIzZiNzI4MCcsIGZvbnRTaXplOiAxMyB9fT7op4bpopHliqDovb3lpLHotKU8L1RleHQ+CiAgICAgICAgPC9WaWV3PgogICAgICApOwogICAgfQogICAgcmV0dXJuIHRoaXMucHJvcHMuY2hpbGRyZW47CiAgfQp9CgovLyBJbmxpbmUgdmlkZW8gcGxheWVyIGNvbXBvbmVudCAtIGR5bmFtaWMgaW1wb3J0IHRvIHByZXZlbnQgbmF0aXZlIGNyYXNoIG9uIHBhZ2UgbG9hZApmdW5jdGlvbiBWaWRlb1BsYXllcklubGluZSh7IHNyYywgdmlkZW9LZXkgfTogeyBzcmM6IHN0cmluZzsgdmlkZW9LZXk6IHN0cmluZyB9KSB7CiAgY29uc3QgW3ZpZGVvTW9kdWxlLCBzZXRWaWRlb01vZHVsZV0gPSBSZWFjdC51c2VTdGF0ZTx7IHVzZVZpZGVvUGxheWVyOiBhbnk7IFZpZGVvVmlldzogYW55IH0gfCBudWxsPihudWxsKTsKICBjb25zdCBbbG9hZEVycm9yLCBzZXRMb2FkRXJyb3JdID0gUmVhY3QudXNlU3RhdGUoZmFsc2UpOwoKICBSZWFjdC51c2VFZmZlY3QoKCkgPT4gewogICAgaWYgKCFzcmMgfHwgUGxhdGZvcm0uT1MgPT09ICd3ZWInKSByZXR1cm47CiAgICBsZXQgbW91bnRlZCA9IHRydWU7CiAgICBpbXBvcnQoJ2V4cG8tdmlkZW8nKS50aGVuKG1vZCA9PiB7CiAgICAgIGlmIChtb3VudGVkKSBzZXRWaWRlb01vZHVsZSh7IHVzZVZpZGVvUGxheWVyOiBtb2QudXNlVmlkZW9QbGF5ZXIsIFZpZGVvVmlldzogbW9kLlZpZGVvVmlldyB9KTsKICAgIH0pLmNhdGNoKCgpID0+IHsKICAgICAgaWYgKG1vdW50ZWQpIHNldExvYWRFcnJvcih0cnVlKTsKICAgIH0pOwogICAgcmV0dXJuICgpID0+IHsgbW91bnRlZCA9IGZhbHNlOyB9OwogIH0sIFtzcmNdKTsKCiAgaWYgKFBsYXRmb3JtLk9TID09PSAnd2ViJykgewogICAgcmV0dXJuICgKICAgICAgPFZpZXcgc3R5bGU9e3sgbWFyZ2luVmVydGljYWw6IDgsIGJvcmRlclJhZGl1czogMTIsIG92ZXJmbG93OiAnaGlkZGVuJyB9fT4KICAgICAgICA8dmlkZW8gc3JjPXtzcmN9IGNvbnRyb2xzIHN0eWxlPXt7IHdpZHRoOiAnMTAwJScsIG1heFdpZHRoOiA0ODAsIGJvcmRlclJhZGl1czogMTIsIGJhY2tncm91bmRDb2xvcjogJyMwMDAnIH19IC8+CiAgICAgIDwvVmlldz4KICAgICk7CiAgfQogIGlmIChsb2FkRXJyb3IpIHsKICAgIHJldHVybiAoCiAgICAgIDxWaWV3IHN0eWxlPXt7IG1hcmdpblZlcnRpY2FsOiA4LCBwYWRkaW5nOiAyMCwgYmFja2dyb3VuZENvbG9yOiAnI2YzZjRmNicsIGJvcmRlclJhZGl1czogMTIsIGFsaWduSXRlbXM6ICdjZW50ZXInIH19PgogICAgICAgIDxUZXh0IHN0eWxlPXt7IGNvbG9yOiAnIzZiNzI4MCcsIGZvbnRTaXplOiAxMyB9fT7op4bpopHmkq3mlL7kuI3lj6/nlKg8L1RleHQ+CiAgICAgIDwvVmlldz4KICAgICk7CiAgfQogIGlmICghdmlkZW9Nb2R1bGUpIHsKICAgIHJldHVybiAoCiAgICAgIDxWaWV3IHN0eWxlPXt7IG1hcmdpblZlcnRpY2FsOiA4LCBwYWRkaW5nOiAyMCwgYmFja2dyb3VuZENvbG9yOiAnI2YzZjRmNicsIGJvcmRlclJhZGl1czogMTIsIGFsaWduSXRlbXM6ICdjZW50ZXInIH19PgogICAgICAgIDxUZXh0IHN0eWxlPXt7IGNvbG9yOiAnIzljYTNhZicsIGZvbnRTaXplOiAxMyB9fT7liqDovb3op4bpopEuLi48L1RleHQ+CiAgICAgIDwvVmlldz4KICAgICk7CiAgfQogIHJldHVybiAoCiAgICA8VmlkZW9FcnJvckJvdW5kYXJ5PgogICAgICA8TmF0aXZlVmlkZW9JbmxpbmUgc3JjPXtzcmN9IHVzZVZpZGVvUGxheWVyPXt2aWRlb01vZHVsZS51c2VWaWRlb1BsYXllcn0gVmlkZW9WaWV3PXt2aWRlb01vZHVsZS5WaWRlb1ZpZXd9IC8+CiAgICA8L1ZpZGVvRXJyb3JCb3VuZGFyeT4KICApOwp9CgpmdW5jdGlvbiBOYXRpdmVWaWRlb0lubGluZSh7IHNyYywgdXNlVmlkZW9QbGF5ZXIsIFZpZGVvVmlldyB9OiB7IHNyYzogc3RyaW5nOyB1c2VWaWRlb1BsYXllcjogYW55OyBWaWRlb1ZpZXc6IGFueSB9KSB7CiAgY29uc3QgcGxheWVyID0gdXNlVmlkZW9QbGF5ZXIoc3JjLCAocDogYW55KSA9PiB7IHAubG9vcCA9IGZhbHNlOyB9KTsKICByZXR1cm4gKAogICAgPFZpZXcgc3R5bGU9e3sgbWFyZ2luVmVydGljYWw6IDgsIGJvcmRlclJhZGl1czogMTIsIG92ZXJmbG93OiAnaGlkZGVuJywgYmFja2dyb3VuZENvbG9yOiAnIzAwMCcgfX0+CiAgICAgIDxWaWRlb1ZpZXcgcGxheWVyPXtwbGF5ZXJ9IHN0eWxlPXt7IHdpZHRoOiAnMTAwJScsIGhlaWdodDogMjAwLCBib3JkZXJSYWRpdXM6IDEyIH19IGNvbnRlbnRGaXQ9ImNvbnRhaW4iIGFsbG93c0Z1bGxzY3JlZW4gYWxsb3dzUGljdHVyZUluUGljdHVyZSAvPgogICAgPC9WaWV3PgogICk7Cn0KCgpleHBvcnQgY29uc3QgTWFya2Rvd25SZW5kZXJlcjogUmVhY3QuRkM8TWFya2Rvd25SZW5kZXJlclByb3BzPiA9ICh7IGNvbnRlbnQsIGlzRGFyayB9KSA9PiB7CiAgLy8gRGVjb2RlIFVSTC1lbmNvZGVkIGNvbnRlbnQgZnJvbSBBSQogIGNvbnN0IGRlY29kZWRDb250ZW50ID0gKCgpID0+IHsKICAgIHRyeSB7IHJldHVybiBkZWNvZGVVUklDb21wb25lbnQoY29udGVudCB8fCAnJyk7IH0gY2F0Y2ggeyByZXR1cm4gY29udGVudCB8fCAnJzsgfQogIH0pKCk7CiAgY29uc3QgbGluZXMgPSBkZWNvZGVkQ29udGVudC5zcGxpdCgnXG4nKTsKICBjb25zdCBlbGVtZW50czogUmVhY3QuUmVhY3ROb2RlW10gPSBbXTsKICBsZXQgaW5Db2RlQmxvY2sgPSBmYWxzZTsKICBsZXQgY29kZUNvbnRlbnQgPSAnJzsKICBsZXQgY29kZUxhbmcgPSAnJzsKICBsZXQgaW5MaXN0ID0gZmFsc2U7CgogIGNvbnN0IHRleHRDb2xvciA9IGlzRGFyayA/IENvbG9ycy50ZXh0SW52ZXJzZSA6IENvbG9ycy50ZXh0OwogIGNvbnN0IGNvZGVCZyA9IGlzRGFyayA/ICcjMWUxZTFlJyA6ICcjZjVmNWY1JzsKCiAgY29uc3QgcmVuZGVySW5saW5lID0gKHRleHQ6IHN0cmluZywga2V5OiBzdHJpbmcpOiBSZWFjdC5SZWFjdE5vZGUgPT4gewogICAgLy8g6KGM5YaF5Luj56CBCiAgICBjb25zdCBwYXJ0cyA9IHRleHQuc3BsaXQoLyhgW15gXStgKS9nKTsKICAgIHJldHVybiBwYXJ0cy5tYXAoKHBhcnQsIGkpID0+IHsKICAgICAgaWYgKHBhcnQuc3RhcnRzV2l0aCgnYCcpICYmIHBhcnQuZW5kc1dpdGgoJ2AnKSkgewogICAgICAgIHJldHVybiAoCiAgICAgICAgICA8VGV4dCBrZXk9e2Ake2tleX0tY29kZS0ke2l9YH0gc3R5bGU9e1tzdHlsZXMuaW5saW5lQ29kZSwgeyBiYWNrZ3JvdW5kQ29sb3I6IGNvZGVCZywgY29sb3I6IGlzRGFyayA/ICcjZDRkNGQ0JyA6ICcjMzM0MTU1JyB9XX0+CiAgICAgICAgICAgIHtwYXJ0LnNsaWNlKDEsIC0xKX0KICAgICAgICAgIDwvVGV4dD4KICAgICAgICApOwogICAgICB9CiAgICAgIC8vIOeyl+S9kwogICAgICBsZXQgcmVzdWx0OiBSZWFjdC5SZWFjdE5vZGUgPSBwYXJ0OwogICAgICBjb25zdCBib2xkUGFydHMgPSBwYXJ0LnNwbGl0KC8oXCpcKlteKl0rXCpcKikvZyk7CiAgICAgIGlmIChib2xkUGFydHMubGVuZ3RoID4gMSkgewogICAgICAgIHJlc3VsdCA9IGJvbGRQYXJ0cy5tYXAoKGJwLCBqKSA9PiB7CiAgICAgICAgICBpZiAoYnAuc3RhcnRzV2l0aCgnKionKSAmJiBicC5lbmRzV2l0aCgnKionKSkgewogICAgICAgICAgICByZXR1cm4gPFRleHQga2V5PXtgJHtrZXl9LWItJHtqfWB9IHN0eWxlPXt7IGZvbnRXZWlnaHQ6ICc3MDAnIH19PnticC5zbGljZSgyLCAtMil9PC9UZXh0PjsKICAgICAgICAgIH0KICAgICAgICAgIC8vIOaWnOS9kwogICAgICAgICAgY29uc3QgaXRhbGljUGFydHMgPSBicC5zcGxpdCgvKFwqW14qXStcKikvZyk7CiAgICAgICAgICBpZiAoaXRhbGljUGFydHMubGVuZ3RoID4gMSkgewogICAgICAgICAgICByZXR1cm4gaXRhbGljUGFydHMubWFwKChpcCwgaykgPT4gewogICAgICAgICAgICAgIGlmIChpcC5zdGFydHNXaXRoKCcqJykgJiYgaXAuZW5kc1dpdGgoJyonKSkgewogICAgICAgICAgICAgICAgcmV0dXJuIDxUZXh0IGtleT17YCR7a2V5fS1pLSR7an0tJHtrfWB9IHN0eWxlPXt7IGZvbnRTdHlsZTogJ2l0YWxpYycgfX0+e2lwLnNsaWNlKDEsIC0xKX08L1RleHQ+OwogICAgICAgICAgICAgIH0KICAgICAgICAgICAgICByZXR1cm4gPFRleHQga2V5PXtgJHtrZXl9LXQtJHtqfS0ke2t9YH0+e2lwfTwvVGV4dD47CiAgICAgICAgICAgIH0pOwogICAgICAgICAgfQogICAgICAgICAgcmV0dXJuIDxUZXh0IGtleT17YCR7a2V5fS10LSR7an1gfT57YnB9PC9UZXh0PjsKICAgICAgICB9KTsKICAgICAgfQogICAgICByZXR1cm4gPFJlYWN0LkZyYWdtZW50IGtleT17YCR7a2V5fS0ke2l9YH0+e3Jlc3VsdH08L1JlYWN0LkZyYWdtZW50PjsKICAgIH0pOwogIH07CgogIAovLyBQYXJzZSA8aW1nIHNyYz0iLi4uIj4gdGFncyBhbmQgcmVuZGVyIGFzIEltYWdlCmNvbnN0IHJlbmRlckltZ1RhZyA9ICh0YWc6IHN0cmluZywga2V5OiBzdHJpbmcpOiBSZWFjdC5SZWFjdE5vZGUgPT4gewogIGNvbnN0IHNyY01hdGNoID0gdGFnLm1hdGNoKC9zcmM9WyInXShbXiInXSspWyInXS8pOwogIGlmICghc3JjTWF0Y2gpIHJldHVybiBudWxsOwogIGNvbnN0IHNyYyA9IHNyY01hdGNoWzFdOwogIGNvbnN0IGFsdE1hdGNoID0gdGFnLm1hdGNoKC9hbHQ9WyInXShbXiInXSspWyInXS8pOwogIGNvbnN0IGFsdCA9IGFsdE1hdGNoID8gYWx0TWF0Y2hbMV0gOiAnJzsKICByZXR1cm4gKAogICAgPFZpZXcga2V5PXtrZXl9IHN0eWxlPXtbc3R5bGVzLmltZ0NvbnRhaW5lcl19PgogICAgICA8SW1hZ2Ugc291cmNlPXt7IHVyaTogbm9ybWFsaXplSW1hZ2VVcmwoc3JjKSB9fSBzdHlsZT17c3R5bGVzLmltZ30gcmVzaXplTW9kZT0iY292ZXIiIC8+CiAgICAgIHthbHQgPyA8VGV4dCBzdHlsZT17eyBmb250U2l6ZTogMTEsIGNvbG9yOiAnIzk0YTNiOCcsIG1hcmdpblRvcDogNCwgdGV4dEFsaWduOiAnY2VudGVyJyB9fT57YWx0fTwvVGV4dD4gOiBudWxsfQogICAgPC9WaWV3PgogICk7Cn07CgovLyBQYXJzZSA8dmlkZW8gLi4uPiBvciA8c291cmNlIC4uLj4gdGFncyBhbmQgcmVuZGVyIGFzIHZpZGVvIHBsYXllcgpjb25zdCByZW5kZXJWaWRlb1RhZyA9ICh0YWc6IHN0cmluZywga2V5OiBzdHJpbmcpOiBSZWFjdC5SZWFjdE5vZGUgPT4gewogIGxldCBzcmMgPSAnJzsKICBjb25zdCBzcmNNYXRjaCA9IHRhZy5tYXRjaCgvPHZpZGVvW14+XSpzcmM9WyInXShbXiInXSspWyInXS8pOwogIGlmIChzcmNNYXRjaCkgewogICAgc3JjID0gc3JjTWF0Y2hbMV07CiAgfSBlbHNlIHsKICAgIGNvbnN0IHNvdXJjZU1hdGNoID0gdGFnLm1hdGNoKC88c291cmNlW14+XSpzcmM9WyInXShbXiInXSspWyInXS8pOwogICAgaWYgKHNvdXJjZU1hdGNoKSBzcmMgPSBzb3VyY2VNYXRjaFsxXTsKICB9CiAgaWYgKCFzcmMpIHJldHVybiBudWxsOwogIHJldHVybiAoCiAgICA8VmlldyBrZXk9e2tleX0gc3R5bGU9e1tzdHlsZXMudmlkZW9Db250YWluZXJdfT4KICAgICAgPFRvdWNoYWJsZU9wYWNpdHkgc3R5bGU9e1tzdHlsZXMudmlkZW9MaW5rXX0gYWN0aXZlT3BhY2l0eT17MC43fSBvblByZXNzPXsoKSA9PiBMaW5raW5nLm9wZW5VUkwoc3JjKX0+CiAgICAgICAgPFRleHQgc3R5bGU9e3sgY29sb3I6ICcjZmZmJywgZm9udFNpemU6IEZvbnRTaXplLnNtIH19PuKWtjwvVGV4dD4KICAgICAgICA8VGV4dCBzdHlsZT17W3N0eWxlcy52aWRlb0xpbmtUZXh0XX0+54K55Ye75pKt5pS+6KeG6aKRPC9UZXh0PgogICAgICAgIDxUZXh0IHN0eWxlPXt7IGNvbG9yOiAnIzk0YTNiOCcsIGZvbnRTaXplOiAxMSwgZmxleDogMSwgbWFyZ2luTGVmdDogOCB9fSBudW1iZXJPZkxpbmVzPXsxfT57c3JjLnN1YnN0cmluZygwLCA2MCl9Li4uPC9UZXh0PgogICAgICA8L1RvdWNoYWJsZU9wYWNpdHk+CiAgICA8L1ZpZXc+CiAgKTsKfTsKCi8vIFJlcGxhY2UgcmF3IEhUTUwgaW1nL3ZpZGVvIHRhZ3MgaW4gdGV4dCB3aXRoIHBsYWNlaG9sZGVycwpjb25zdCBleHRyYWN0SHRtbFRhZ3MgPSAodGV4dDogc3RyaW5nKTogUmVhY3QuUmVhY3ROb2RlW10gPT4gewogIGNvbnN0IHBhcnRzOiBSZWFjdC5SZWFjdE5vZGVbXSA9IFtdOwogIC8vIEhhbmRsZSBtYXJrZG93biBpbWFnZXMgIVthbHRdKHVybCkgYnkgY29udmVydGluZyB0byA8aW1nPiB0YWdzCiAgY29uc3QgbWRJbWdDb252ZXJ0ZWQgPSB0ZXh0LnJlcGxhY2UoLyFcWyhbXlxdXSopXF1cKChbXildKylcKS9nLCAnPGltZyBzcmM9IiQyIiBhbHQ9IiQxIiAvPicpOwogIGNvbnN0IGltZ1JlZ2V4ID0gLzxpbWdbXj5dKz4vZ2k7CiAgY29uc3QgdmlkZW9SZWdleCA9IC88dmlkZW9bXj5dKj5bXHNcU10qPzxcL3ZpZGVvPnw8dmlkZW9bXj5dKz4vZ2k7CiAgbGV0IGxhc3RJbmRleCA9IDA7CiAgbGV0IGtleUlkeCA9IDA7CiAgLy8gUHJvY2VzcyBpbWFnZXMgZmlyc3QKICBsZXQgcmVtYWluaW5nID0gbWRJbWdDb252ZXJ0ZWQ7CiAgY29uc3Qgc2VnbWVudHM6IHsgdHlwZTogc3RyaW5nOyBjb250ZW50OiBzdHJpbmc7IHN0YXJ0OiBudW1iZXI7IGVuZDogbnVtYmVyIH1bXSA9IFtdOwogIGxldCB0bXAgPSBtZEltZ0NvbnZlcnRlZDsKICBsZXQgb2Zmc2V0ID0gMDsKICBpbWdSZWdleC5sYXN0SW5kZXggPSAwOwogIHZpZGVvUmVnZXgubGFzdEluZGV4ID0gMDsKICAvLyBDb21iaW5lIGFsbCBtYXRjaGVzCiAgY29uc3QgYWxsTWF0Y2hlczogeyB0eXBlOiBzdHJpbmc7IGNvbnRlbnQ6IHN0cmluZzsgaW5kZXg6IG51bWJlciB9W10gPSBbXTsKICBsZXQgbTsKICBjb25zdCBpbWdSZSA9IC88aW1nW14+XSs+L2dpOwogIHdoaWxlICgobSA9IGltZ1JlLmV4ZWMobWRJbWdDb252ZXJ0ZWQpKSAhPT0gbnVsbCkgeyBhbGxNYXRjaGVzLnB1c2goeyB0eXBlOiAnaW1nJywgY29udGVudDogbVswXSwgaW5kZXg6IG0uaW5kZXggfSk7IH0KICBjb25zdCB2aWRSZSA9IC88dmlkZW9bXj5dKj5bXHNcU10qPzxcL3ZpZGVvPnw8dmlkZW9bXj5dKz4vZ2k7CiAgd2hpbGUgKChtID0gdmlkUmUuZXhlYyhtZEltZ0NvbnZlcnRlZCkpICE9PSBudWxsKSB7IGFsbE1hdGNoZXMucHVzaCh7IHR5cGU6ICd2aWRlbycsIGNvbnRlbnQ6IG1bMF0sIGluZGV4OiBtLmluZGV4IH0pOyB9CiAgYWxsTWF0Y2hlcy5zb3J0KChhLCBiKSA9PiBhLmluZGV4IC0gYi5pbmRleCk7CiAgbGV0IHBvcyA9IDA7CiAgZm9yIChjb25zdCBtYXRjaCBvZiBhbGxNYXRjaGVzKSB7CiAgICBpZiAobWF0Y2guaW5kZXggPiBwb3MpIHsKICAgICAgcGFydHMucHVzaChtZEltZ0NvbnZlcnRlZC5zbGljZShwb3MsIG1hdGNoLmluZGV4KSBhcyBhbnkpOyAgLy8gcmF3IHN0cmluZyBmb3IgY2FsbGVyIHRvIGZvcm1hdAogICAgfQogICAgaWYgKG1hdGNoLnR5cGUgPT09ICdpbWcnKSBwYXJ0cy5wdXNoKHJlbmRlckltZ1RhZyhtYXRjaC5jb250ZW50LCBgaW1nLSR7a2V5SWR4Kyt9YCkpOwogICAgZWxzZSBwYXJ0cy5wdXNoKHJlbmRlclZpZGVvVGFnKG1hdGNoLmNvbnRlbnQsIGB2aWQtJHtrZXlJZHgrK31gKSk7CiAgICBwb3MgPSBtYXRjaC5pbmRleCArIG1hdGNoLmNvbnRlbnQubGVuZ3RoOwogIH0KICBpZiAocG9zIDwgdGV4dC5sZW5ndGgpIHBhcnRzLnB1c2godGV4dC5zbGljZShwb3MpIGFzIGFueSk7ICAvLyByYXcgc3RyaW5nIGZvciBjYWxsZXIgdG8gZm9ybWF0CiAgcmV0dXJuIHBhcnRzLmxlbmd0aCA+IDAgPyBwYXJ0cyA6IG51bGw7Cn07CgoKLyoqCiAqIENoZWNrIGlmIGEgbGluZSBpcyBhIHRhYmxlIHNlcGFyYXRvciByb3cKICovCmNvbnN0IGlzVGFibGVTZXBhcmF0b3IgPSAobGluZTogc3RyaW5nKTogYm9vbGVhbiA9PiB7CiAgcmV0dXJuIC9eXHw/XHMqOj8tezIsfTo/XHMqKFx8XHMqOj8tezIsfTo/XHMqKSpcfD9ccyokLy50ZXN0KGxpbmUudHJpbSgpKTsKfTsKCi8qKgogKiBQYXJzZSBhIHRhYmxlIHNlcGFyYXRvciB0byBleHRyYWN0IGNvbHVtbiBhbGlnbm1lbnRzCiAqLwpjb25zdCBwYXJzZUFsaWdubWVudHMgPSAobGluZTogc3RyaW5nKTogKCdsZWZ0JyB8ICdjZW50ZXInIHwgJ3JpZ2h0JylbXSA9PiB7CiAgY29uc3QgY2VsbHMgPSBsaW5lLnRyaW0oKS5yZXBsYWNlKC9eXHx8XHwkL2csICcnKS5zcGxpdCgnfCcpOwogIHJldHVybiBjZWxscy5tYXAoY2VsbCA9PiB7CiAgICBjb25zdCB0cmltbWVkID0gY2VsbC50cmltKCk7CiAgICBpZiAodHJpbW1lZC5zdGFydHNXaXRoKCc6JykgJiYgdHJpbW1lZC5lbmRzV2l0aCgnOicpKSByZXR1cm4gJ2NlbnRlcic7CiAgICBpZiAodHJpbW1lZC5lbmRzV2l0aCgnOicpKSByZXR1cm4gJ3JpZ2h0JzsKICAgIHJldHVybiAnbGVmdCc7CiAgfSk7Cn07CgovKioKICogUGFyc2UgYSB0YWJsZSByb3cgaW50byBjZWxscwogKi8KY29uc3QgcGFyc2VUYWJsZUNlbGxzID0gKGxpbmU6IHN0cmluZyk6IHN0cmluZ1tdID0+IHsKICBsZXQgdHJpbW1lZCA9IGxpbmUudHJpbSgpOwogIGlmICh0cmltbWVkLnN0YXJ0c1dpdGgoJ3wnKSkgdHJpbW1lZCA9IHRyaW1tZWQuc2xpY2UoMSk7CiAgaWYgKHRyaW1tZWQuZW5kc1dpdGgoJ3wnKSkgdHJpbW1lZCA9IHRyaW1tZWQuc2xpY2UoMCwgLTEpOwogIHJldHVybiB0cmltbWVkLnNwbGl0KCd8JykubWFwKGNlbGwgPT4gY2VsbC50cmltKCkpOwp9OwoKLyoqCiAqIFJlbmRlciBhIE1hcmtkb3duIHRhYmxlIGZyb20gY29uc2VjdXRpdmUgbGluZXMKICovCmNvbnN0IHJlbmRlclRhYmxlID0gKGhlYWRlckxpbmU6IHN0cmluZywgbGluZXM6IHN0cmluZ1tdLCBzdGFydElkeDogbnVtYmVyLCBpc0Rhcms6IGJvb2xlYW4pOiB7IGVsZW1lbnQ6IFJlYWN0LlJlYWN0Tm9kZTsgY29uc3VtZWQ6IG51bWJlciB9ID0+IHsKICBpZiAoc3RhcnRJZHggKyAxID49IGxpbmVzLmxlbmd0aCkgcmV0dXJuIHsgZWxlbWVudDogbnVsbCwgY29uc3VtZWQ6IDAgfTsKICBjb25zdCBzZXBMaW5lID0gbGluZXNbc3RhcnRJZHggKyAxXTsKICBpZiAoIWlzVGFibGVTZXBhcmF0b3Ioc2VwTGluZSkpIHJldHVybiB7IGVsZW1lbnQ6IG51bGwsIGNvbnN1bWVkOiAwIH07CgogIGNvbnN0IGFsaWdubWVudHMgPSBwYXJzZUFsaWdubWVudHMoc2VwTGluZSk7CiAgY29uc3QgaGVhZGVycyA9IHBhcnNlVGFibGVDZWxscyhoZWFkZXJMaW5lKTsKICBjb25zdCB0ZXh0Q29sb3IgPSBpc0RhcmsgPyBDb2xvcnMudGV4dEludmVyc2UgOiBDb2xvcnMudGV4dDsKICBjb25zdCBoZWFkZXJCZyA9IGlzRGFyayA/ICcjMmQzNzQ4JyA6ICcjZjdmN2Y1JzsKICBjb25zdCBib3JkZXJDb2xvciA9IGlzRGFyayA/ICcjNGE1NTY4JyA6ICcjZTJlOGYwJzsKCiAgY29uc3QgZGF0YVJvd3M6IHN0cmluZ1tdW10gPSBbXTsKICBsZXQgY29uc3VtZWQgPSAyOwogIGZvciAobGV0IGogPSBzdGFydElkeCArIDI7IGogPCBsaW5lcy5sZW5ndGg7IGorKykgewogICAgY29uc3Qgcm93ID0gbGluZXNbal0udHJpbSgpOwogICAgaWYgKHJvdyA9PT0gJycgfHwgIXJvdy5pbmNsdWRlcygnfCcpKSBicmVhazsKICAgIGRhdGFSb3dzLnB1c2gocGFyc2VUYWJsZUNlbGxzKHJvdykpOwogICAgY29uc3VtZWQrKzsKICB9CgoKICByZXR1cm4gewogICAgZWxlbWVudDogKAogICAgICBQbGF0Zm9ybS5PUyA9PT0gJ3dlYicgPyAoCiAgICAgICAgPFZpZXcga2V5PXtgdGFibGUtJHtzdGFydElkeH1gfSBjbGFzc05hbWU9Im1kLXRhYmxlLXNjcm9sbCIgc3R5bGU9e3sgbWFyZ2luVmVydGljYWw6IFNwYWNpbmcuc20gfX0+CiAgICAgICAgICA8VmlldyBzdHlsZT17eyBib3JkZXJXaWR0aDogMSwgYm9yZGVyQ29sb3IsIGJvcmRlclJhZGl1czogQm9yZGVyUmFkaXVzLm1kLCBvdmVyZmxvdzogJ2hpZGRlbicsIGZsZXhEaXJlY3Rpb246ICdjb2x1bW4nIH19PgogICAgICAgICAgICA8VmlldyBzdHlsZT17eyBmbGV4RGlyZWN0aW9uOiAncm93JywgcGFkZGluZ1ZlcnRpY2FsOiA4LCBwYWRkaW5nSG9yaXpvbnRhbDogOCwgYmFja2dyb3VuZENvbG9yOiBoZWFkZXJCZywgYm9yZGVyQm90dG9tV2lkdGg6IDEsIGJvcmRlckJvdHRvbUNvbG9yOiBib3JkZXJDb2xvciB9fT4KICAgICAgICAgICAgICB7aGVhZGVycy5tYXAoKGNlbGwsIGNpKSA9PiAoCiAgICAgICAgICAgICAgICA8VmlldyBrZXk9e2B0aC0ke2NpfWB9IHN0eWxlPXt7IG1pbldpZHRoOiAxNDAsIHBhZGRpbmdIb3Jpem9udGFsOiAxMiwgYWxpZ25JdGVtczogYWxpZ25tZW50c1tjaV0gPT09ICdjZW50ZXInID8gJ2NlbnRlcicgOiBhbGlnbm1lbnRzW2NpXSA9PT0gJ3JpZ2h0JyA/ICdmbGV4LWVuZCcgOiAnZmxleC1zdGFydCcgfX0+CiAgICAgICAgICAgICAgICAgIDxUZXh0IHN0eWxlPXt7IGZvbnRTaXplOiBGb250U2l6ZS5zbSwgZm9udFdlaWdodDogJzcwMCcsIGNvbG9yOiB0ZXh0Q29sb3IsIGZsZXg6IDEsIGZsZXhXcmFwOiAnd3JhcCcgfX0+e3JlbmRlcklubGluZShjZWxsLCBgdGgtJHtjaX1gKX08L1RleHQ+CiAgICAgICAgICAgICAgICA8L1ZpZXc+CiAgICAgICAgICAgICAgKSl9CiAgICAgICAgICAgIDwvVmlldz4KICAgICAgICAgICAge2RhdGFSb3dzLm1hcCgocm93LCByaSkgPT4gKAogICAgICAgICAgICAgIDxWaWV3IGtleT17YHRyLSR7cml9YH0gc3R5bGU9e3sgZmxleERpcmVjdGlvbjogJ3JvdycsIHBhZGRpbmdWZXJ0aWNhbDogNiwgcGFkZGluZ0hvcml6b250YWw6IDgsIGJvcmRlckJvdHRvbVdpZHRoOiByaSA8IGRhdGFSb3dzLmxlbmd0aCAtIDEgPyAwLjUgOiAwLCBib3JkZXJCb3R0b21Db2xvcjogYm9yZGVyQ29sb3IgfX0+CiAgICAgICAgICAgICAgICB7cm93Lm1hcCgoY2VsbCwgY2kpID0+ICgKICAgICAgICAgICAgICAgICAgPFZpZXcga2V5PXtgdGQtJHtyaX0tJHtjaX1gfSBzdHlsZT17eyBtaW5XaWR0aDogMTQwLCBwYWRkaW5nSG9yaXpvbnRhbDogMTIsIGFsaWduSXRlbXM6IGFsaWdubWVudHNbY2ldID09PSAnY2VudGVyJyA/ICdjZW50ZXInIDogYWxpZ25tZW50c1tjaV0gPT09ICdyaWdodCcgPyAnZmxleC1lbmQnIDogJ2ZsZXgtc3RhcnQnIH19PgogICAgICAgICAgICAgICAgICAgIDxUZXh0IHN0eWxlPXt7IGZvbnRTaXplOiBGb250U2l6ZS5zbSwgY29sb3I6IHRleHRDb2xvciwgZmxleDogMSwgZmxleFdyYXA6ICd3cmFwJyB9fT57cmVuZGVySW5saW5lKGNlbGwsIGB0ZC0ke3JpfS0ke2NpfWApfTwvVGV4dD4KICAgICAgICAgICAgICAgICAgPC9WaWV3PgogICAgICAgICAgICAgICAgKSl9CiAgICAgICAgICAgICAgPC9WaWV3PgogICAgICAgICAgICApKX0KICAgICAgICAgIDwvVmlldz4KICAgICAgICA8L1ZpZXc+CiAgICAgICkgOiAoCiAgICAgICAgPFNjcm9sbFZpZXcKICAgICAgICAgIGhvcml6b250YWwKICAgICAgICAgIHNob3dzSG9yaXpvbnRhbFNjcm9sbEluZGljYXRvcj17dHJ1ZX0KICAgICAgICAgIGRpcmVjdGlvbmFsTG9ja0VuYWJsZWQKICAgICAgICAgIGFsd2F5c0JvdW5jZUhvcml6b250YWw9e2ZhbHNlfQogICAgICAgICAgZGlyZWN0aW9uYWxMb2NrRW5hYmxlZAogICAgICAgICAgbmVzdGVkU2Nyb2xsRW5hYmxlZAogICAgICAgICAga2V5PXtgdGFibGUtJHtzdGFydElkeH1gfQogICAgICAgICAgc3R5bGU9e3sgbWFyZ2luVmVydGljYWw6IFNwYWNpbmcuc20sIHdpZHRoOiAnMTAwJScgfX0KICAgICAgICAgIGNvbnRlbnRDb250YWluZXJTdHlsZT17eyBwYWRkaW5nSG9yaXpvbnRhbDogMCwgZmxleEdyb3c6IDAsIGFsaWduU2VsZjogJ2ZsZXgtc3RhcnQnIH19CiAgICAgICAgPgogICAgICAgICAgPFZpZXcgc3R5bGU9e3sgYm9yZGVyV2lkdGg6IDEsIGJvcmRlckNvbG9yLCBib3JkZXJSYWRpdXM6IEJvcmRlclJhZGl1cy5tZCwgb3ZlcmZsb3c6ICdoaWRkZW4nLCBmbGV4RGlyZWN0aW9uOiAnY29sdW1uJyB9fT4KICAgICAgICAgICAgPFZpZXcgc3R5bGU9e3sgZmxleERpcmVjdGlvbjogJ3JvdycsIHBhZGRpbmdWZXJ0aWNhbDogOCwgcGFkZGluZ0hvcml6b250YWw6IDgsIGJhY2tncm91bmRDb2xvcjogaGVhZGVyQmcsIGJvcmRlckJvdHRvbVdpZHRoOiAxLCBib3JkZXJCb3R0b21Db2xvcjogYm9yZGVyQ29sb3IgfX0+CiAgICAgICAgICAgICAge2hlYWRlcnMubWFwKChjZWxsLCBjaSkgPT4gKAogICAgICAgICAgICAgICAgPFZpZXcga2V5PXtgdGgtJHtjaX1gfSBzdHlsZT17eyBtaW5XaWR0aDogMjAwLCBtYXhXaWR0aDogMzYwLCBwYWRkaW5nSG9yaXpvbnRhbDogMTIsIGZsZXhTaHJpbms6IDAsIGZsZXhHcm93OiAwIH19PgogICAgICAgICAgICAgICAgICA8VGV4dCBzdHlsZT17eyBmb250U2l6ZTogRm9udFNpemUuc20sIGZvbnRXZWlnaHQ6ICc3MDAnLCBjb2xvcjogdGV4dENvbG9yLCBmbGV4V3JhcDogJ3dyYXAnLCB3aWR0aDogJzEwMCUnIH19PntyZW5kZXJJbmxpbmUoY2VsbCwgYHRoLSR7Y2l9YCl9PC9UZXh0PgogICAgICAgICAgICAgICAgPC9WaWV3PgogICAgICAgICAgICAgICkpfQogICAgICAgICAgICA8L1ZpZXc+CiAgICAgICAgICAgIHtkYXRhUm93cy5tYXAoKHJvdywgcmkpID0+ICgKICAgICAgICAgICAgICA8VmlldyBrZXk9e2B0ci0ke3JpfWB9IHN0eWxlPXt7IGZsZXhEaXJlY3Rpb246ICdyb3cnLCBwYWRkaW5nVmVydGljYWw6IDYsIHBhZGRpbmdIb3Jpem9udGFsOiA4LCBib3JkZXJCb3R0b21XaWR0aDogcmkgPCBkYXRhUm93cy5sZW5ndGggLSAxID8gMC41IDogMCwgYm9yZGVyQm90dG9tQ29sb3I6IGJvcmRlckNvbG9yIH19PgogICAgICAgICAgICAgICAge3Jvdy5tYXAoKGNlbGwsIGNpKSA9PiAoCiAgICAgICAgICAgICAgICAgIDxWaWV3IGtleT17YHRkLSR7cml9LSR7Y2l9YH0gc3R5bGU9e3sgbWluV2lkdGg6IDIwMCwgbWF4V2lkdGg6IDM2MCwgcGFkZGluZ0hvcml6b250YWw6IDEyLCBmbGV4U2hyaW5rOiAwLCBmbGV4R3JvdzogMCB9fT4KICAgICAgICAgICAgICAgICAgICA8VGV4dCBzdHlsZT17eyBmb250U2l6ZTogRm9udFNpemUuc20sIGNvbG9yOiB0ZXh0Q29sb3IsIGZsZXhXcmFwOiAnd3JhcCcsIHdpZHRoOiAnMTAwJScgfX0+e3JlbmRlcklubGluZShjZWxsLCBgdGQtJHtyaX0tJHtjaX1gKX08L1RleHQ+CiAgICAgICAgICAgICAgICAgIDwvVmlldz4KICAgICAgICAgICAgICAgICkpfQogICAgICAgICAgICAgIDwvVmlldz4KICAgICAgICAgICAgKSl9CiAgICAgICAgICA8L1ZpZXc+CiAgICAgICAgPC9TY3JvbGxWaWV3PgogICAgICApCiAgICApLAogICAgY29uc3VtZWQsCiAgfTsKfTsKCiAgZm9yIChsZXQgaSA9IDA7IGkgPCBsaW5lcy5sZW5ndGg7IGkrKykgewogICAgY29uc3QgbGluZSA9IGxpbmVzW2ldOwoKICAgIC8vIOS7o+eggeWdlwogICAgaWYgKGxpbmUuc3RhcnRzV2l0aCgnYGBgJykpIHsKICAgICAgaWYgKCFpbkNvZGVCbG9jaykgewogICAgICAgIGluQ29kZUJsb2NrID0gdHJ1ZTsKICAgICAgICBjb2RlTGFuZyA9IGxpbmUuc2xpY2UoMykudHJpbSgpOwogICAgICAgIGNvZGVDb250ZW50ID0gJyc7CiAgICAgIH0gZWxzZSB7CiAgICAgICAgaW5Db2RlQmxvY2sgPSBmYWxzZTsKICAgICAgICBlbGVtZW50cy5wdXNoKAogICAgICAgICAgPFZpZXcga2V5PXtgY29kZS0ke2l9YH0gc3R5bGU9e1tzdHlsZXMuY29kZUJsb2NrLCB7IGJhY2tncm91bmRDb2xvcjogY29kZUJnIH1dfT4KICAgICAgICAgICAge2NvZGVMYW5nID8gPFRleHQgc3R5bGU9e1tzdHlsZXMuY29kZUxhbmcsIHsgY29sb3I6IGlzRGFyayA/ICcjOWI5YjliJyA6IENvbG9ycy50ZXh0U2Vjb25kYXJ5IH1dfT57Y29kZUxhbmd9PC9UZXh0PiA6IG51bGx9CiAgICAgICAgICAgIDxTY3JvbGxWaWV3IGhvcml6b250YWwgc2hvd3NIb3Jpem9udGFsU2Nyb2xsSW5kaWNhdG9yPXtmYWxzZX0+CiAgICAgICAgICAgICAgPFRleHQgc3R5bGU9e1tzdHlsZXMuY29kZVRleHQsIHsgY29sb3I6IGlzRGFyayA/ICcjZGNkY2RjJyA6ICcjMzMzJyB9XX0gc2VsZWN0YWJsZT57Y29kZUNvbnRlbnR9PC9UZXh0PgogICAgICAgICAgICA8L1Njcm9sbFZpZXc+CiAgICAgICAgICA8L1ZpZXc+CiAgICAgICAgKTsKICAgICAgfQogICAgICBjb250aW51ZTsKICAgIH0KICAgIGlmIChpbkNvZGVCbG9jaykgewogICAgICBjb2RlQ29udGVudCArPSAoY29kZUNvbnRlbnQgPyAnXG4nIDogJycpICsgbGluZTsKICAgICAgY29udGludWU7CiAgICB9CgogICAgLy8g6KGo5qC85qOA5rWLCiAgICBpZiAobGluZS50cmltKCkuaW5jbHVkZXMoJ3wnKSAmJiBpICsgMSA8IGxpbmVzLmxlbmd0aCAmJiBpc1RhYmxlU2VwYXJhdG9yKGxpbmVzW2kgKyAxXSkpIHsKICAgICAgY29uc3QgdGFibGVSZXN1bHQgPSByZW5kZXJUYWJsZShsaW5lLCBsaW5lcywgaSwgISFpc0RhcmspOwogICAgICBpZiAodGFibGVSZXN1bHQuZWxlbWVudCkgewogICAgICAgIGVsZW1lbnRzLnB1c2godGFibGVSZXN1bHQuZWxlbWVudCk7CiAgICAgICAgaSArPSB0YWJsZVJlc3VsdC5jb25zdW1lZCAtIDE7CiAgICAgICAgY29udGludWU7CiAgICAgIH0KICAgIH0KCiAgICAvLyDnqbrooYwKICAgIGlmIChsaW5lLnRyaW0oKSA9PT0gJycpIHsKICAgICAgZWxlbWVudHMucHVzaCg8VmlldyBrZXk9e2BzcC0ke2l9YH0gc3R5bGU9e3sgaGVpZ2h0OiAyIH19IC8+KTsKICAgICAgY29udGludWU7CiAgICB9CgogICAgLy8g5qCH6aKYCiAgICBpZiAobGluZS5zdGFydHNXaXRoKCcjIyMgJykpIHsKICAgICAgZWxlbWVudHMucHVzaCg8VGV4dCBrZXk9e2BoMy0ke2l9YH0gc3R5bGU9e1tzdHlsZXMuaDMsIHsgY29sb3I6IHRleHRDb2xvciB9XX0+e3JlbmRlcklubGluZShsaW5lLnNsaWNlKDQpLCBgaDMtJHtpfWApfTwvVGV4dD4pOwogICAgfSBlbHNlIGlmIChsaW5lLnN0YXJ0c1dpdGgoJyMjICcpKSB7CiAgICAgIGVsZW1lbnRzLnB1c2goPFRleHQga2V5PXtgaDItJHtpfWB9IHN0eWxlPXtbc3R5bGVzLmgyLCB7IGNvbG9yOiB0ZXh0Q29sb3IgfV19PntyZW5kZXJJbmxpbmUobGluZS5zbGljZSgzKSwgYGgyLSR7aX1gKX08L1RleHQ+KTsKICAgIH0gZWxzZSBpZiAobGluZS5zdGFydHNXaXRoKCcjICcpKSB7CiAgICAgIGVsZW1lbnRzLnB1c2goPFRleHQga2V5PXtgaDEtJHtpfWB9IHN0eWxlPXtbc3R5bGVzLmgxLCB7IGNvbG9yOiB0ZXh0Q29sb3IgfV19PntyZW5kZXJJbmxpbmUobGluZS5zbGljZSgyKSwgYGgxLSR7aX1gKX08L1RleHQ+KTsKICAgIH0KICAgIC8vIOW8leeUqAogICAgZWxzZSBpZiAobGluZS5zdGFydHNXaXRoKCc+ICcpKSB7CiAgICAgIGVsZW1lbnRzLnB1c2goCiAgICAgICAgPFZpZXcga2V5PXtgcS0ke2l9YH0gc3R5bGU9e1tzdHlsZXMucXVvdGUsIHsgYm9yZGVyTGVmdENvbG9yOiBDb2xvcnMucHJpbWFyeSB9XX0+CiAgICAgICAgICA8VGV4dCBzdHlsZT17W3N0eWxlcy5xdW90ZVRleHQsIHsgY29sb3I6IGlzRGFyayA/ICcjOTk5JyA6IENvbG9ycy50ZXh0U2Vjb25kYXJ5IH1dfT57cmVuZGVySW5saW5lKGxpbmUuc2xpY2UoMiksIGBxLSR7aX1gKX08L1RleHQ+CiAgICAgICAgPC9WaWV3PgogICAgICApOwogICAgfQogICAgLy8g5peg5bqP5YiX6KGoCiAgICBlbHNlIGlmIChsaW5lLnN0YXJ0c1dpdGgoJy0gJykgfHwgbGluZS5zdGFydHNXaXRoKCcqICcpKSB7CiAgICAgIGlmICghaW5MaXN0KSB7IGluTGlzdCA9IHRydWU7IH0KICAgICAgZWxlbWVudHMucHVzaCgKICAgICAgICA8VmlldyBrZXk9e2BsaS0ke2l9YH0gc3R5bGU9e3N0eWxlcy5saXN0SXRlbX0+CiAgICAgICAgICA8VGV4dCBzdHlsZT17eyBjb2xvcjogdGV4dENvbG9yLCBmb250U2l6ZTogRm9udFNpemUubWQsIHdpZHRoOiAxNiB9fT48L1RleHQ+CiAgICAgICAgICA8VGV4dCBzdHlsZT17eyBjb2xvcjogdGV4dENvbG9yLCBmb250U2l6ZTogRm9udFNpemUubWQsIGZsZXg6IDEgfX0+e3JlbmRlcklubGluZShsaW5lLnNsaWNlKDIpLCBgbGktJHtpfWApfTwvVGV4dD4KICAgICAgICA8L1ZpZXc+CiAgICAgICk7CiAgICB9CiAgICAvLyDmnInluo/liJfooagKICAgIGVsc2UgaWYgKC9eXGQrXC5ccy8udGVzdChsaW5lKSkgewogICAgICBjb25zdCBtYXRjaCA9IGxpbmUubWF0Y2goL14oXGQrKVwuXHMoLiopJC8pOwogICAgICBpZiAobWF0Y2gpIHsKICAgICAgICBlbGVtZW50cy5wdXNoKAogICAgICAgICAgPFZpZXcga2V5PXtgb2wtJHtpfWB9IHN0eWxlPXtzdHlsZXMubGlzdEl0ZW19PgogICAgICAgICAgICA8VGV4dCBzdHlsZT17eyBjb2xvcjogQ29sb3JzLnByaW1hcnksIGZvbnRTaXplOiBGb250U2l6ZS5tZCwgZm9udFdlaWdodDogJzYwMCcsIHdpZHRoOiAyNCB9fT57bWF0Y2hbMV19LjwvVGV4dD4KICAgICAgICAgICAgPFRleHQgc3R5bGU9e3sgY29sb3I6IHRleHRDb2xvciwgZm9udFNpemU6IEZvbnRTaXplLm1kLCBmbGV4OiAxIH19PntyZW5kZXJJbmxpbmUobWF0Y2hbMl0sIGBvbC0ke2l9YCl9PC9UZXh0PgogICAgICAgICAgPC9WaWV3PgogICAgICAgICk7CiAgICAgIH0KICAgIH0KICAgIC8vIE1hcmtkb3duIOWbvueJhyAhW2FsdF0odXJsKQogICAgZWxzZSBpZiAoL14hXFsoW15cXV0qKVxdXCgoW14pXSspXCkvaS50ZXN0KGxpbmUudHJpbSgpKSkgewogICAgICBjb25zdCBtZEltZ01hdGNoID0gbGluZS50cmltKCkubWF0Y2goL14hXFsoW15cXV0qKVxdXCgoW14pXSspXCkvKTsKICAgICAgaWYgKG1kSW1nTWF0Y2gpIHsKICAgICAgICBjb25zdCBhbHQgPSBtZEltZ01hdGNoWzFdIHx8ICcnOwogICAgICAgIGNvbnN0IHNyYyA9IG1kSW1nTWF0Y2hbMl07CiAgICAgICAgZWxlbWVudHMucHVzaCgKICAgICAgICAgIDxWaWV3IGtleT17YG1kLWltZy0ke2l9YH0gc3R5bGU9e1tzdHlsZXMuaW1nQ29udGFpbmVyXX0+CiAgICAgICAgICAgIDxJbWFnZSBzb3VyY2U9e3sgdXJpOiBub3JtYWxpemVJbWFnZVVybChzcmMpIH19IHN0eWxlPXtzdHlsZXMuaW1nfSByZXNpemVNb2RlPSJjb3ZlciIgLz4KICAgICAgICAgICAge2FsdCA/IDxUZXh0IHN0eWxlPXt7IGZvbnRTaXplOiAxMSwgY29sb3I6ICcjOTRhM2I4JywgbWFyZ2luVG9wOiA0LCB0ZXh0QWxpZ246ICdjZW50ZXInIH19PnthbHR9PC9UZXh0PiA6IG51bGx9CiAgICAgICAgICA8L1ZpZXc+CiAgICAgICAgKTsKICAgICAgfQogICAgfQogICAgLy8g6KeG6aKRVVJM5qOA5rWLCiAgICBlbHNlIGlmICgvXmh0dHBzPzpcL1wvXFMrXC4obXA0fHdlYm18bW92KShcP1xTKik/JC9pLnRlc3QobGluZS50cmltKCkpKSB7CiAgICAgIGVsZW1lbnRzLnB1c2goPFZpZGVvUGxheWVySW5saW5lIGtleT17YHZpZC11cmwtJHtpfWB9IHNyYz17bGluZS50cmltKCl9IHZpZGVvS2V5PXtgdmlkLXVybC0ke2l9YH0gLz4pOwogICAgfQogICAgLy8g5pmu6YCa5paH5pysCiAgICBlbHNlIHsKICAgICAgaW5MaXN0ID0gZmFsc2U7CiAgICAgIC8vIENoZWNrIGZvciBzdGFuZGFsb25lIGltZy92aWRlbyB0YWdzCiAgICAgIGlmICgvXjxpbWdbXj5dKz4vaS50ZXN0KGxpbmUudHJpbSgpKSB8fCAvXiZsdDtpbWdbXiZdKyZndDsvaS50ZXN0KGxpbmUudHJpbSgpKSB8fCAvXiUzQ2ltZ1teJV0rJTNFL2kudGVzdChsaW5lLnRyaW0oKSkpIHsKICAgICAgICAvLyBDb2xsZWN0IG11bHRpLWxpbmUgaW1nIHRhZ3MKICAgICAgICBsZXQgaW1nTGluZSA9IGxpbmUudHJpbSgpOwogICAgICAgIHdoaWxlICghaW1nTGluZS5pbmNsdWRlcygnPicpICYmICFpbWdMaW5lLmluY2x1ZGVzKCclM0UnKSAmJiBpICsgMSA8IGxpbmVzLmxlbmd0aCkgewogICAgICAgICAgaSsrOwogICAgICAgICAgaW1nTGluZSArPSAnICcgKyBsaW5lc1tpXS50cmltKCk7CiAgICAgICAgfQogICAgICAgIGVsZW1lbnRzLnB1c2gocmVuZGVySW1nVGFnKGltZ0xpbmUsIGBpbWctbGluZS0ke2l9YCkpOwogICAgICB9IGVsc2UgaWYgKC88dmlkZW9bXj5dKj5bXHNcU10qPzxcL3ZpZGVvPnw8dmlkZW9bXj5dKz4vaS50ZXN0KGxpbmUudHJpbSgpKSkgewogICAgICAgIGVsZW1lbnRzLnB1c2gocmVuZGVyVmlkZW9UYWcobGluZS50cmltKCksIGB2aWQtbGluZS0ke2l9YCkpOwogICAgICB9IGVsc2UgewogICAgICAgIC8vIENoZWNrIGlubGluZSBpbWcvdmlkZW8gdGFncyB3aXRoaW4gdGV4dAogICAgICAgIGNvbnN0IGlubGluZVBhcnRzID0gZXh0cmFjdEh0bWxUYWdzKGxpbmUpOwogICAgICAgIGlmIChpbmxpbmVQYXJ0cykgewogICAgICAgICAgLy8gVXNlIFZpZXcgd3JhcHBlciBzbyBJbWFnZS9WaWV3IGNoaWxkcmVuIHJlbmRlciBjb3JyZWN0bHkgb24gV2ViCiAgICAgICAgICAvLyAoSW1hZ2UgaW5zaWRlIDxUZXh0PiByZW5kZXJzIGFzIDxkaXY+IGluc2lkZSA8c3Bhbj4gPSBicm9rZW4gbGF5b3V0KQogICAgICAgICAgZWxlbWVudHMucHVzaCgKICAgICAgICAgICAgPFZpZXcga2V5PXtgcC0ke2l9YH0gc3R5bGU9e3sgbWFyZ2luQm90dG9tOiBTcGFjaW5nLnhzIH19PgogICAgICAgICAgICAgIHtpbmxpbmVQYXJ0cy5tYXAoKHBhcnQsIHBJZHgpID0+IHsKICAgICAgICAgICAgICAgIC8vIFJhdyBzdHJpbmcg4oaSIGFwcGx5IGlubGluZSBmb3JtYXR0aW5nIChib2xkL2l0YWxpYy9jb2RlKQogICAgICAgICAgICAgICAgaWYgKHR5cGVvZiBwYXJ0ID09PSAnc3RyaW5nJykgewogICAgICAgICAgICAgICAgICByZXR1cm4gPFRleHQga2V5PXtgcHQtJHtwSWR4fWB9IHN0eWxlPXtbc3R5bGVzLnBhcmFncmFwaCwgeyBjb2xvcjogdGV4dENvbG9yIH1dfT57cmVuZGVySW5saW5lKHBhcnQsIGBpcC0ke2l9LSR7cElkeH1gKX08L1RleHQ+OwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgLy8gUmVhY3QgZWxlbWVudCAoVmlldyB3aXRoIEltYWdlKSDihpIgcmVuZGVyIGRpcmVjdGx5CiAgICAgICAgICAgICAgICByZXR1cm4gPFJlYWN0LkZyYWdtZW50IGtleT17YHB2LSR7cElkeH1gfT57cGFydH08L1JlYWN0LkZyYWdtZW50PjsKICAgICAgICAgICAgICB9KX0KICAgICAgICAgICAgPC9WaWV3PgogICAgICAgICAgKTsKICAgICAgICB9IGVsc2UgewogICAgICAgICAgZWxlbWVudHMucHVzaCg8VGV4dCBrZXk9e2BwLSR7aX1gfSBzdHlsZT17W3N0eWxlcy5wYXJhZ3JhcGgsIHsgY29sb3I6IHRleHRDb2xvciB9XX0+e3JlbmRlcklubGluZShsaW5lLCBgcC0ke2l9YCl9PC9UZXh0Pik7CiAgICAgICAgfQogICAgICB9CiAgICB9CiAgfQoKICByZXR1cm4gKAogICAgPD4KICAgICAge1BsYXRmb3JtLk9TID09PSAnd2ViJyAmJiA8c3R5bGU+e3dlYldyYXBDU1N9PC9zdHlsZT59CiAgICAgIDxWaWV3IHN0eWxlPXtzdHlsZXMuY29udGFpbmVyfSBjbGFzc05hbWU9Im1kLWJ1YmJsZSI+e2VsZW1lbnRzfTwvVmlldz4KICAgIDwvPgogICk7Cn07Cgpjb25zdCBzdHlsZXMgPSBTdHlsZVNoZWV0LmNyZWF0ZSh7CiAgY29udGFpbmVyOiB7IHBhZGRpbmdWZXJ0aWNhbDogU3BhY2luZy54cyB9LAogIGltZ0NvbnRhaW5lcjogeyBtYXJnaW5WZXJ0aWNhbDogU3BhY2luZy5zbSwgYm9yZGVyUmFkaXVzOiBCb3JkZXJSYWRpdXMubWQsIG92ZXJmbG93OiAnaGlkZGVuJyB9LAogIGltZzogeyB3aWR0aDogJzEwMCUnLCBoZWlnaHQ6IDIyMCwgYm9yZGVyUmFkaXVzOiBCb3JkZXJSYWRpdXMubWQsIGJhY2tncm91bmRDb2xvcjogJyNmMGYwZjAnIH0sCiAgdmlkZW9Db250YWluZXI6IHsgbWFyZ2luVmVydGljYWw6IFNwYWNpbmcuc20sIGJvcmRlclJhZGl1czogQm9yZGVyUmFkaXVzLm1kLCBvdmVyZmxvdzogJ2hpZGRlbicsIGJhY2tncm91bmRDb2xvcjogJyMwMDAnIH0sCiAgdmlkZW9QbGF5ZXI6IHsgd2lkdGg6ICcxMDAlJywgaGVpZ2h0OiAyMjAsIGJvcmRlclJhZGl1czogQm9yZGVyUmFkaXVzLm1kIH0sCiAgdmlkZW9MaW5rOiB7IGZsZXhEaXJlY3Rpb246ICdyb3cnLCBhbGlnbkl0ZW1zOiAnY2VudGVyJywgcGFkZGluZ1ZlcnRpY2FsOiBTcGFjaW5nLnNtLCBwYWRkaW5nSG9yaXpvbnRhbDogU3BhY2luZy5tZCwgYmFja2dyb3VuZENvbG9yOiAnIzFlMjkzYicsIGJvcmRlclJhZGl1czogQm9yZGVyUmFkaXVzLm1kLCBtYXJnaW5WZXJ0aWNhbDogU3BhY2luZy5zbSB9LAogIHZpZGVvTGlua1RleHQ6IHsgY29sb3I6ICcjNjBhNWZhJywgZm9udFNpemU6IEZvbnRTaXplLnNtLCBtYXJnaW5MZWZ0OiBTcGFjaW5nLnhzIH0sCiAgaDE6IHsgZm9udFNpemU6IEZvbnRTaXplLnh4bCwgZm9udFdlaWdodDogJzcwMCcsIG1hcmdpbkJvdHRvbTogU3BhY2luZy5zbSB9LAogIGgyOiB7IGZvbnRTaXplOiBGb250U2l6ZS54bCwgZm9udFdlaWdodDogJzcwMCcsIG1hcmdpbkJvdHRvbTogU3BhY2luZy5zbSB9LAogIGgzOiB7IGZvbnRTaXplOiBGb250U2l6ZS5sZywgZm9udFdlaWdodDogJzYwMCcsIG1hcmdpbkJvdHRvbTogU3BhY2luZy54cyB9LAogIHBhcmFncmFwaDogeyBmb250U2l6ZTogRm9udFNpemUubWQsIGxpbmVIZWlnaHQ6IEZvbnRTaXplLm1kICogMS40LCBtYXJnaW5Cb3R0b206IDIgfSwKICBjb2RlQmxvY2s6IHsgYm9yZGVyUmFkaXVzOiBCb3JkZXJSYWRpdXMubWQsIHBhZGRpbmc6IFNwYWNpbmcubWQsIG1hcmdpblZlcnRpY2FsOiBTcGFjaW5nLnNtIH0sCiAgY29kZUxhbmc6IHsgZm9udFNpemU6IEZvbnRTaXplLnhzLCBtYXJnaW5Cb3R0b206IFNwYWNpbmcueHMsIGZvbnRGYW1pbHk6ICdtb25vc3BhY2UnIH0sCiAgY29kZVRleHQ6IHsgZm9udFNpemU6IEZvbnRTaXplLnNtLCBmb250RmFtaWx5OiAnbW9ub3NwYWNlJywgbGluZUhlaWdodDogRm9udFNpemUuc20gKiAxLjUgfSwKICBpbmxpbmVDb2RlOiB7IHBhZGRpbmdIb3Jpem9udGFsOiBTcGFjaW5nLnhzLCBwYWRkaW5nVmVydGljYWw6IDIsIGJvcmRlclJhZGl1czogQm9yZGVyUmFkaXVzLnNtLCBmb250U2l6ZTogRm9udFNpemUuc20gKiAwLjksIGZvbnRGYW1pbHk6ICdtb25vc3BhY2UnIH0sCiAgcXVvdGU6IHsgYm9yZGVyTGVmdFdpZHRoOiAzLCBwYWRkaW5nTGVmdDogU3BhY2luZy5tZCwgbWFyZ2luVmVydGljYWw6IFNwYWNpbmcueHMgfSwKICBxdW90ZVRleHQ6IHsgZm9udFNpemU6IEZvbnRTaXplLm1kLCBmb250U3R5bGU6ICdpdGFsaWMnIH0sCiAgbGlzdEl0ZW06IHsgZmxleERpcmVjdGlvbjogJ3JvdycsIGFsaWduSXRlbXM6ICdmbGV4LXN0YXJ0JywgbWFyZ2luQm90dG9tOiBTcGFjaW5nLnhzIH0sCn0pOwoK
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Linking, Platform } from 'react-native';
+// expo-video dynamically imported to prevent native crash on iOS 26
+import { Colors, Spacing, BorderRadius, FontSize } from '../constants/theme';
+
+// Convert HTTP server URLs to HTTPS tunnel URLs to bypass iOS ATS
+function normalizeImageUrl(url: string): string {
+  if (!url) return url;
+  return url
+    .replace(/http:\/\/36\.137\.84\.216:9091/g, 'https://s.symsgf.xyz')
+    .replace(/http:\/\/127\.0\.0\.1:9091/g, 'https://s.symsgf.xyz')
+    .replace(/http:\/\/localhost:9091/g, 'https://s.symsgf.xyz');
+}
+
+interface MarkdownRendererProps {
+  content: string;
+  isDark?: boolean;
+}
+
+
+const webWrapCSS = Platform.OS === 'web' ? `
+  .md-bubble p, .md-bubble li, .md-bubble td, .md-bubble th, .md-bubble h1, .md-bubble h2, .md-bubble h3, .md-bubble blockquote { word-wrap: break-word; overflow-wrap: break-word; white-space: pre-wrap; }
+  .md-bubble p a, .md-bubble p code { word-break: break-all; }
+  .md-table-scroll { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+  .md-table-scroll::-webkit-scrollbar { height: 4px; }
+  .md-table-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+` : '';
+
+/**
+ * 简易 Markdown 渲染器
+ * 支持：标题、粗体、斜体、代码块、行内代码、列表、引用、链接
+ */
+
+// Error boundary for video player to prevent native crashes
+class VideoErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <View style={{ marginVertical: 8, padding: 16, backgroundColor: '#f3f4f6', borderRadius: 12, alignItems: 'center' }}>
+          <Text style={{ color: '#6b7280', fontSize: 13 }}>视频加载失败</Text>
+        </View>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+// Inline video player component - dynamic import to prevent native crash on page load
+function VideoPlayerInline({ src, videoKey }: { src: string; videoKey: string }) {
+  const [videoModule, setVideoModule] = React.useState<{ useVideoPlayer: any; VideoView: any } | null>(null);
+  const [loadError, setLoadError] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!src || Platform.OS === 'web') return;
+    let mounted = true;
+    import('expo-video').then(mod => {
+      if (mounted) setVideoModule({ useVideoPlayer: mod.useVideoPlayer, VideoView: mod.VideoView });
+    }).catch(() => {
+      if (mounted) setLoadError(true);
+    });
+    return () => { mounted = false; };
+  }, [src]);
+
+  if (Platform.OS === 'web') {
+    return (
+      <View style={{ marginVertical: 8, borderRadius: 12, overflow: 'hidden' }}>
+        <video src={src} controls style={{ width: '100%', maxWidth: 480, borderRadius: 12, backgroundColor: '#000' }} />
+      </View>
+    );
+  }
+  if (loadError) {
+    return (
+      <View style={{ marginVertical: 8, padding: 20, backgroundColor: '#f3f4f6', borderRadius: 12, alignItems: 'center' }}>
+        <Text style={{ color: '#6b7280', fontSize: 13 }}>视频播放不可用</Text>
+      </View>
+    );
+  }
+  if (!videoModule) {
+    return (
+      <View style={{ marginVertical: 8, padding: 20, backgroundColor: '#f3f4f6', borderRadius: 12, alignItems: 'center' }}>
+        <Text style={{ color: '#9ca3af', fontSize: 13 }}>加载视频...</Text>
+      </View>
+    );
+  }
+  return (
+    <VideoErrorBoundary>
+      <NativeVideoInline src={src} useVideoPlayer={videoModule.useVideoPlayer} VideoView={videoModule.VideoView} />
+    </VideoErrorBoundary>
+  );
+}
+
+function NativeVideoInline({ src, useVideoPlayer, VideoView }: { src: string; useVideoPlayer: any; VideoView: any }) {
+  const player = useVideoPlayer(src, (p: any) => { p.loop = false; });
+  return (
+    <View style={{ marginVertical: 8, borderRadius: 12, overflow: 'hidden', backgroundColor: '#000' }}>
+      <VideoView player={player} style={{ width: '100%', height: 200, borderRadius: 12 }} contentFit="contain" allowsFullscreen allowsPictureInPicture />
+    </View>
+  );
+}
+
+
+export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, isDark }) => {
+  // Decode URL-encoded content from AI
+  const decodedContent = (() => {
+    try { return decodeURIComponent(content || ''); } catch { return content || ''; }
+  })();
+  const lines = decodedContent.split('\n');
+  const elements: React.ReactNode[] = [];
+  let inCodeBlock = false;
+  let codeContent = '';
+  let codeLang = '';
+  let inList = false;
+
+  const textColor = isDark ? Colors.textInverse : Colors.text;
+  const codeBg = isDark ? '#1e1e1e' : '#f5f5f5';
+
+  const renderInline = (text: string, key: string): React.ReactNode => {
+    // 行内代码
+    const parts = text.split(/(`[^`]+`)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('`') && part.endsWith('`')) {
+        return (
+          <Text key={`${key}-code-${i}`} style={[styles.inlineCode, { backgroundColor: codeBg, color: isDark ? '#d4d4d4' : '#334155' }]}>
+            {part.slice(1, -1)}
+          </Text>
+        );
+      }
+      // 粗体
+      let result: React.ReactNode = part;
+      const boldParts = part.split(/(\*\*[^*]+\*\*)/g);
+      if (boldParts.length > 1) {
+        result = boldParts.map((bp, j) => {
+          if (bp.startsWith('**') && bp.endsWith('**')) {
+            return <Text key={`${key}-b-${j}`} style={{ fontWeight: '700' }}>{bp.slice(2, -2)}</Text>;
+          }
+          // 斜体
+          const italicParts = bp.split(/(\*[^*]+\*)/g);
+          if (italicParts.length > 1) {
+            return italicParts.map((ip, k) => {
+              if (ip.startsWith('*') && ip.endsWith('*')) {
+                return <Text key={`${key}-i-${j}-${k}`} style={{ fontStyle: 'italic' }}>{ip.slice(1, -1)}</Text>;
+              }
+              return <Text key={`${key}-t-${j}-${k}`}>{ip}</Text>;
+            });
+          }
+          return <Text key={`${key}-t-${j}`}>{bp}</Text>;
+        });
+      }
+      return <React.Fragment key={`${key}-${i}`}>{result}</React.Fragment>;
+    });
+  };
+
+  
+// Parse <img src="..."> tags and render as Image
+const renderImgTag = (tag: string, key: string): React.ReactNode => {
+  const srcMatch = tag.match(/src=["']([^"']+)["']/);
+  if (!srcMatch) return null;
+  const src = srcMatch[1];
+  const altMatch = tag.match(/alt=["']([^"']+)["']/);
+  const alt = altMatch ? altMatch[1] : '';
+  return (
+    <View key={key} style={[styles.imgContainer]}>
+      <Image source={{ uri: normalizeImageUrl(src) }} style={styles.img} resizeMode="cover" />
+      {alt ? <Text style={{ fontSize: 11, color: '#94a3b8', marginTop: 4, textAlign: 'center' }}>{alt}</Text> : null}
+    </View>
+  );
+};
+
+// Parse <video ...> or <source ...> tags and render as video player
+const renderVideoTag = (tag: string, key: string): React.ReactNode => {
+  let src = '';
+  const srcMatch = tag.match(/<video[^>]*src=["']([^"']+)["']/);
+  if (srcMatch) {
+    src = srcMatch[1];
+  } else {
+    const sourceMatch = tag.match(/<source[^>]*src=["']([^"']+)["']/);
+    if (sourceMatch) src = sourceMatch[1];
+  }
+  if (!src) return null;
+  return (
+    <View key={key} style={[styles.videoContainer]}>
+      <TouchableOpacity style={[styles.videoLink]} activeOpacity={0.7} onPress={() => Linking.openURL(src)}>
+        <Text style={{ color: '#fff', fontSize: FontSize.sm }}>▶</Text>
+        <Text style={[styles.videoLinkText]}>点击播放视频</Text>
+        <Text style={{ color: '#94a3b8', fontSize: 11, flex: 1, marginLeft: 8 }} numberOfLines={1}>{src.substring(0, 60)}...</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+// Replace raw HTML img/video tags in text with placeholders
+const extractHtmlTags = (text: string): React.ReactNode[] => {
+  const parts: React.ReactNode[] = [];
+  // Handle markdown images ![alt](url) by converting to <img> tags
+  const mdImgConverted = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />');
+  const imgRegex = /<img[^>]+>/gi;
+  const videoRegex = /<video[^>]*>[\s\S]*?<\/video>|<video[^>]+>/gi;
+  let lastIndex = 0;
+  let keyIdx = 0;
+  // Process images first
+  let remaining = mdImgConverted;
+  const segments: { type: string; content: string; start: number; end: number }[] = [];
+  let tmp = mdImgConverted;
+  let offset = 0;
+  imgRegex.lastIndex = 0;
+  videoRegex.lastIndex = 0;
+  // Combine all matches
+  const allMatches: { type: string; content: string; index: number }[] = [];
+  let m;
+  const imgRe = /<img[^>]+>/gi;
+  while ((m = imgRe.exec(mdImgConverted)) !== null) { allMatches.push({ type: 'img', content: m[0], index: m.index }); }
+  const vidRe = /<video[^>]*>[\s\S]*?<\/video>|<video[^>]+>/gi;
+  while ((m = vidRe.exec(mdImgConverted)) !== null) { allMatches.push({ type: 'video', content: m[0], index: m.index }); }
+  allMatches.sort((a, b) => a.index - b.index);
+  let pos = 0;
+  for (const match of allMatches) {
+    if (match.index > pos) {
+      parts.push(mdImgConverted.slice(pos, match.index) as any);  // raw string for caller to format
+    }
+    if (match.type === 'img') parts.push(renderImgTag(match.content, `img-${keyIdx++}`));
+    else parts.push(renderVideoTag(match.content, `vid-${keyIdx++}`));
+    pos = match.index + match.content.length;
+  }
+  if (pos < text.length) parts.push(text.slice(pos) as any);  // raw string for caller to format
+  return parts.length > 0 ? parts : null;
+};
+
+
+/**
+ * Check if a line is a table separator row
+ */
+const isTableSeparator = (line: string): boolean => {
+  return /^\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(line.trim());
+};
+
+/**
+ * Parse a table separator to extract column alignments
+ */
+const parseAlignments = (line: string): ('left' | 'center' | 'right')[] => {
+  const cells = line.trim().replace(/^\||\|$/g, '').split('|');
+  return cells.map(cell => {
+    const trimmed = cell.trim();
+    if (trimmed.startsWith(':') && trimmed.endsWith(':')) return 'center';
+    if (trimmed.endsWith(':')) return 'right';
+    return 'left';
+  });
+};
+
+/**
+ * Parse a table row into cells
+ */
+const parseTableCells = (line: string): string[] => {
+  let trimmed = line.trim();
+  if (trimmed.startsWith('|')) trimmed = trimmed.slice(1);
+  if (trimmed.endsWith('|')) trimmed = trimmed.slice(0, -1);
+  return trimmed.split('|').map(cell => cell.trim());
+};
+
+/**
+ * Render a Markdown table from consecutive lines
+ */
+const renderTable = (headerLine: string, lines: string[], startIdx: number, isDark: boolean): { element: React.ReactNode; consumed: number } => {
+  if (startIdx + 1 >= lines.length) return { element: null, consumed: 0 };
+  const sepLine = lines[startIdx + 1];
+  if (!isTableSeparator(sepLine)) return { element: null, consumed: 0 };
+
+  const alignments = parseAlignments(sepLine);
+  const headers = parseTableCells(headerLine);
+  const textColor = isDark ? Colors.textInverse : Colors.text;
+  const headerBg = isDark ? '#2d3748' : '#f7f7f5';
+  const borderColor = isDark ? '#4a5568' : '#e2e8f0';
+
+  const dataRows: string[][] = [];
+  let consumed = 2;
+  for (let j = startIdx + 2; j < lines.length; j++) {
+    const row = lines[j].trim();
+    if (row === '' || !row.includes('|')) break;
+    dataRows.push(parseTableCells(row));
+    consumed++;
+  }
+
+
+  return {
+    element: (
+      Platform.OS === 'web' ? (
+        <View key={`table-${startIdx}`} className="md-table-scroll" style={{ marginVertical: Spacing.sm }}>
+          <View style={{ borderWidth: 1, borderColor, borderRadius: BorderRadius.md, overflow: 'hidden', flexDirection: 'column' }}>
+            <View style={{ flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 8, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: borderColor }}>
+              {headers.map((cell, ci) => (
+                <View key={`th-${ci}`} style={{ minWidth: 140, paddingHorizontal: 12, alignItems: alignments[ci] === 'center' ? 'center' : alignments[ci] === 'right' ? 'flex-end' : 'flex-start' }}>
+                  <Text style={{ fontSize: FontSize.sm, fontWeight: '700', color: textColor, flex: 1, flexWrap: 'wrap' }}>{renderInline(cell, `th-${ci}`)}</Text>
+                </View>
+              ))}
+            </View>
+            {dataRows.map((row, ri) => (
+              <View key={`tr-${ri}`} style={{ flexDirection: 'row', paddingVertical: 6, paddingHorizontal: 8, borderBottomWidth: ri < dataRows.length - 1 ? 0.5 : 0, borderBottomColor: borderColor }}>
+                {row.map((cell, ci) => (
+                  <View key={`td-${ri}-${ci}`} style={{ minWidth: 140, paddingHorizontal: 12, alignItems: alignments[ci] === 'center' ? 'center' : alignments[ci] === 'right' ? 'flex-end' : 'flex-start' }}>
+                    <Text style={{ fontSize: FontSize.sm, color: textColor, flex: 1, flexWrap: 'wrap' }}>{renderInline(cell, `td-${ri}-${ci}`)}</Text>
+                  </View>
+                ))}
+              </View>
+            ))}
+          </View>
+        </View>
+      ) : (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={true}
+          directionalLockEnabled
+          alwaysBounceHorizontal={false}
+          directionalLockEnabled
+          nestedScrollEnabled
+          key={`table-${startIdx}`}
+          style={{ marginVertical: Spacing.sm, width: '100%' }}
+          contentContainerStyle={{ paddingHorizontal: 0, flexGrow: 0, alignSelf: 'flex-start' }}
+        >
+          <View style={{ borderWidth: 1, borderColor, borderRadius: BorderRadius.md, overflow: 'hidden', flexDirection: 'column' }}>
+            <View style={{ flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 8, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: borderColor }}>
+              {headers.map((cell, ci) => (
+                <View key={`th-${ci}`} style={{ minWidth: 200, maxWidth: 360, paddingHorizontal: 12, flexShrink: 0, flexGrow: 0 }}>
+                  <Text style={{ fontSize: FontSize.sm, fontWeight: '700', color: textColor, flexWrap: 'wrap', width: '100%' }}>{renderInline(cell, `th-${ci}`)}</Text>
+                </View>
+              ))}
+            </View>
+            {dataRows.map((row, ri) => (
+              <View key={`tr-${ri}`} style={{ flexDirection: 'row', paddingVertical: 6, paddingHorizontal: 8, borderBottomWidth: ri < dataRows.length - 1 ? 0.5 : 0, borderBottomColor: borderColor }}>
+                {row.map((cell, ci) => (
+                  <View key={`td-${ri}-${ci}`} style={{ minWidth: 200, maxWidth: 360, paddingHorizontal: 12, flexShrink: 0, flexGrow: 0 }}>
+                    <Text style={{ fontSize: FontSize.sm, color: textColor, flexWrap: 'wrap', width: '100%' }}>{renderInline(cell, `td-${ri}-${ci}`)}</Text>
+                  </View>
+                ))}
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+      )
+    ),
+    consumed,
+  };
+};
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    // 代码块
+    if (line.startsWith('```')) {
+      if (!inCodeBlock) {
+        inCodeBlock = true;
+        codeLang = line.slice(3).trim();
+        codeContent = '';
+      } else {
+        inCodeBlock = false;
+        elements.push(
+          <View key={`code-${i}`} style={[styles.codeBlock, { backgroundColor: codeBg }]}>
+            {codeLang ? <Text style={[styles.codeLang, { color: isDark ? '#9b9b9b' : Colors.textSecondary }]}>{codeLang}</Text> : null}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <Text style={[styles.codeText, { color: isDark ? '#dcdcdc' : '#333' }]} selectable>{codeContent}</Text>
+            </ScrollView>
+          </View>
+        );
+      }
+      continue;
+    }
+    if (inCodeBlock) {
+      codeContent += (codeContent ? '\n' : '') + line;
+      continue;
+    }
+
+    // 表格检测
+    if (line.trim().includes('|') && i + 1 < lines.length && isTableSeparator(lines[i + 1])) {
+      const tableResult = renderTable(line, lines, i, !!isDark);
+      if (tableResult.element) {
+        elements.push(tableResult.element);
+        i += tableResult.consumed - 1;
+        continue;
+      }
+    }
+
+    // 空行
+    if (line.trim() === '') {
+      elements.push(<View key={`sp-${i}`} style={{ height: 2 }} />);
+      continue;
+    }
+
+    // 标题
+    if (line.startsWith('### ')) {
+      elements.push(<Text key={`h3-${i}`} style={[styles.h3, { color: textColor }]}>{renderInline(line.slice(4), `h3-${i}`)}</Text>);
+    } else if (line.startsWith('## ')) {
+      elements.push(<Text key={`h2-${i}`} style={[styles.h2, { color: textColor }]}>{renderInline(line.slice(3), `h2-${i}`)}</Text>);
+    } else if (line.startsWith('# ')) {
+      elements.push(<Text key={`h1-${i}`} style={[styles.h1, { color: textColor }]}>{renderInline(line.slice(2), `h1-${i}`)}</Text>);
+    }
+    // 引用
+    else if (line.startsWith('> ')) {
+      elements.push(
+        <View key={`q-${i}`} style={[styles.quote, { borderLeftColor: Colors.primary }]}>
+          <Text style={[styles.quoteText, { color: isDark ? '#999' : Colors.textSecondary }]}>{renderInline(line.slice(2), `q-${i}`)}</Text>
+        </View>
+      );
+    }
+    // 无序列表
+    else if (line.startsWith('- ') || line.startsWith('* ')) {
+      if (!inList) { inList = true; }
+      elements.push(
+        <View key={`li-${i}`} style={styles.listItem}>
+          <Text style={{ color: textColor, fontSize: FontSize.md, width: 16 }}></Text>
+          <Text style={{ color: textColor, fontSize: FontSize.md, flex: 1 }}>{renderInline(line.slice(2), `li-${i}`)}</Text>
+        </View>
+      );
+    }
+    // 有序列表
+    else if (/^\d+\.\s/.test(line)) {
+      const match = line.match(/^(\d+)\.\s(.*)$/);
+      if (match) {
+        elements.push(
+          <View key={`ol-${i}`} style={styles.listItem}>
+            <Text style={{ color: Colors.primary, fontSize: FontSize.md, fontWeight: '600', width: 24 }}>{match[1]}.</Text>
+            <Text style={{ color: textColor, fontSize: FontSize.md, flex: 1 }}>{renderInline(match[2], `ol-${i}`)}</Text>
+          </View>
+        );
+      }
+    }
+    // Markdown 图片 ![alt](url)
+    else if (/^!\[([^\]]*)\]\(([^)]+)\)/i.test(line.trim())) {
+      const mdImgMatch = line.trim().match(/^!\[([^\]]*)\]\(([^)]+)\)/);
+      if (mdImgMatch) {
+        const alt = mdImgMatch[1] || '';
+        const src = mdImgMatch[2];
+        elements.push(
+          <View key={`md-img-${i}`} style={[styles.imgContainer]}>
+            <Image source={{ uri: normalizeImageUrl(src) }} style={styles.img} resizeMode="cover" />
+            {alt ? <Text style={{ fontSize: 11, color: '#94a3b8', marginTop: 4, textAlign: 'center' }}>{alt}</Text> : null}
+          </View>
+        );
+      }
+    }
+    // 视频URL检测
+    else if (/^https?:\/\/\S+\.(mp4|webm|mov)(\?\S*)?$/i.test(line.trim())) {
+      elements.push(<VideoPlayerInline key={`vid-url-${i}`} src={line.trim()} videoKey={`vid-url-${i}`} />);
+    }
+    // 普通文本
+    else {
+      inList = false;
+      // Check for standalone img/video tags
+      if (/^<img[^>]+>/i.test(line.trim()) || /^&lt;img[^&]+&gt;/i.test(line.trim()) || /^%3Cimg[^%]+%3E/i.test(line.trim())) {
+        // Collect multi-line img tags
+        let imgLine = line.trim();
+        while (!imgLine.includes('>') && !imgLine.includes('%3E') && i + 1 < lines.length) {
+          i++;
+          imgLine += ' ' + lines[i].trim();
+        }
+        elements.push(renderImgTag(imgLine, `img-line-${i}`));
+      } else if (/<video[^>]*>[\s\S]*?<\/video>|<video[^>]+>/i.test(line.trim())) {
+        elements.push(renderVideoTag(line.trim(), `vid-line-${i}`));
+      } else {
+        // Check inline img/video tags within text
+        const inlineParts = extractHtmlTags(line);
+        if (inlineParts) {
+          // Use View wrapper so Image/View children render correctly on Web
+          // (Image inside <Text> renders as <div> inside <span> = broken layout)
+          elements.push(
+            <View key={`p-${i}`} style={{ marginBottom: Spacing.xs }}>
+              {inlineParts.map((part, pIdx) => {
+                // Raw string → apply inline formatting (bold/italic/code)
+                if (typeof part === 'string') {
+                  return <Text key={`pt-${pIdx}`} style={[styles.paragraph, { color: textColor }]}>{renderInline(part, `ip-${i}-${pIdx}`)}</Text>;
+                }
+                // React element (View with Image) → render directly
+                return <React.Fragment key={`pv-${pIdx}`}>{part}</React.Fragment>;
+              })}
+            </View>
+          );
+        } else {
+          elements.push(<Text key={`p-${i}`} style={[styles.paragraph, { color: textColor }]}>{renderInline(line, `p-${i}`)}</Text>);
+        }
+      }
+    }
+  }
+
+  return (
+    <>
+      {Platform.OS === 'web' && <style>{webWrapCSS}</style>}
+      <View style={styles.container} className="md-bubble">{elements}</View>
+    </>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: { paddingVertical: Spacing.xs },
+  imgContainer: { marginVertical: Spacing.sm, borderRadius: BorderRadius.md, overflow: 'hidden' },
+  img: { width: '100%', height: 220, borderRadius: BorderRadius.md, backgroundColor: '#f0f0f0' },
+  videoContainer: { marginVertical: Spacing.sm, borderRadius: BorderRadius.md, overflow: 'hidden', backgroundColor: '#000' },
+  videoPlayer: { width: '100%', height: 220, borderRadius: BorderRadius.md },
+  videoLink: { flexDirection: 'row', alignItems: 'center', paddingVertical: Spacing.sm, paddingHorizontal: Spacing.md, backgroundColor: '#1e293b', borderRadius: BorderRadius.md, marginVertical: Spacing.sm },
+  videoLinkText: { color: '#60a5fa', fontSize: FontSize.sm, marginLeft: Spacing.xs },
+  h1: { fontSize: FontSize.xxl, fontWeight: '700', marginBottom: Spacing.sm },
+  h2: { fontSize: FontSize.xl, fontWeight: '700', marginBottom: Spacing.sm },
+  h3: { fontSize: FontSize.lg, fontWeight: '600', marginBottom: Spacing.xs },
+  paragraph: { fontSize: FontSize.md, lineHeight: FontSize.md * 1.4, marginBottom: 2 },
+  codeBlock: { borderRadius: BorderRadius.md, padding: Spacing.md, marginVertical: Spacing.sm },
+  codeLang: { fontSize: FontSize.xs, marginBottom: Spacing.xs, fontFamily: 'monospace' },
+  codeText: { fontSize: FontSize.sm, fontFamily: 'monospace', lineHeight: FontSize.sm * 1.5 },
+  inlineCode: { paddingHorizontal: Spacing.xs, paddingVertical: 2, borderRadius: BorderRadius.sm, fontSize: FontSize.sm * 0.9, fontFamily: 'monospace' },
+  quote: { borderLeftWidth: 3, paddingLeft: Spacing.md, marginVertical: Spacing.xs },
+  quoteText: { fontSize: FontSize.md, fontStyle: 'italic' },
+  listItem: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: Spacing.xs },
+});
+
