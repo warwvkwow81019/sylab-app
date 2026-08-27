@@ -685,9 +685,22 @@ function ChatDetailScreenInner() {
           msgs.reverse();
           if (!cancelled) {
             
-            setMessages(msgs);
-            _sessionMessages = msgs;
-            _messageBackup.set(id as string, msgs);
+              // Dedup: merge server msgs with any existing local msgs (e.g., just-sent user message)
+            const _existing = useChatStore.getState().messages;
+            const _serverIds = new Set(msgs.map((m: any) => m.id).filter(Boolean));
+            const _localOnly = _existing.filter((m: any) => !_serverIds.has(m.id));
+            const _merged = [..._localOnly, ...msgs];
+            // Also dedup by content+role for same timestamp (local temp msgs vs server msgs)
+            const _seen = new Set<string>();
+            const _deduped = _merged.filter((m: any) => {
+              const key = m.role + '|' + (m.content || '').slice(0, 100) + '|' + String(m.created_at || '').slice(0, 10);
+              if (_seen.has(key)) return false;
+              _seen.add(key);
+              return true;
+            });
+            setMessages(_deduped);
+            _sessionMessages = _deduped;
+            _messageBackup.set(id as string, _deduped);
             // Batch query transactions for historical cost matching
             try {
               const txResult = await creditsApi.getTransactions(user.id, { page: 1, page_size: 50 });
@@ -974,17 +987,20 @@ function ChatDetailScreenInner() {
       updated_at: String(Date.now()),
     };
     lastUserMsgRef.current = userMsg;
-    if (!_isDuplicateUserMsg(effectiveConvId, userMsg.content, Number(userMsg.created_at))) {
-      const _prevB = useChatStore.getState().messages;
+    const _prevB = useChatStore.getState().messages;
+    const _isContentDup = _prevB.some(m => m.role === 'user' && m.content === userMsg.content && Math.abs(Number(m.created_at) - Number(userMsg.created_at)) < 10000);
+    if (!_isDuplicateUserMsg(effectiveConvId, userMsg.content, Number(userMsg.created_at)) && !_isContentDup) {
       if (!_prevB.some(m => m.id === userMsg.id)) {
         setMessages([..._prevB, userMsg]);
         _sessionMessages = [..._sessionMessages, userMsg];
       }
     }
-      // Save to nuclear backup immediately
+      // Save to nuclear backup immediately (dedup by content)
       const backupKey = effectiveConvId || 'pending';
       const existing = _messageBackup.get(backupKey) || [];
-      _messageBackup.set(backupKey, [...existing, userMsg]);
+      if (!existing.some(m => m.role === 'user' && m.content === userMsg.content)) {
+        _messageBackup.set(backupKey, [...existing, userMsg]);
+      }
     }
     startStreaming();
 
@@ -1149,7 +1165,13 @@ function ChatDetailScreenInner() {
               m.id !== aiMsgId &&
               !(m.role === 'assistant' && m.content === capturedAiContent && Math.abs(Number(m.created_at) - _now) < 5000)
             );
-            setMessages([...filtered, aiMsg]);
+            // Avoid duplicate assistant message with same content
+            const _aiDup = filtered.some(m => m.role === 'assistant' && m.content === capturedAiContent);
+            if (!_aiDup) {
+              setMessages([...filtered, aiMsg]);
+            } else {
+              setMessages(filtered);
+            }
           }
           console.log("[Chat] onComplete: localAi:", localAiAccum.length, "localUser:", localUserContent.length, "sessionMsgs:", _sessionMessages.length, "tokens:", tokens);
           // Token-based billing: deduct credits based on actual token usage

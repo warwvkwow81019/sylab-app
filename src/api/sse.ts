@@ -232,6 +232,24 @@ export function sendMessageStream(
                     callbacks.onToolCall?.(toolName, '', content);
                   } catch {}
                 }
+                // answer in completed event: some backends send full answer in completed rather than deltas
+                if (msgType === 'answer' || (dMsg.role === 'assistant' && !msgType && dMsg.content && typeof dMsg.content === 'string')) {
+                  const answerContent = dMsg.content;
+                  if (answerContent && answerContent.trim() && !fullAssistantContent.includes(answerContent)) {
+                    // If we already accumulated delta content, only append missing parts
+                    if (fullAssistantContent && answerContent.startsWith(fullAssistantContent)) {
+                      const remaining = answerContent.slice(fullAssistantContent.length);
+                      if (remaining) {
+                        callbacks.onDelta(remaining);
+                        fullAssistantContent += remaining;
+                      }
+                    } else if (!fullAssistantContent) {
+                      callbacks.onDelta(answerContent);
+                      fullAssistantContent = answerContent;
+                    }
+                    callbacks.onStatus?.('streaming');
+                  }
+                }
               }
               else if (currentEvent === 'conversation.chat.completed') {
                 try {

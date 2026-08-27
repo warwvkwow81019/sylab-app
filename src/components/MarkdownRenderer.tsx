@@ -326,7 +326,7 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
           <View style={{ borderWidth: 1, borderColor, borderRadius: BorderRadius.md, overflow: 'hidden', flexDirection: 'column' }}>
             <View style={{ flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 8, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: borderColor }}>
               {headers.map((cell, ci) => (
-                <View key={`th-${ci}`} style={{ minWidth: 140, maxWidth: 300, paddingHorizontal: 12, flexShrink: 0, flexGrow: 0 }}>
+                <View key={`th-${ci}`} style={{ minWidth: 180, maxWidth: 320, paddingHorizontal: 12, flexShrink: 0, flexGrow: 0 }}>
                   <Text style={{ fontSize: FontSize.sm, fontWeight: '700', color: textColor, flexWrap: 'wrap', width: '100%' }}>{renderInline(cell, `th-${ci}`)}</Text>
                 </View>
               ))}
@@ -334,7 +334,7 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
             {dataRows.map((row, ri) => (
               <View key={`tr-${ri}`} style={{ flexDirection: 'row', paddingVertical: 6, paddingHorizontal: 8, borderBottomWidth: ri < dataRows.length - 1 ? 0.5 : 0, borderBottomColor: borderColor }}>
                 {row.map((cell, ci) => (
-                  <View key={`td-${ri}-${ci}`} style={{ minWidth: 140, maxWidth: 300, paddingHorizontal: 12, flexShrink: 0, flexGrow: 0 }}>
+                  <View key={`td-${ri}-${ci}`} style={{ minWidth: 180, maxWidth: 320, paddingHorizontal: 12, flexShrink: 0, flexGrow: 0 }}>
                     <Text style={{ fontSize: FontSize.sm, color: textColor, flexWrap: 'wrap', width: '100%' }}>{renderInline(cell, `td-${ri}-${ci}`)}</Text>
                   </View>
                 ))}
