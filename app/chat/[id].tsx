@@ -582,7 +582,18 @@ function ChatDetailScreenInner() {
         const prev = useChatStore.getState().messages;
         const validMsgs = msgs.filter((m: any) => m && m.id);
         const existingIds = new Set(prev.map(m => m.id).filter(Boolean));
-        const newMsgs = validMsgs.filter((m: any) => !existingIds.has(m.id));
+        // Also dedup by content+time for local temp msgs vs server msgs
+        const existingKeys = new Set(prev.map((m: any) => {
+          const _t = _ts(m.created_at);
+          return (m.role || '') + '|' + (m.content || '').trim().slice(0, 200) + '|' + Math.floor(_t / 1000);
+        }));
+        const newMsgs = validMsgs.filter((m: any) => {
+          if (existingIds.has(m.id)) return false;
+          const _t = _ts(m.created_at);
+          const _k = (m.role || '') + '|' + (m.content || '').trim().slice(0, 200) + '|' + Math.floor(_t / 1000);
+          if (existingKeys.has(_k)) return false;
+          return true;
+        });
         if (newMsgs.length > 0) {
           setMessages([...newMsgs, ...prev]);
         }
@@ -604,7 +615,7 @@ function ChatDetailScreenInner() {
   useEffect(() => {
     navigation.setOptions({
       title: botName,
-      headerBackTitle: '',
+      headerBackTitle: '', headerBackButtonDisplayMode: 'minimal',
       headerRight: () => (
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginRight: 8 }}>
           <TouchableOpacity onPress={() => { fetchBots(); setShowBotSelector(true); }}>
@@ -691,7 +702,18 @@ function ChatDetailScreenInner() {
               // Dedup: merge server msgs with any existing local msgs (e.g., just-sent user message)
             const _existing = useChatStore.getState().messages;
             const _serverIds = new Set(msgs.map((m: any) => m.id).filter(Boolean));
-            const _localOnly = _existing.filter((m: any) => !_serverIds.has(m.id));
+            // Dedup local msgs by content+time against server msgs (local temp IDs won't match server IDs)
+            const _serverKeys = new Set(msgs.map((m: any) => {
+              const _t = _ts(m.created_at);
+              return (m.role || '') + '|' + (m.content || '').trim().slice(0, 200) + '|' + Math.floor(_t / 1000);
+            }));
+            const _localOnly = _existing.filter((m: any) => {
+              if (_serverIds.has(m.id)) return false;
+              const _t = _ts(m.created_at);
+              const _k = (m.role || '') + '|' + (m.content || '').trim().slice(0, 200) + '|' + Math.floor(_t / 1000);
+              if (_serverKeys.has(_k)) return false;
+              return true;
+            });
             const _merged = [..._localOnly, ...msgs];
             // Also dedup by content+role for same timestamp (local temp msgs vs server msgs)
             const _seen = new Set<string>();
@@ -1818,9 +1840,10 @@ function ChatDetailScreenInner() {
           onScroll={handleScroll}
           onContentSizeChange={() => {
             flatListRef.current?.scrollToEnd({ animated: false });
-            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 100);
-            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 300);
-            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 600);
+            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 80);
+            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 200);
+            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 500);
+            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 800);
           }}
           onLayout={() => {
             flatListRef.current?.scrollToEnd({ animated: false });
@@ -1975,7 +1998,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', paddingTop: Platform.OS === 'web' ? 0 : 0, paddingBottom: Platform.OS === 'web' ? 0 : Spacing.sm },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   emptyArea: { flex: 1, justifyContent: 'center' },
-  listContent: { paddingVertical: Spacing.md, paddingBottom: 400, flexGrow: 1 },
+  listContent: { paddingVertical: Spacing.md, paddingBottom: 120 },
   errorBar: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: '#fef2f2',

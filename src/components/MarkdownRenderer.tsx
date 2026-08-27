@@ -322,7 +322,7 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
           directionalLockEnabled
           nestedScrollEnabled
           key={`table-${startIdx}`}
-          style={{ marginVertical: Spacing.sm, width: '100%' }}
+          style={{ marginVertical: Spacing.sm, alignSelf: 'flex-start' }}
           contentContainerStyle={{ paddingHorizontal: 0, flexGrow: 0, alignSelf: 'flex-start' }}
         >
           <View style={{ borderWidth: 1, borderColor, borderRadius: BorderRadius.md, overflow: 'hidden', flexDirection: 'column' }}>
