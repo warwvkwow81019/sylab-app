@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, FlatList, KeyboardAvoidingView, Platform, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Alert, Dimensions, StatusBar, TextInput, Animated, ScrollView, Linking, Keyboard } from "react-native";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SafeAlert } from "../../src/utils/safeAlert";
 // expo-video dynamically imported to prevent native crash on iOS 26
 import NetInfo from '@react-native-community/netinfo';
@@ -426,6 +427,19 @@ function ChatDetailScreenInner() {
   const navigation = useNavigation();
   const router = useRouter();
   const flatListRef = useRef<FlatList>(null);
+
+  // Auto-scroll when messages array changes (new message added)
+  const messagesLength = messages.length;
+  useEffect(() => {
+    if (messagesLength > 0) {
+      requestAnimationFrame(() => {
+        flatListRef.current?.scrollToEnd({ animated: false });
+        setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 100);
+        setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 350);
+      });
+    }
+  }, [messagesLength, isStreaming]);
+
   const [showScrollBtn, setShowScrollBtn] = useState(false);
   const streamRef = useRef<{ abort: () => void } | null>(null);
   const queueTaskIdRef = useRef<string | null>(null);
@@ -523,6 +537,7 @@ function ChatDetailScreenInner() {
 
   // Keyboard height tracking for iOS input avoidance
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const insets = useSafeAreaInsets();
   useEffect(() => {
     const showSub = Keyboard.addListener('keyboardDidShow', (e) => {
       setKeyboardHeight(e.endCoordinates.height);
@@ -1699,7 +1714,7 @@ function ChatDetailScreenInner() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: isDark ? '#0f172a' : '#fff' }]}>
+    <View style={[styles.container, { backgroundColor: isDark ? '#0f172a' : '#fff', paddingTop: 0, paddingBottom: 0 }]}>
 
 
       {showSearch && (
@@ -1809,7 +1824,7 @@ function ChatDetailScreenInner() {
       )}
 
       {/* Dynamic typing indicator + input with keyboard avoidance */}
-      <View style={{ marginBottom: keyboardHeight }}>
+      <View style={{ marginBottom: keyboardHeight + (Platform.OS === 'ios' ? insets.bottom : 0) }}>
         <TypingIndicator
           statusText={activityStatus}
           visible={isStreaming}
@@ -1920,7 +1935,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', paddingTop: Platform.OS === 'web' ? 0 : 0, paddingBottom: Platform.OS === 'web' ? 0 : Spacing.sm },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   emptyArea: { flex: 1, justifyContent: 'center' },
-  listContent: { paddingVertical: Spacing.md, paddingBottom: 180 },
+  listContent: { paddingVertical: Spacing.md, paddingBottom: 200 },
   errorBar: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: '#fef2f2',
