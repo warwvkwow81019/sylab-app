@@ -552,7 +552,7 @@ function ChatDetailScreenInner() {
     try {
       const nextPage = page + 1;
       const result = await chatApi.getMessages(convId, { page_num: nextPage, page_size: 50 });
-      const msgs = (result.items || []).filter((m: any) => m && m.id && (m.role === 'user' || (m.content && m.content.trim()))).reverse();
+      const msgs = (result.items || []).filter((m: any) => m && m.id && (m.role === "user" || (m.content && m.content.trim() && !m.content.includes("generate_answer_finish")))).map((m: any) => ({...m, content: m.content?.replace(/[$TRAE_REF](.*?)/g, "")})).reverse();
       if (msgs.length === 0) {
         setHasMore(false);
       } else {
@@ -658,7 +658,7 @@ function ChatDetailScreenInner() {
         } else {
           setConversationId(id);
           const result = await chatApi.getMessages(id, { page_num: 1, page_size: 50 });
-          const msgs = (result.items || []).filter((m: any) => m && m.id && (m.role === 'user' || (m.content && m.content.trim())));
+          const msgs = (result.items || []).filter((m: any) => m && m.id && (m.role === "user" || (m.content && m.content.trim() && !m.content.includes("generate_answer_finish")))).map((m: any) => ({...m, content: m.content?.replace(/[$TRAE_REF](.*?)/g, "")}));
           msgs.reverse();
           if (!cancelled) {
             
@@ -1374,14 +1374,11 @@ function ChatDetailScreenInner() {
           // Keep "X完成" visible for at least 1.2s so user sees the transition
           const completionVisible = current.endsWith("完成") && sinceToolComplete < 1200;
           if (status === "streaming") {
-            // AI is outputting text now - always switch (content is streaming)
             setActivityStatus("正在输入回复…");
+          } else if (status === "tool_running") {
+            return;
           } else if (status === "thinking") {
-            // Don't overwrite if a tool is running or completion just showed
-            if (!hasRunningTool && !completionVisible) {
-              setActivityStatus("正在思考理解…");
-            }
-            // If completion visible, schedule a fallback update after window
+            if (hasRunningTool) return;
             if (completionVisible) {
               setTimeout(() => {
                 const s = useChatStore.getState();
@@ -1389,7 +1386,9 @@ function ChatDetailScreenInner() {
                   setActivityStatus("正在思考理解…");
                 }
               }, 1200 - sinceToolComplete);
+              return;
             }
+            setActivityStatus("正在思考理解…");
           } else if (status === "complete") {
             setActivityStatus("");
           } else {
@@ -1756,9 +1755,12 @@ function ChatDetailScreenInner() {
           extraData={videoTasks}
           onScroll={handleScroll}
           onContentSizeChange={() => {
-            if (useChatStore.getState().isStreaming) {
-              flatListRef.current?.scrollToEnd({ animated: false });
-            }
+            flatListRef.current?.scrollToEnd({ animated: false });
+            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 80);
+            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 250);
+          }}
+          onLayout={() => {
+            flatListRef.current?.scrollToEnd({ animated: false });
           }}
           scrollEventThrottle={Platform.OS === 'web' ? 0 : 100}
         />
@@ -1910,7 +1912,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', paddingTop: Platform.OS === 'web' ? 0 : 0, paddingBottom: Platform.OS === 'web' ? 0 : Spacing.sm },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   emptyArea: { flex: 1, justifyContent: 'center' },
-  listContent: { paddingVertical: Spacing.md, paddingBottom: 90 },
+  listContent: { paddingVertical: Spacing.md, paddingBottom: 140 },
   errorBar: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: '#fef2f2',

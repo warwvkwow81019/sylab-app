@@ -205,21 +205,26 @@ export function sendMessageStream(
                   try {
                     let tc: any = {};
                     try { tc = JSON.parse(dMsg.content || '{}'); } catch { tc = {}; }
-                    const name = tc.function?.name || tc.name || dMsg.meta_data?.tool_name || data.meta_data?.tool_name || 'unknown';
+                    let extObj: any = {};
+                    try { extObj = dMsg.ext ? (typeof dMsg.ext === 'string' ? JSON.parse(dMsg.ext) : dMsg.ext) : {}; } catch {}
+                    const name = tc.function?.name || tc.name || dMsg.meta_data?.tool_name || data.meta_data?.tool_name || extObj.tool_name || extObj.plugin || 'unknown';
                     const args = tc.function?.arguments || tc.arguments || '{}';
                     console.log('[SSE] Tool call detected:', name);
                     callbacks.onToolCall?.(name, args);
+                    callbacks.onStatus?.('tool_running');
                   } catch (e) { console.warn('[SSE] function_call parse error:', e); }
                 }
                 // tool_response: mark previous tool call as done
                 if (msgType === 'tool_response') {
                   try {
                     let toolName = '';
-                    // Try to extract tool name from content (tool responses often include it)
                     const content = dMsg.content || '';
+                    let extObj: any = {};
+                    try { extObj = dMsg.ext ? (typeof dMsg.ext === 'string' ? JSON.parse(dMsg.ext) : dMsg.ext) : {}; } catch {}
                     if (dMsg.meta_data?.tool_name) toolName = dMsg.meta_data.tool_name;
                     else if (data.meta_data?.tool_name) toolName = data.meta_data.tool_name;
-                    // Fallback: don't pass empty name - appendToolCall will find latest pending
+                    else if (extObj.tool_name) toolName = extObj.tool_name;
+                    else if (extObj.plugin) toolName = extObj.plugin;
                     callbacks.onToolCall?.(toolName, '', content);
                   } catch {}
                 }
