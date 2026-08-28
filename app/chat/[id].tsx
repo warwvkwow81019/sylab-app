@@ -1058,13 +1058,34 @@ function ChatDetailScreenInner() {
 
     // Build additional_messages: combine files + text into object_string for multimodal support
     const additionalMsgs: Array<{ role: string; content: string; content_type: string }> = [];
-    if (fileIds && fileIds.length > 0) {
-      // Use object_string (mix) format to send files + text together as one message
-      const contentParts: Array<{ type: string; text?: string; file_id?: string }> = [];
+    // Collect image URLs from _files (uploaded via /user-upload)
+    const imageUrls: string[] = [];
+    if (_files && _files.length > 0) {
+      for (const f of _files) {
+        const u = (f as any).url || '';
+        if (u && u.startsWith('http')) imageUrls.push(u);
+      }
+    }
+    const realFileIds: string[] = [];
+    if (fileIds) {
       for (const fid of fileIds) {
+        if (fid && fid.startsWith('http')) {
+          imageUrls.push(fid);
+        } else if (fid) {
+          realFileIds.push(fid);
+        }
+      }
+    }
+
+    if (imageUrls.length > 0 || realFileIds.length > 0) {
+      const contentParts: Array<{ type: string; text?: string; file_id?: string; file_url?: string }> = [];
+      for (const imgUrl of imageUrls) {
+        contentParts.push({ type: 'image', file_url: imgUrl });
+      }
+      for (const fid of realFileIds) {
         contentParts.push({ type: 'file', file_id: fid });
       }
-      contentParts.push({ type: 'text', text: aiContent });
+      contentParts.push({ type: 'text', text: aiContent || '请分析这张图片' });
       additionalMsgs.push({
         role: 'user',
         content: JSON.stringify(contentParts),
@@ -1469,18 +1490,24 @@ function ChatDetailScreenInner() {
             setActivityStatus("正在输入回复…");
           } else if (status === "tool_running") {
             return;
-          } else if (status === "thinking") {
+          } else if (status === "thinking" || status === "thinking_deep" || status === "thinking_long") {
             if (hasRunningTool) return;
+            const thinkingLabels: Record<string, string> = {
+              thinking: "正在思考理解…",
+              thinking_deep: "正在深度思考…",
+              thinking_long: "AI 正在努力分析中，请稍候…",
+            };
+            const label = thinkingLabels[status] || "正在思考理解…";
             if (completionVisible) {
               setTimeout(() => {
                 const s = useChatStore.getState();
                 if (!s.toolCalls.some(tc => !tc.result) && s.activityStatus.endsWith("完成")) {
-                  setActivityStatus("正在思考理解…");
+                  setActivityStatus(label);
                 }
               }, 1200 - sinceToolComplete);
               return;
             }
-            setActivityStatus("正在思考理解…");
+            setActivityStatus(label);
           } else if (status === "complete") {
             setActivityStatus("");
           } else {

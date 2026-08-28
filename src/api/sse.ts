@@ -65,17 +65,19 @@ export function sendMessageStream(
   let lastTokenUsage: TokenUsage | undefined;
   let fullAssistantContent = "";
   let idleWatchdog: ReturnType<typeof setTimeout> | null = null;
+  let thinkingTimer: ReturnType<typeof setInterval> | null = null;
+  let thinkingPhase = 0;
 
   const resetIdleWatchdog = () => {
     if (idleWatchdog) clearTimeout(idleWatchdog);
     idleWatchdog = setTimeout(() => {
       if (!aborted) {
-        console.error('[SSE] Idle timeout 45s, aborting');
+        console.error('[SSE] Idle timeout 90s, aborting');
         aborted = true;
         try { controller.abort(); } catch {}
         callbacks.onError(new Error('response timeout, retrying...'));
       }
-    }, 45000);
+    }, 90000);
   };
 
   (async () => {
@@ -126,6 +128,13 @@ export function sendMessageStream(
 
       console.log('[SSE] Stream started, reading...');
       resetIdleWatchdog();
+      thinkingPhase = 0;
+      thinkingTimer = setInterval(() => {
+        thinkingPhase++;
+        if (thinkingPhase === 1) callbacks.onStatus?.('thinking');
+        else if (thinkingPhase === 2) callbacks.onStatus?.('thinking_deep');
+        else if (thinkingPhase >= 3) callbacks.onStatus?.('thinking_long');
+      }, 12000);
 
       while (true) {
         if (aborted) break;
@@ -133,6 +142,7 @@ export function sendMessageStream(
         if (done) {
           console.log('[SSE] Stream ended, done=true');
           if (idleWatchdog) clearTimeout(idleWatchdog);
+          if (thinkingTimer) { clearInterval(thinkingTimer); thinkingTimer = null; }
           break;
         }
 
@@ -179,6 +189,7 @@ export function sendMessageStream(
                 if (isAnswerType && dMsg.content) {
                   callbacks.onDelta(dMsg.content);
                   if (dMsg.role === "assistant") fullAssistantContent += dMsg.content;
+                  if (thinkingTimer) { clearInterval(thinkingTimer); thinkingTimer = null; }
                   callbacks.onStatus?.('streaming');
                 }
                 // Reasoning deltas do NOT change status - thinking is already set at stream start.
@@ -267,6 +278,9 @@ export function sendMessageStream(
                   }
                 }
               }
+              else if (currentEvent === 'conversation.chat.created' || currentEvent === 'conversation.chat.in_progress') {
+                callbacks.onStatus?.('thinking');
+              }
               else if (currentEvent === 'conversation.chat.completed') {
                 try {
                   if (data.usage) {
@@ -309,6 +323,7 @@ export function sendMessageStream(
     abort: () => {
       aborted = true;
       if (idleWatchdog) clearTimeout(idleWatchdog);
+      if (thinkingTimer) { clearInterval(thinkingTimer); thinkingTimer = null; }
       try { controller.abort(); } catch {}
     },
   };

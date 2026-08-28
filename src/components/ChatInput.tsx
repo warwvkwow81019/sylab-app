@@ -242,7 +242,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     setAttachedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  const UPLOAD_URL = 'https://s.symsgf.xyz/v1/files/upload';
+  const UPLOAD_URL = 'https://s.symsgf.xyz/user-upload';
 
   const uploadToCoze = async (file: AttachedFile): Promise<string | null> => {
     try {
@@ -251,39 +251,51 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       if (Platform.OS !== 'web' && file.uri) {
         const uploadResp = await FileSystem.uploadAsync(UPLOAD_URL, file.uri, {
           httpMethod: 'POST',
-          uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-          fieldName: 'file',
-          mimeType: file.type || 'application/octet-stream',
-          headers: { 'Authorization': `Bearer ${patToken || ''}` },
-          parameters: { purpose: 'assistants' },
+          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+          headers: {
+            'Content-Type': file.type || 'application/octet-stream',
+            'X-File-Name': encodeURIComponent(file.name || 'upload.bin'),
+          },
         });
         console.log('[ChatInput] native upload status:', uploadResp.status, 'name:', file.name);
         if (uploadResp.status >= 200 && uploadResp.status < 300) {
           const result = JSON.parse(uploadResp.body);
+          let fileUrl = '';
+          if (result?.code === 0 && result?.data) {
+            try {
+              const d = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
+              fileUrl = d?.url || '';
+            } catch {}
+          }
           const fileId = result?.data?.id || result?.id || null;
-          console.log('[ChatInput] Coze upload OK (native), file_id:', fileId);
-          return fileId;
+          console.log('[ChatInput] Upload OK (native), url:', fileUrl, 'file_id:', fileId);
+          return fileId || fileUrl || null;
         }
         console.error('[ChatInput] Coze native upload failed:', uploadResp.status, (uploadResp.body || '').substring(0, 300));
         return null;
       }
 
-      // Web: FormData with Blob
-      const formData = new FormData();
       const blob = file.blob || new Blob([]);
-      const fileObj = new File([blob], file.name, { type: file.type || 'application/octet-stream' });
-      formData.append('file', fileObj);
-      formData.append('purpose', 'assistants');
       const resp = await fetch(UPLOAD_URL, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${patToken || ''}` },
-        body: formData,
+        headers: {
+          'Content-Type': file.type || 'application/octet-stream',
+          'X-File-Name': encodeURIComponent(file.name || 'upload.bin'),
+        },
+        body: blob,
       });
       if (resp.ok) {
         const result = await resp.json();
+        let fileUrl = '';
+        if (result?.code === 0 && result?.data) {
+          try {
+            const d = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
+            fileUrl = d?.url || '';
+          } catch {}
+        }
         const fileId = result.data?.id || result.id || null;
-        console.log('[ChatInput] Coze upload OK (web), file_id:', fileId);
-        return fileId;
+        console.log('[ChatInput] Upload OK (web), url:', fileUrl, 'file_id:', fileId);
+        return fileId || fileUrl || null;
       }
       const errText = await resp.text().catch(() => '');
       console.error('[ChatInput] Coze upload failed:', resp.status, errText);
