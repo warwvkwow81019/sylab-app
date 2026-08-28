@@ -318,7 +318,8 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
           </View>
         </View>
       ) : (
-        <ScrollView horizontal showsHorizontalScrollIndicator directionalLockEnabled alwaysBounceHorizontal={false} style={{ width: TABLE_SCROLL_W, flexGrow: 0, flexShrink: 0, alignSelf: 'flex-start', marginVertical: Spacing.sm }} contentContainerStyle={{ flexGrow: 0, flexShrink: 0 }}>
+        <View style={{ width: TABLE_SCROLL_W, alignSelf: 'flex-start', marginVertical: Spacing.sm }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator directionalLockEnabled alwaysBounceHorizontal={false} alwaysBounceVertical={false} contentContainerStyle={{ flexGrow: 0, flexShrink: 0 }}>
           <View style={{ borderWidth: 1, borderColor, borderRadius: BorderRadius.md, overflow: 'hidden', flexDirection: 'column' }}>
             <View style={{ flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 8, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: borderColor }}>
               {headers.map((cell, ci) => (
@@ -338,6 +339,7 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
             ))}
           </View>
         </ScrollView>
+        </View>
       )
     ),
     consumed,

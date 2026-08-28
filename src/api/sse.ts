@@ -64,6 +64,19 @@ export function sendMessageStream(
   let lastConversationId = '';
   let lastTokenUsage: TokenUsage | undefined;
   let fullAssistantContent = "";
+  let idleWatchdog: ReturnType<typeof setTimeout> | null = null;
+
+  const resetIdleWatchdog = () => {
+    if (idleWatchdog) clearTimeout(idleWatchdog);
+    idleWatchdog = setTimeout(() => {
+      if (!aborted) {
+        console.error('[SSE] Idle timeout 45s, aborting');
+        aborted = true;
+        try { controller.abort(); } catch {}
+        callbacks.onError(new Error('response timeout, retrying...'));
+      }
+    }, 45000);
+  };
 
   (async () => {
     try {
@@ -112,16 +125,19 @@ export function sendMessageStream(
       let currentEvent = '';
 
       console.log('[SSE] Stream started, reading...');
+      resetIdleWatchdog();
 
       while (true) {
         if (aborted) break;
         const { done, value } = await reader.read();
         if (done) {
           console.log('[SSE] Stream ended, done=true');
+          if (idleWatchdog) clearTimeout(idleWatchdog);
           break;
         }
 
         buffer += decoder.decode(value, { stream: true });
+        resetIdleWatchdog();
         const lines = buffer.split('\n');
         buffer = lines.pop() || '';
 
@@ -292,7 +308,8 @@ export function sendMessageStream(
   return {
     abort: () => {
       aborted = true;
-      controller.abort();
+      if (idleWatchdog) clearTimeout(idleWatchdog);
+      try { controller.abort(); } catch {}
     },
   };
 }
