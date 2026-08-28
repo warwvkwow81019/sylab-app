@@ -427,6 +427,7 @@ function ChatDetailScreenInner() {
   const navigation = useNavigation();
   const router = useRouter();
   const flatListRef = useRef<FlatList>(null);
+  const isNearBottomRef = useRef(true);
 
   const { user, patToken, isRestoring } = useAuthStore();
   const userName = (() => {
@@ -443,17 +444,26 @@ function ChatDetailScreenInner() {
     setActivityStatus,
   } = useChatStore();
 
-  // Auto-scroll when messages array changes (new message added)
+  // Auto-scroll when messages array changes (only if user is near bottom)
   const messagesLength = messages.length;
   useEffect(() => {
-    if (messagesLength > 0) {
+    if (messagesLength > 0 && isNearBottomRef.current) {
       requestAnimationFrame(() => {
         flatListRef.current?.scrollToEnd({ animated: false });
-        setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 100);
-        setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 350);
+        setTimeout(() => { if (isNearBottomRef.current) flatListRef.current?.scrollToEnd({ animated: false }); }, 100);
       });
     }
-  }, [messagesLength, isStreaming]);
+  }, [messagesLength]);
+
+  // Auto-scroll during streaming (only if near bottom)
+  useEffect(() => {
+    if (isStreaming && isNearBottomRef.current) {
+      const timer = setTimeout(() => {
+        if (isNearBottomRef.current) flatListRef.current?.scrollToEnd({ animated: false });
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [streamingContent, isNearBottomRef.current]);
 
   const [showScrollBtn, setShowScrollBtn] = useState(false);
   const streamRef = useRef<{ abort: () => void } | null>(null);
@@ -463,12 +473,14 @@ function ChatDetailScreenInner() {
   const { registerTask, clearTask, activeTaskRef, getActiveTask } = useChatQueue(id as string);
 
   const scrollToBottom = () => {
+    isNearBottomRef.current = true;
     flatListRef.current?.scrollToEnd({ animated: true });
   };
 
   const handleScroll = (event: any) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
     const distanceFromBottom = contentSize.height - contentOffset.y - layoutMeasurement.height;
+    isNearBottomRef.current = distanceFromBottom < 150;
     const shouldShow = distanceFromBottom > 200;
     setShowScrollBtn(prev => prev !== shouldShow ? shouldShow : prev);
   };
@@ -1879,14 +1891,17 @@ function ChatDetailScreenInner() {
           extraData={videoTasks}
           onScroll={handleScroll}
           onContentSizeChange={() => {
-            flatListRef.current?.scrollToEnd({ animated: false });
-            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 80);
-            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 200);
-            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 500);
-            setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 800);
+            if (isNearBottomRef.current) {
+              flatListRef.current?.scrollToEnd({ animated: false });
+            }
           }}
           onLayout={() => {
-            flatListRef.current?.scrollToEnd({ animated: false });
+            if (isNearBottomRef.current) {
+              flatListRef.current?.scrollToEnd({ animated: false });
+            }
+          }}
+          onScrollBeginDrag={() => {
+            // User started scrolling manually - don't force scroll until they go back to bottom
           }}
           scrollEventThrottle={Platform.OS === 'web' ? 0 : 100}
         />

@@ -20,7 +20,6 @@ interface MarkdownRendererProps {
   isDark?: boolean;
 }
 
-
 const webWrapCSS = Platform.OS === 'web' ? `
   .md-bubble p, .md-bubble li, .md-bubble td, .md-bubble th, .md-bubble h1, .md-bubble h2, .md-bubble h3, .md-bubble blockquote { word-wrap: break-word; overflow-wrap: break-word; white-space: pre-wrap; }
   .md-bubble p a, .md-bubble p code { word-break: break-all; }
@@ -28,11 +27,6 @@ const webWrapCSS = Platform.OS === 'web' ? `
   .md-table-scroll::-webkit-scrollbar { height: 4px; }
   .md-table-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
 ` : '';
-
-/**
- * 简易 Markdown 渲染器
- * 支持：标题、粗体、斜体、代码块、行内代码、列表、引用、链接
- */
 
 // Error boundary for video player to prevent native crashes
 class VideoErrorBoundary extends React.Component<
@@ -111,76 +105,23 @@ function NativeVideoInline({ src, useVideoPlayer, VideoView }: { src: string; us
   );
 }
 
+// ===== Module-level helper functions (moved outside component) =====
 
-export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, isDark }) => {
-  // Decode URL-encoded content from AI
-  const decodedContent = (() => {
-    try { return decodeURIComponent(content || ''); } catch { return content || ''; }
-  })();
-  const lines = decodedContent.split('\n');
-  const elements: React.ReactNode[] = [];
-  let inCodeBlock = false;
-  let codeContent = '';
-  let codeLang = '';
-  let inList = false;
-
-  const textColor = isDark ? Colors.textInverse : Colors.text;
-  const codeBg = isDark ? '#1e1e1e' : '#f5f5f5';
-
-  const renderInline = (text: string, key: string): React.ReactNode => {
-    // 行内代码
-    const parts = text.split(/(`[^`]+`)/g);
-    return parts.map((part, i) => {
-      if (part.startsWith('`') && part.endsWith('`')) {
-        return (
-          <Text key={`${key}-code-${i}`} style={[styles.inlineCode, { backgroundColor: codeBg, color: isDark ? '#d4d4d4' : '#334155' }]}>
-            {part.slice(1, -1)}
-          </Text>
-        );
-      }
-      // 粗体
-      let result: React.ReactNode = part;
-      const boldParts = part.split(/(\*\*[^*]+\*\*)/g);
-      if (boldParts.length > 1) {
-        result = boldParts.map((bp, j) => {
-          if (bp.startsWith('**') && bp.endsWith('**')) {
-            return <Text key={`${key}-b-${j}`} style={{ fontWeight: '700' }}>{bp.slice(2, -2)}</Text>;
-          }
-          // 斜体
-          const italicParts = bp.split(/(\*[^*]+\*)/g);
-          if (italicParts.length > 1) {
-            return italicParts.map((ip, k) => {
-              if (ip.startsWith('*') && ip.endsWith('*')) {
-                return <Text key={`${key}-i-${j}-${k}`} style={{ fontStyle: 'italic' }}>{ip.slice(1, -1)}</Text>;
-              }
-              return <Text key={`${key}-t-${j}-${k}`}>{ip}</Text>;
-            });
-          }
-          return <Text key={`${key}-t-${j}`}>{bp}</Text>;
-        });
-      }
-      return <React.Fragment key={`${key}-${i}`}>{result}</React.Fragment>;
-    });
-  };
-
-  
-// Parse <img src="..."> tags and render as Image
-const renderImgTag = (tag: string, key: string): React.ReactNode => {
+function renderImgTag(tag: string, key: string, isDark?: boolean): React.ReactNode {
   const srcMatch = tag.match(/src=["']([^"']+)["']/);
   if (!srcMatch) return null;
   const src = srcMatch[1];
   const altMatch = tag.match(/alt=["']([^"']+)["']/);
   const alt = altMatch ? altMatch[1] : '';
   return (
-    <View key={key} style={[styles.imgContainer]}>
+    <View key={key} style={styles.imgContainer}>
       <Image source={{ uri: normalizeImageUrl(src) }} style={styles.img} resizeMode="cover" />
       {alt ? <Text style={{ fontSize: 11, color: '#94a3b8', marginTop: 4, textAlign: 'center' }}>{alt}</Text> : null}
     </View>
   );
-};
+}
 
-// Parse <video ...> or <source ...> tags and render as video player
-const renderVideoTag = (tag: string, key: string): React.ReactNode => {
+function renderVideoTag(tag: string, key: string): React.ReactNode {
   let src = '';
   const srcMatch = tag.match(/<video[^>]*src=["']([^"']+)["']/);
   if (srcMatch) {
@@ -191,33 +132,19 @@ const renderVideoTag = (tag: string, key: string): React.ReactNode => {
   }
   if (!src) return null;
   return (
-    <View key={key} style={[styles.videoContainer]}>
-      <TouchableOpacity style={[styles.videoLink]} activeOpacity={0.7} onPress={() => Linking.openURL(src)}>
+    <View key={key} style={styles.videoContainer}>
+      <TouchableOpacity style={styles.videoLink} activeOpacity={0.7} onPress={() => Linking.openURL(src)}>
         <Text style={{ color: '#fff', fontSize: FontSize.sm }}>▶</Text>
-        <Text style={[styles.videoLinkText]}>点击播放视频</Text>
+        <Text style={styles.videoLinkText}>点击播放视频</Text>
         <Text style={{ color: '#94a3b8', fontSize: 11, flex: 1, marginLeft: 8 }} numberOfLines={1}>{src.substring(0, 60)}...</Text>
       </TouchableOpacity>
     </View>
   );
-};
+}
 
-// Replace raw HTML img/video tags in text with placeholders
-const extractHtmlTags = (text: string): React.ReactNode[] => {
+function extractHtmlTags(text: string): React.ReactNode[] {
   const parts: React.ReactNode[] = [];
-  // Handle markdown images ![alt](url) by converting to <img> tags
   const mdImgConverted = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />');
-  const imgRegex = /<img[^>]+>/gi;
-  const videoRegex = /<video[^>]*>[\s\S]*?<\/video>|<video[^>]+>/gi;
-  let lastIndex = 0;
-  let keyIdx = 0;
-  // Process images first
-  let remaining = mdImgConverted;
-  const segments: { type: string; content: string; start: number; end: number }[] = [];
-  let tmp = mdImgConverted;
-  let offset = 0;
-  imgRegex.lastIndex = 0;
-  videoRegex.lastIndex = 0;
-  // Combine all matches
   const allMatches: { type: string; content: string; index: number }[] = [];
   let m;
   const imgRe = /<img[^>]+>/gi;
@@ -226,29 +153,23 @@ const extractHtmlTags = (text: string): React.ReactNode[] => {
   while ((m = vidRe.exec(mdImgConverted)) !== null) { allMatches.push({ type: 'video', content: m[0], index: m.index }); }
   allMatches.sort((a, b) => a.index - b.index);
   let pos = 0;
+  let keyIdx = 0;
   for (const match of allMatches) {
     if (match.index > pos) {
-      parts.push(mdImgConverted.slice(pos, match.index) as any);  // raw string for caller to format
+      parts.push(mdImgConverted.slice(pos, match.index) as any);
     }
     if (match.type === 'img') parts.push(renderImgTag(match.content, `img-${keyIdx++}`));
     else parts.push(renderVideoTag(match.content, `vid-${keyIdx++}`));
     pos = match.index + match.content.length;
   }
-  if (pos < text.length) parts.push(text.slice(pos) as any);  // raw string for caller to format
-  return parts.length > 0 ? parts : null;
-};
+  if (pos < mdImgConverted.length) parts.push(mdImgConverted.slice(pos) as any);
+  return parts.length > 0 ? parts : [];
+}
 
-
-/**
- * Check if a line is a table separator row
- */
 const isTableSeparator = (line: string): boolean => {
   return /^\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(line.trim());
 };
 
-/**
- * Parse a table separator to extract column alignments
- */
 const parseAlignments = (line: string): ('left' | 'center' | 'right')[] => {
   const cells = line.trim().replace(/^\||\|$/g, '').split('|');
   return cells.map(cell => {
@@ -259,9 +180,6 @@ const parseAlignments = (line: string): ('left' | 'center' | 'right')[] => {
   });
 };
 
-/**
- * Parse a table row into cells
- */
 const parseTableCells = (line: string): string[] => {
   let trimmed = line.trim();
   if (trimmed.startsWith('|')) trimmed = trimmed.slice(1);
@@ -269,18 +187,21 @@ const parseTableCells = (line: string): string[] => {
   return trimmed.split('|').map(cell => cell.trim());
 };
 
-/**
- * Render a Markdown table from consecutive lines
- */
+interface RenderCtx {
+  isDark: boolean;
+  textColor: string;
+  codeBg: string;
+  renderInline: (text: string, key: string) => React.ReactNode;
+}
 
-const renderTable = (headerLine: string, lines: string[], startIdx: number, isDark: boolean): { element: React.ReactNode; consumed: number } => {
+function renderTable(headerLine: string, lines: string[], startIdx: number, ctx: RenderCtx): { element: React.ReactNode; consumed: number } {
   if (startIdx + 1 >= lines.length) return { element: null, consumed: 0 };
   const sepLine = lines[startIdx + 1];
   if (!isTableSeparator(sepLine)) return { element: null, consumed: 0 };
 
   const alignments = parseAlignments(sepLine);
   const headers = parseTableCells(headerLine);
-  const textColor = isDark ? Colors.textInverse : Colors.text;
+  const { isDark, textColor, renderInline } = ctx;
   const headerBg = isDark ? '#2d3748' : '#f7f7f5';
   const borderColor = isDark ? '#4a5568' : '#e2e8f0';
 
@@ -293,11 +214,10 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
     consumed++;
   }
 
-
   return {
     element: (
       Platform.OS === 'web' ? (
-        <View key={`table-${startIdx}`} className="md-table-scroll" style={{ marginVertical: Spacing.sm }}>
+        <View key={`table-${startIdx}`} className="md-table-scroll" style={{ marginVertical: Spacing.sm, maxWidth: '100%' }}>
           <View style={{ borderWidth: 1, borderColor, borderRadius: BorderRadius.md, overflow: 'hidden', flexDirection: 'column' }}>
             <View style={{ flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 8, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: borderColor }}>
               {headers.map((cell, ci) => (
@@ -318,38 +238,92 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
           </View>
         </View>
       ) : (
-        <View style={{ width: TABLE_SCROLL_W, alignSelf: 'flex-start', marginVertical: Spacing.sm }}>
-        <ScrollView horizontal showsHorizontalScrollIndicator directionalLockEnabled alwaysBounceHorizontal={false} alwaysBounceVertical={false} contentContainerStyle={{ flexGrow: 0, flexShrink: 0, alignItems: 'flex-start' }}>
-          <View style={{ borderWidth: 1, borderColor, borderRadius: BorderRadius.md, overflow: 'hidden', flexDirection: 'column', minWidth: headers.length * 200 + 16, flexShrink: 0 }}>
-            <View style={{ flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 8, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: borderColor }}>
-              {headers.map((cell, ci) => (
-                <View key={`th-${ci}`} style={{ minWidth: 200, maxWidth: 360, paddingHorizontal: 12, flexShrink: 0, flexGrow: 0 }}>
-                  <Text style={{ fontSize: FontSize.sm, fontWeight: '700', color: textColor, flexWrap: 'wrap', width: '100%' }}>{renderInline(cell, `th-${ci}`)}</Text>
-                </View>
-              ))}
-            </View>
-            {dataRows.map((row, ri) => (
-              <View key={`tr-${ri}`} style={{ flexDirection: 'row', paddingVertical: 6, paddingHorizontal: 8, borderBottomWidth: ri < dataRows.length - 1 ? 0.5 : 0, borderBottomColor: borderColor }}>
-                {row.map((cell, ci) => (
-                  <View key={`td-${ri}-${ci}`} style={{ minWidth: 200, maxWidth: 360, paddingHorizontal: 12, flexShrink: 0, flexGrow: 0 }}>
-                    <Text style={{ fontSize: FontSize.sm, color: textColor, flexWrap: 'wrap', width: '100%' }}>{renderInline(cell, `td-${ri}-${ci}`)}</Text>
+        <View key={`table-${startIdx}`} style={{ width: TABLE_SCROLL_W, alignSelf: 'flex-start', marginVertical: Spacing.sm, flexShrink: 0 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator directionalLockEnabled alwaysBounceHorizontal={false} alwaysBounceVertical={false} contentContainerStyle={{ flexGrow: 0, flexShrink: 0, alignItems: 'flex-start' }}>
+            <View style={{ borderWidth: 1, borderColor, borderRadius: BorderRadius.md, overflow: 'hidden', flexDirection: 'column', minWidth: headers.length * 200 + 16, flexShrink: 0 }}>
+              <View style={{ flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 8, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: borderColor }}>
+                {headers.map((cell, ci) => (
+                  <View key={`th-${ci}`} style={{ minWidth: 200, maxWidth: 360, paddingHorizontal: 12, flexShrink: 0, flexGrow: 0 }}>
+                    <Text style={{ fontSize: FontSize.sm, fontWeight: '700', color: textColor, flexWrap: 'wrap', width: '100%' }}>{renderInline(cell, `th-${ci}`)}</Text>
                   </View>
                 ))}
               </View>
-            ))}
-          </View>
-        </ScrollView>
+              {dataRows.map((row, ri) => (
+                <View key={`tr-${ri}`} style={{ flexDirection: 'row', paddingVertical: 6, paddingHorizontal: 8, borderBottomWidth: ri < dataRows.length - 1 ? 0.5 : 0, borderBottomColor: borderColor }}>
+                  {row.map((cell, ci) => (
+                    <View key={`td-${ri}-${ci}`} style={{ minWidth: 200, maxWidth: 360, paddingHorizontal: 12, flexShrink: 0, flexGrow: 0 }}>
+                      <Text style={{ fontSize: FontSize.sm, color: textColor, flexWrap: 'wrap', width: '100%' }}>{renderInline(cell, `td-${ri}-${ci}`)}</Text>
+                    </View>
+                  ))}
+                </View>
+              ))}
+            </View>
+          </ScrollView>
         </View>
       )
     ),
     consumed,
   };
-};
+}
+
+// ===== Main component =====
+
+export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, isDark }) => {
+  const decodedContent = (() => {
+    try { return decodeURIComponent(content || ''); } catch { return content || ''; }
+  })();
+
+  // Trim trailing whitespace/newlines to prevent bubble from being too tall
+  const trimmedContent = decodedContent.replace(/\s+$/, '');
+  const lines = trimmedContent.split('\n');
+  const elements: React.ReactNode[] = [];
+  let inCodeBlock = false;
+  let codeContent = '';
+  let codeLang = '';
+  let inList = false;
+
+  const textColor = isDark ? Colors.textInverse : Colors.text;
+  const codeBg = isDark ? '#1e1e1e' : '#f5f5f5';
+
+  const renderInline = (text: string, key: string): React.ReactNode => {
+    const parts = text.split(/(`[^`]+`)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('`') && part.endsWith('`')) {
+        return (
+          <Text key={`${key}-code-${i}`} style={[styles.inlineCode, { backgroundColor: codeBg, color: isDark ? '#d4d4d4' : '#334155' }]}>
+            {part.slice(1, -1)}
+          </Text>
+        );
+      }
+      let result: React.ReactNode = part;
+      const boldParts = part.split(/(\*\*[^*]+\*\*)/g);
+      if (boldParts.length > 1) {
+        result = boldParts.map((bp, j) => {
+          if (bp.startsWith('**') && bp.endsWith('**')) {
+            return <Text key={`${key}-b-${j}`} style={{ fontWeight: '700' }}>{bp.slice(2, -2)}</Text>;
+          }
+          const italicParts = bp.split(/(\*[^*]+\*)/g);
+          if (italicParts.length > 1) {
+            return italicParts.map((ip, k) => {
+              if (ip.startsWith('*') && ip.endsWith('*')) {
+                return <Text key={`${key}-i-${j}-${k}`} style={{ fontStyle: 'italic' }}>{ip.slice(1, -1)}</Text>;
+              }
+              return <Text key={`${key}-t-${j}-${k}`}>{ip}</Text>;
+            });
+          }
+          return <Text key={`${key}-t-${j}`}>{bp}</Text>;
+        });
+      }
+      return <React.Fragment key={`${key}-${i}`}>{result}</React.Fragment>;
+    });
+  };
+
+  const ctx: RenderCtx = { isDark: !!isDark, textColor, codeBg, renderInline };
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
-    // 代码块
+    // Code block
     if (line.startsWith('```')) {
       if (!inCodeBlock) {
         inCodeBlock = true;
@@ -373,9 +347,9 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
       continue;
     }
 
-    // 表格检测
+    // Table
     if (line.trim().includes('|') && i + 1 < lines.length && isTableSeparator(lines[i + 1])) {
-      const tableResult = renderTable(line, lines, i, !!isDark);
+      const tableResult = renderTable(line, lines, i, ctx);
       if (tableResult.element) {
         elements.push(tableResult.element);
         i += tableResult.consumed - 1;
@@ -383,13 +357,14 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
       }
     }
 
-    // 空行
+    // Empty line - use small spacing, don't add giant gaps
     if (line.trim() === '') {
-      elements.push(<View key={`sp-${i}`} style={{ height: 2 }} />);
+      // Only add a small spacer if previous element wasn't already a spacer
+      elements.push(<View key={`sp-${i}`} style={{ height: 4 }} />);
       continue;
     }
 
-    // 标题
+    // Headings
     if (line.startsWith('### ')) {
       elements.push(<Text key={`h3-${i}`} style={[styles.h3, { color: textColor }]}>{renderInline(line.slice(4), `h3-${i}`)}</Text>);
     } else if (line.startsWith('## ')) {
@@ -397,7 +372,7 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
     } else if (line.startsWith('# ')) {
       elements.push(<Text key={`h1-${i}`} style={[styles.h1, { color: textColor }]}>{renderInline(line.slice(2), `h1-${i}`)}</Text>);
     }
-    // 引用
+    // Blockquote
     else if (line.startsWith('> ')) {
       elements.push(
         <View key={`q-${i}`} style={[styles.quote, { borderLeftColor: Colors.primary }]}>
@@ -405,17 +380,17 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
         </View>
       );
     }
-    // 无序列表
+    // Unordered list
     else if (line.startsWith('- ') || line.startsWith('* ')) {
       if (!inList) { inList = true; }
       elements.push(
         <View key={`li-${i}`} style={styles.listItem}>
-          <Text style={{ color: textColor, fontSize: FontSize.md, width: 16 }}></Text>
+          <Text style={{ color: textColor, fontSize: FontSize.md, width: 16 }}>•</Text>
           <Text style={{ color: textColor, fontSize: FontSize.md, flex: 1 }}>{renderInline(line.slice(2), `li-${i}`)}</Text>
         </View>
       );
     }
-    // 有序列表
+    // Ordered list
     else if (/^\d+\.\s/.test(line)) {
       const match = line.match(/^(\d+)\.\s(.*)$/);
       if (match) {
@@ -427,52 +402,45 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
         );
       }
     }
-    // Markdown 图片 ![alt](url)
+    // Markdown image
     else if (/^!\[([^\]]*)\]\(([^)]+)\)/i.test(line.trim())) {
       const mdImgMatch = line.trim().match(/^!\[([^\]]*)\]\(([^)]+)\)/);
       if (mdImgMatch) {
         const alt = mdImgMatch[1] || '';
         const src = mdImgMatch[2];
         elements.push(
-          <View key={`md-img-${i}`} style={[styles.imgContainer]}>
+          <View key={`md-img-${i}`} style={styles.imgContainer}>
             <Image source={{ uri: normalizeImageUrl(src) }} style={styles.img} resizeMode="cover" />
             {alt ? <Text style={{ fontSize: 11, color: '#94a3b8', marginTop: 4, textAlign: 'center' }}>{alt}</Text> : null}
           </View>
         );
       }
     }
-    // 视频URL检测
+    // Video URL
     else if (/^https?:\/\/\S+\.(mp4|webm|mov)(\?\S*)?$/i.test(line.trim())) {
       elements.push(<VideoPlayerInline key={`vid-url-${i}`} src={line.trim()} videoKey={`vid-url-${i}`} />);
     }
-    // 普通文本
+    // Normal text
     else {
       inList = false;
-      // Check for standalone img/video tags
       if (/^<img[^>]+>/i.test(line.trim()) || /^&lt;img[^&]+&gt;/i.test(line.trim()) || /^%3Cimg[^%]+%3E/i.test(line.trim())) {
-        // Collect multi-line img tags
         let imgLine = line.trim();
         while (!imgLine.includes('>') && !imgLine.includes('%3E') && i + 1 < lines.length) {
           i++;
           imgLine += ' ' + lines[i].trim();
         }
-        elements.push(renderImgTag(imgLine, `img-line-${i}`));
+        elements.push(renderImgTag(imgLine, `img-line-${i}`, isDark));
       } else if (/<video[^>]*>[\s\S]*?<\/video>|<video[^>]+>/i.test(line.trim())) {
         elements.push(renderVideoTag(line.trim(), `vid-line-${i}`));
       } else {
-        // Check inline img/video tags within text
         const inlineParts = extractHtmlTags(line);
-        if (inlineParts) {
-          // Use View wrapper so Image/View children render correctly on Web
-          // (Image inside <Text> renders as <div> inside <span> = broken layout)
+        if (inlineParts && inlineParts.length > 0) {
           elements.push(
             <View key={`p-${i}`} style={{ marginBottom: Spacing.xs }}>
               {inlineParts.map((part, pIdx) => {
-                // Raw string → apply inline formatting (bold/italic/code)
                 if (typeof part === 'string') {
                   return <Text key={`pt-${pIdx}`} style={[styles.paragraph, { color: textColor }]}>{renderInline(part, `ip-${i}-${pIdx}`)}</Text>;
                 }
-                // React element (View with Image) → render directly
                 return <React.Fragment key={`pv-${pIdx}`}>{part}</React.Fragment>;
               })}
             </View>
@@ -493,7 +461,7 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
 };
 
 const styles = StyleSheet.create({
-  container: { paddingVertical: Spacing.xs },
+  container: { paddingVertical: Spacing.xs, flexShrink: 1 },
   imgContainer: { marginVertical: Spacing.sm, borderRadius: BorderRadius.md, overflow: 'hidden' },
   img: { width: '100%', height: 220, borderRadius: BorderRadius.md, backgroundColor: '#f0f0f0' },
   videoContainer: { marginVertical: Spacing.sm, borderRadius: BorderRadius.md, overflow: 'hidden', backgroundColor: '#000' },
@@ -512,4 +480,3 @@ const styles = StyleSheet.create({
   quoteText: { fontSize: FontSize.md, fontStyle: 'italic' },
   listItem: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: Spacing.xs },
 });
-
