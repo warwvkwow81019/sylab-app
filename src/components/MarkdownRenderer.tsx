@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Linking, Platform } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Linking, Platform, Dimensions } from 'react-native';
 // expo-video dynamically imported to prevent native crash on iOS 26
 import { Colors, Spacing, BorderRadius, FontSize } from '../constants/theme';
+
+// Fixed pixel width for horizontal table scroll (avoids flexbox circular dependency)
+const TABLE_SCROLL_W = Math.max(200, (Dimensions.get('window').width - 32) * 0.96 - 24);
 
 // Convert HTTP server URLs to HTTPS tunnel URLs to bypass iOS ATS
 function normalizeImageUrl(url: string): string {
@@ -269,37 +272,6 @@ const parseTableCells = (line: string): string[] => {
 /**
  * Render a Markdown table from consecutive lines
  */
-// TableWidthBoundary: measures available width via onLayout, then renders a
-// horizontal ScrollView with that exact pixel width. This gives the ScrollView
-// a bounded width so horizontal scrolling works, while flexGrow:0/flexShrink:0
-// prevents it from vertically expanding to fill parent.
-const TableWidthBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [bw, setBw] = useState(0);
-  return (
-    <View
-      style={{ marginVertical: Spacing.sm }}
-      onLayout={(e) => {
-        const w = e.nativeEvent.layout.width;
-        if (w > 0 && Math.abs(w - bw) > 1) setBw(w);
-      }}
-    >
-      {bw > 0 ? (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator
-          directionalLockEnabled
-          alwaysBounceHorizontal={false}
-          style={{ width: bw, flexGrow: 0, flexShrink: 0 }}
-          contentContainerStyle={{ flexGrow: 0, flexShrink: 0 }}
-        >
-          {children}
-        </ScrollView>
-      ) : (
-        <View style={{ opacity: 0 }}>{children}</View>
-      )}
-    </View>
-  );
-};
 
 const renderTable = (headerLine: string, lines: string[], startIdx: number, isDark: boolean): { element: React.ReactNode; consumed: number } => {
   if (startIdx + 1 >= lines.length) return { element: null, consumed: 0 };
@@ -346,7 +318,7 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
           </View>
         </View>
       ) : (
-        <TableWidthBoundary key={`table-${startIdx}`}>
+        <ScrollView horizontal showsHorizontalScrollIndicator directionalLockEnabled alwaysBounceHorizontal={false} style={{ width: TABLE_SCROLL_W, flexGrow: 0, flexShrink: 0, alignSelf: 'flex-start', marginVertical: Spacing.sm }} contentContainerStyle={{ flexGrow: 0, flexShrink: 0 }}>
           <View style={{ borderWidth: 1, borderColor, borderRadius: BorderRadius.md, overflow: 'hidden', flexDirection: 'column' }}>
             <View style={{ flexDirection: 'row', paddingVertical: 8, paddingHorizontal: 8, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: borderColor }}>
               {headers.map((cell, ci) => (
@@ -365,7 +337,7 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
               </View>
             ))}
           </View>
-        </TableWidthBoundary>
+        </ScrollView>
       )
     ),
     consumed,
