@@ -1,1 +1,610 @@
-aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlLCB1c2VSZWYsIHVzZUVmZmVjdCB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0ICogYXMgRG9jdW1lbnRQaWNrZXIgZnJvbSAnZXhwby1kb2N1bWVudC1waWNrZXInOwppbXBvcnQgKiBhcyBJbWFnZVBpY2tlciBmcm9tICdleHBvLWltYWdlLXBpY2tlcic7CmltcG9ydCAqIGFzIEZpbGVTeXN0ZW0gZnJvbSAnZXhwby1maWxlLXN5c3RlbSc7CmltcG9ydCB7IFZpZXcsIFRleHRJbnB1dCwgVG91Y2hhYmxlT3BhY2l0eSwgVGV4dCwgU3R5bGVTaGVldCwgUGxhdGZvcm0sIEFsZXJ0LCBBY3Rpdml0eUluZGljYXRvciwgTW9kYWwsIEZsYXRMaXN0IH0gZnJvbSAncmVhY3QtbmF0aXZlJzsKaW1wb3J0IHsgQ29sb3JzLCBTcGFjaW5nLCBCb3JkZXJSYWRpdXMsIEZvbnRTaXplIH0gZnJvbSAnLi4vY29uc3RhbnRzL3RoZW1lJzsKaW1wb3J0IHsgSW9uaWNvbnMgfSBmcm9tICdAZXhwby92ZWN0b3ItaWNvbnMnOwoKLy8gTW9kdWxlLWxldmVsIHN0b3JhZ2UgZm9yIHBlbmRpbmcgZmlsZSBibG9icyB3aGVuIG5vIGNvbnZlcnNhdGlvbklkIGV4aXN0cyB5ZXQKbGV0IF9wZW5kaW5nRmlsZUJsb2JzOiBBcnJheTx7YmxvYjogQmxvYiwgbmFtZTogc3RyaW5nLCB0eXBlOiBzdHJpbmd9PiA9IFtdOwpleHBvcnQgZnVuY3Rpb24gZ2V0UGVuZGluZ0ZpbGVzKCkgeyByZXR1cm4gX3BlbmRpbmdGaWxlQmxvYnM7IH0KZXhwb3J0IGZ1bmN0aW9uIGNsZWFyUGVuZGluZ0ZpbGVzKCkgeyBfcGVuZGluZ0ZpbGVCbG9icyA9IFtdOyB9CgppbnRlcmZhY2UgQXR0YWNoZWRGaWxlIHsKICBuYW1lOiBzdHJpbmc7CiAgc2l6ZTogbnVtYmVyOwogIHR5cGU6IHN0cmluZzsKICBibG9iPzogQmxvYjsKICB1cmk/OiBzdHJpbmc7Cn0KCmludGVyZmFjZSBRdW90ZWRNZXNzYWdlIHsKICByb2xlOiBzdHJpbmc7CiAgY29udGVudDogc3RyaW5nOwp9CgppbnRlcmZhY2UgQ2hhdElucHV0UHJvcHMgewogIG9uU2VuZDogKHRleHQ6IHN0cmluZywgZmlsZXM/OiBBdHRhY2hlZEZpbGVbXSwgZmlsZUlkcz86IHN0cmluZ1tdKSA9PiB2b2lkOwogIG9uU3RvcD86ICgpID0+IHZvaWQ7CiAgaXNTdHJlYW1pbmc/OiBib29sZWFuOwogIGlzRGFyaz86IGJvb2xlYW47CiAgcGxhY2Vob2xkZXI/OiBzdHJpbmc7CiAgb25GaWxlVXBsb2FkZWQ/OiAoZmlsZTogeyBuYW1lOiBzdHJpbmc7IHVybDogc3RyaW5nIH0pID0+IHZvaWQ7CiAgY29udmVyc2F0aW9uSWQ/OiBzdHJpbmc7CiAgcGF0VG9rZW4/OiBzdHJpbmc7CiAgcXVvdGVkTWVzc2FnZT86IFF1b3RlZE1lc3NhZ2UgfCBudWxsOwogIG9uQ2xlYXJRdW90ZT86ICgpID0+IHZvaWQ7CiAgaW5pdGlhbFRleHQ/OiBzdHJpbmc7Cn0KCmNvbnN0IHN0cmlwTWQgPSAodGV4dDogc3RyaW5nKTogc3RyaW5nID0+IHsKICBpZiAoIXRleHQpIHJldHVybiAiIjsKICByZXR1cm4gdGV4dAogICAgLnJlcGxhY2UoLzxpbWdcc1tePl0qYWx0PSIoW14iXSopIltePl0qPi9naSwgKF8sIGFsdCkgPT4gYWx0ID8gYFvlm77niYddYCA6ICJb5Zu+54mHXSIpCiAgICAucmVwbGFjZSgvPGltZ1xzW14+XSo+L2dpLCAiW+WbvueJh10iKQogICAgLnJlcGxhY2UoLzxbXj5dKz4vZywgIiIpCiAgICAucmVwbGFjZSgvI3sxLDZ9XHMqL2csICIiKQogICAgLnJlcGxhY2UoL1wqXCooLis/KVwqXCovZywgIiQxIikKICAgIC5yZXBsYWNlKC9cKiguKz8pXCovZywgIiQxIikKICAgIC5yZXBsYWNlKC9gKC4rPylgL2csICIkMSIpCiAgICAucmVwbGFjZSgvXFsoLis/KVxdXCguKz9cKS9nLCAiJDEiKQogICAgLnJlcGxhY2UoLyFcWy4qP1xdXCguKz9cKS9nLCAiIikKICAgIC5yZXBsYWNlKC9eWy0qK11ccysvZ20sICIiKQogICAgLnJlcGxhY2UoL1xuKy9nLCAiICIpCiAgICAudHJpbSgpOwp9OwoKLy8gUmVhZCBhIG5hdGl2ZSBmaWxlIFVSSSBpbnRvIGEgQmxvYiAoZm9yIHByb2plY3QtZmlsZXMgcmF3IHVwbG9hZCkKY29uc3QgdXJpVG9CbG9iID0gYXN5bmMgKHVyaTogc3RyaW5nKTogUHJvbWlzZTxCbG9iPiA9PiB7CiAgY29uc3QgcmVzcCA9IGF3YWl0IGZldGNoKHVyaSk7CiAgcmV0dXJuIGF3YWl0IHJlc3AuYmxvYigpOwp9OwoKLy8gRGVyaXZlIGEgZmlsZW5hbWUgZnJvbSBhIFVSSQpjb25zdCBmaWxlTmFtZUZyb21VcmkgPSAodXJpOiBzdHJpbmcsIGZhbGxiYWNrOiBzdHJpbmcpOiBzdHJpbmcgPT4gewogIHRyeSB7CiAgICBjb25zdCBwYXJ0cyA9IHVyaS5zcGxpdCgnLycpOwogICAgY29uc3QgbGFzdCA9IHBhcnRzW3BhcnRzLmxlbmd0aCAtIDFdOwogICAgaWYgKGxhc3QgJiYgbGFzdC5pbmNsdWRlcygnLicpKSByZXR1cm4gbGFzdC5zcGxpdCgnPycpWzBdOwogIH0gY2F0Y2gge30KICByZXR1cm4gZmFsbGJhY2s7Cn07CgpleHBvcnQgY29uc3QgQ2hhdElucHV0OiBSZWFjdC5GQzxDaGF0SW5wdXRQcm9wcz4gPSAoewogIG9uU2VuZCwgb25TdG9wLCBpc1N0cmVhbWluZywgaXNEYXJrLCBwbGFjZWhvbGRlciwKICBvbkZpbGVVcGxvYWRlZCwgY29udmVyc2F0aW9uSWQsIHBhdFRva2VuLAogIHF1b3RlZE1lc3NhZ2UsIG9uQ2xlYXJRdW90ZSwgaW5pdGlhbFRleHQsCn0pID0+IHsKICBjb25zdCBbdGV4dCwgc2V0VGV4dF0gPSB1c2VTdGF0ZSgnJyk7CgogIFJlYWN0LnVzZUVmZmVjdCgoKSA9PiB7CiAgICBpZiAoaW5pdGlhbFRleHQgJiYgIXRleHQpIHsKICAgICAgc2V0VGV4dChpbml0aWFsVGV4dCk7CiAgICB9CiAgfSwgW2luaXRpYWxUZXh0XSk7CiAgY29uc3QgW2F0dGFjaGVkRmlsZXMsIHNldEF0dGFjaGVkRmlsZXNdID0gdXNlU3RhdGU8QXR0YWNoZWRGaWxlW10+KFtdKTsKICBjb25zdCBbdXBsb2FkaW5nLCBzZXRVcGxvYWRpbmddID0gdXNlU3RhdGUoZmFsc2UpOwogIGNvbnN0IFtzaG93QXR0YWNoTWVudSwgc2V0U2hvd0F0dGFjaE1lbnVdID0gdXNlU3RhdGUoZmFsc2UpOwogIGNvbnN0IGlucHV0UmVmID0gdXNlUmVmPFRleHRJbnB1dD4obnVsbCk7CiAgY29uc3QgaXNTZW5kaW5nUmVmID0gdXNlUmVmKGZhbHNlKTsKICBjb25zdCBbaW5wdXRIZWlnaHQsIHNldElucHV0SGVpZ2h0XSA9IHVzZVN0YXRlKDQwKTsKCiAgdXNlRWZmZWN0KCgpID0+IHsKICAgIGlmIChQbGF0Zm9ybS5PUyAhPT0gJ3dlYicpIHJldHVybjsKICAgIGlmICghaW5wdXRSZWYuY3VycmVudCkgcmV0dXJuOwogICAgY29uc3Qgbm9kZSA9IGlucHV0UmVmLmN1cnJlbnQgYXMgYW55OwogICAgY29uc3QgZWwgPSBub2RlPy5nZXRFbGVtZW50ID8gbm9kZS5nZXRFbGVtZW50KCkgOiBub2RlOwogICAgaWYgKCFlbCkgcmV0dXJuOwogICAgZWwuc3R5bGUuaGVpZ2h0ID0gJzFweCc7CiAgICBjb25zdCBuZXdIZWlnaHQgPSBNYXRoLm1pbihlbC5zY3JvbGxIZWlnaHQsIDEyMCk7CiAgICBzZXRJbnB1dEhlaWdodChuZXdIZWlnaHQpOwogICAgZWwuc3R5bGUuaGVpZ2h0ID0gbmV3SGVpZ2h0ICsgJ3B4JzsKICB9LCBbdGV4dF0pOwoKICBjb25zdCBoYW5kbGVTZW5kID0gKCkgPT4gewogICAgaWYgKGlzU2VuZGluZ1JlZi5jdXJyZW50KSByZXR1cm47CiAgICBjb25zdCB0cmltbWVkID0gdGV4dC50cmltKCk7CiAgICBpZiAoIXRyaW1tZWQgJiYgYXR0YWNoZWRGaWxlcy5sZW5ndGggPT09IDApIHJldHVybjsKICAgIGlzU2VuZGluZ1JlZi5jdXJyZW50ID0gdHJ1ZTsKICAgIG9uU2VuZCh0cmltbWVkLCBhdHRhY2hlZEZpbGVzLmxlbmd0aCA+IDAgPyBhdHRhY2hlZEZpbGVzIDogdW5kZWZpbmVkKTsKICAgIHNldFRleHQoJycpOwogICAgc2V0QXR0YWNoZWRGaWxlcyhbXSk7CiAgICBzZXRUaW1lb3V0KCgpID0+IHsgaXNTZW5kaW5nUmVmLmN1cnJlbnQgPSBmYWxzZTsgfSwgNTAwKTsKICB9OwoKICBjb25zdCBhZGRGaWxlcyA9IChuZXdGaWxlczogQXR0YWNoZWRGaWxlW10pID0+IHsKICAgIGlmIChuZXdGaWxlcy5sZW5ndGggPiAwKSB7CiAgICAgIHNldEF0dGFjaGVkRmlsZXMocHJldiA9PiBbLi4ucHJldiwgLi4ubmV3RmlsZXNdKTsKICAgIH0KICB9OwoKICBjb25zdCBoYW5kbGVEb2N1bWVudFBpY2tlciA9IGFzeW5jICgpID0+IHsKICAgIHNldFNob3dBdHRhY2hNZW51KGZhbHNlKTsKICAgIGlmIChQbGF0Zm9ybS5PUyA9PT0gJ3dlYicpIHsKICAgICAgY29uc3QgaW5wdXQgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdpbnB1dCcpOwogICAgICBpbnB1dC50eXBlID0gJ2ZpbGUnOwogICAgICBpbnB1dC5tdWx0aXBsZSA9IHRydWU7CiAgICAgIGlucHV0Lm9uY2hhbmdlID0gKGU6IGFueSkgPT4gewogICAgICAgIGNvbnN0IGZpbGVzID0gQXJyYXkuZnJvbShlLnRhcmdldC5maWxlcyB8fCBbXSkgYXMgRmlsZVtdOwogICAgICAgIGFkZEZpbGVzKGZpbGVzLm1hcChmID0+ICh7CiAgICAgICAgICBuYW1lOiBmLm5hbWUsCiAgICAgICAgICBzaXplOiBmLnNpemUsCiAgICAgICAgICB0eXBlOiBmLnR5cGUsCiAgICAgICAgICBibG9iOiBmIGFzIEJsb2IsCiAgICAgICAgfSkpKTsKICAgICAgfTsKICAgICAgaW5wdXQuY2xpY2soKTsKICAgIH0gZWxzZSB7CiAgICAgIHRyeSB7CiAgICAgICAgY29uc3QgcmVzdWx0ID0gYXdhaXQgRG9jdW1lbnRQaWNrZXIuZ2V0RG9jdW1lbnRBc3luYyh7CiAgICAgICAgICBtdWx0aXBsZTogdHJ1ZSwKICAgICAgICAgIHR5cGU6ICcqLyonLAogICAgICAgICAgY29weVRvQ2FjaGVEaXJlY3Rvcnk6IHRydWUsCiAgICAgICAgfSk7CiAgICAgICAgaWYgKHJlc3VsdC5jYW5jZWxlZCkgcmV0dXJuOwogICAgICAgIGFkZEZpbGVzKHJlc3VsdC5hc3NldHMubWFwKChhc3NldDogYW55KSA9PiAoewogICAgICAgICAgbmFtZTogYXNzZXQubmFtZSB8fCAndW5rbm93bicsCiAgICAgICAgICBzaXplOiBhc3NldC5zaXplIHx8IDAsCiAgICAgICAgICB0eXBlOiBhc3NldC5taW1lVHlwZSB8fCAnYXBwbGljYXRpb24vb2N0ZXQtc3RyZWFtJywKICAgICAgICAgIHVyaTogYXNzZXQudXJpLAogICAgICAgIH0pKSk7CiAgICAgIH0gY2F0Y2ggKGUpIHsKICAgICAgICBjb25zb2xlLmVycm9yKCdbQ2hhdElucHV0XSBEb2N1bWVudCBwaWNrZXIgZXJyb3I6JywgZSk7CiAgICAgIH0KICAgIH0KICB9OwoKICBjb25zdCBoYW5kbGVJbWFnZVBpY2tlciA9IGFzeW5jICgpID0+IHsKICAgIHNldFNob3dBdHRhY2hNZW51KGZhbHNlKTsKICAgIGlmIChQbGF0Zm9ybS5PUyA9PT0gJ3dlYicpIHsKICAgICAgY29uc3QgaW5wdXQgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdpbnB1dCcpOwogICAgICBpbnB1dC50eXBlID0gJ2ZpbGUnOwogICAgICBpbnB1dC5tdWx0aXBsZSA9IHRydWU7CiAgICAgIGlucHV0LmFjY2VwdCA9ICdpbWFnZS8qJzsKICAgICAgaW5wdXQub25jaGFuZ2UgPSAoZTogYW55KSA9PiB7CiAgICAgICAgY29uc3QgZmlsZXMgPSBBcnJheS5mcm9tKGUudGFyZ2V0LmZpbGVzIHx8IFtdKSBhcyBGaWxlW107CiAgICAgICAgYWRkRmlsZXMoZmlsZXMubWFwKGYgPT4gKHsKICAgICAgICAgIG5hbWU6IGYubmFtZSwKICAgICAgICAgIHNpemU6IGYuc2l6ZSwKICAgICAgICAgIHR5cGU6IGYudHlwZSB8fCAnaW1hZ2UvanBlZycsCiAgICAgICAgICBibG9iOiBmIGFzIEJsb2IsCiAgICAgICAgfSkpKTsKICAgICAgfTsKICAgICAgaW5wdXQuY2xpY2soKTsKICAgICAgcmV0dXJuOwogICAgfQogICAgdHJ5IHsKICAgICAgY29uc3QgcGVybSA9IGF3YWl0IEltYWdlUGlja2VyLnJlcXVlc3RNZWRpYUxpYnJhcnlQZXJtaXNzaW9uc0FzeW5jKCk7CiAgICAgIGlmICghcGVybS5ncmFudGVkKSB7CiAgICAgICAgQWxlcnQuYWxlcnQoJ+mcgOimgeadg+mZkCcsICfor7flnKjorr7nva7kuK3lhYHorrjorr/pl67nhafniYflupMnKTsKICAgICAgICByZXR1cm47CiAgICAgIH0KICAgICAgY29uc3QgcmVzdWx0ID0gYXdhaXQgSW1hZ2VQaWNrZXIubGF1bmNoSW1hZ2VMaWJyYXJ5QXN5bmMoewogICAgICAgIG1lZGlhVHlwZXM6IFsnaW1hZ2VzJ10sCiAgICAgICAgYWxsb3dzTXVsdGlwbGVTZWxlY3Rpb246IHRydWUsCiAgICAgICAgcXVhbGl0eTogMC45LAogICAgICB9KTsKICAgICAgaWYgKHJlc3VsdC5jYW5jZWxlZCkgcmV0dXJuOwogICAgICBhZGRGaWxlcyhyZXN1bHQuYXNzZXRzLm1hcCgoYXNzZXQ6IGFueSkgPT4gKHsKICAgICAgICBuYW1lOiBhc3NldC5maWxlTmFtZSB8fCBmaWxlTmFtZUZyb21VcmkoYXNzZXQudXJpLCBgcGhvdG9fJHtEYXRlLm5vdygpfS5qcGdgKSwKICAgICAgICBzaXplOiBhc3NldC5maWxlU2l6ZSB8fCAwLAogICAgICAgIHR5cGU6IGFzc2V0Lm1pbWVUeXBlIHx8ICdpbWFnZS9qcGVnJywKICAgICAgICB1cmk6IGFzc2V0LnVyaSwKICAgICAgfSkpKTsKICAgIH0gY2F0Y2ggKGUpIHsKICAgICAgY29uc29sZS5lcnJvcignW0NoYXRJbnB1dF0gSW1hZ2UgcGlja2VyIGVycm9yOicsIGUpOwogICAgfQogIH07CgogIGNvbnN0IGhhbmRsZUNhbWVyYSA9IGFzeW5jICgpID0+IHsKICAgIHNldFNob3dBdHRhY2hNZW51KGZhbHNlKTsKICAgIGlmIChQbGF0Zm9ybS5PUyA9PT0gJ3dlYicpIHsKICAgICAgY29uc3QgaW5wdXQgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdpbnB1dCcpOwogICAgICBpbnB1dC50eXBlID0gJ2ZpbGUnOwogICAgICBpbnB1dC5hY2NlcHQgPSAnaW1hZ2UvKic7CiAgICAgIGlucHV0LmNhcHR1cmUgPSAnZW52aXJvbm1lbnQnOwogICAgICBpbnB1dC5vbmNoYW5nZSA9IChlOiBhbnkpID0+IHsKICAgICAgICBjb25zdCBmaWxlcyA9IEFycmF5LmZyb20oZS50YXJnZXQuZmlsZXMgfHwgW10pIGFzIEZpbGVbXTsKICAgICAgICBhZGRGaWxlcyhmaWxlcy5tYXAoZiA9PiAoewogICAgICAgICAgbmFtZTogZi5uYW1lLAogICAgICAgICAgc2l6ZTogZi5zaXplLAogICAgICAgICAgdHlwZTogZi50eXBlIHx8ICdpbWFnZS9qcGVnJywKICAgICAgICAgIGJsb2I6IGYgYXMgQmxvYiwKICAgICAgICB9KSkpOwogICAgICB9OwogICAgICBpbnB1dC5jbGljaygpOwogICAgICByZXR1cm47CiAgICB9CiAgICB0cnkgewogICAgICBjb25zdCBwZXJtID0gYXdhaXQgSW1hZ2VQaWNrZXIucmVxdWVzdENhbWVyYVBlcm1pc3Npb25zQXN5bmMoKTsKICAgICAgaWYgKCFwZXJtLmdyYW50ZWQpIHsKICAgICAgICBBbGVydC5hbGVydCgn6ZyA6KaB5p2D6ZmQJywgJ+ivt+WcqOiuvue9ruS4reWFgeiuuOiuv+mXruebuOacuicpOwogICAgICAgIHJldHVybjsKICAgICAgfQogICAgICBjb25zdCByZXN1bHQgPSBhd2FpdCBJbWFnZVBpY2tlci5sYXVuY2hDYW1lcmFBc3luYyh7CiAgICAgICAgbWVkaWFUeXBlczogWydpbWFnZXMnXSwKICAgICAgICBxdWFsaXR5OiAwLjksCiAgICAgIH0pOwogICAgICBpZiAocmVzdWx0LmNhbmNlbGVkKSByZXR1cm47CiAgICAgIGFkZEZpbGVzKHJlc3VsdC5hc3NldHMubWFwKChhc3NldDogYW55KSA9PiAoewogICAgICAgIG5hbWU6IGFzc2V0LmZpbGVOYW1lIHx8IGBwaG90b18ke0RhdGUubm93KCl9LmpwZ2AsCiAgICAgICAgc2l6ZTogYXNzZXQuZmlsZVNpemUgfHwgMCwKICAgICAgICB0eXBlOiBhc3NldC5taW1lVHlwZSB8fCAnaW1hZ2UvanBlZycsCiAgICAgICAgdXJpOiBhc3NldC51cmksCiAgICAgIH0pKSk7CiAgICB9IGNhdGNoIChlKSB7CiAgICAgIGNvbnNvbGUuZXJyb3IoJ1tDaGF0SW5wdXRdIENhbWVyYSBlcnJvcjonLCBlKTsKICAgIH0KICB9OwoKICBjb25zdCByZW1vdmVGaWxlID0gKGluZGV4OiBudW1iZXIpID0+IHsKICAgIHNldEF0dGFjaGVkRmlsZXMocHJldiA9PiBwcmV2LmZpbHRlcigoXywgaSkgPT4gaSAhPT0gaW5kZXgpKTsKICB9OwoKICBjb25zdCBVUExPQURfVVJMID0gJ2h0dHBzOi8vcy5zeW1zZ2YueHl6L3YxL2ZpbGVzL3VwbG9hZCc7CgogIGNvbnN0IHVwbG9hZFRvQ296ZSA9IGFzeW5jIChmaWxlOiBBdHRhY2hlZEZpbGUpOiBQcm9taXNlPHN0cmluZyB8IG51bGw+ID0+IHsKICAgIHRyeSB7CiAgICAgIC8vIE5hdGl2ZSAoaU9TL0FuZHJvaWQpOiB1c2UgRmlsZVN5c3RlbS51cGxvYWRBc3luYyB3aGljaCBidWlsZHMgbXVsdGlwYXJ0IHJlbGlhYmx5LgogICAgICAvLyBSZWFjdCBOYXRpdmUgRm9ybURhdGEgd2l0aCB7dXJpLG5hbWUsdHlwZX0gb2Z0ZW4gZmFpbHMgdG8gc2VuZCBmaWxlIGJ5dGVzIG9uIGlPUy4KICAgICAgaWYgKFBsYXRmb3JtLk9TICE9PSAnd2ViJyAmJiBmaWxlLnVyaSkgewogICAgICAgIGNvbnN0IHVwbG9hZFJlc3AgPSBhd2FpdCBGaWxlU3lzdGVtLnVwbG9hZEFzeW5jKFVQTE9BRF9VUkwsIGZpbGUudXJpLCB7CiAgICAgICAgICBodHRwTWV0aG9kOiAnUE9TVCcsCiAgICAgICAgICB1cGxvYWRUeXBlOiBGaWxlU3lzdGVtLkZpbGVTeXN0ZW1VcGxvYWRUeXBlLk1VTFRJUEFSVCwKICAgICAgICAgIGZpZWxkTmFtZTogJ2ZpbGUnLAogICAgICAgICAgbWltZVR5cGU6IGZpbGUudHlwZSB8fCAnYXBwbGljYXRpb24vb2N0ZXQtc3RyZWFtJywKICAgICAgICAgIGhlYWRlcnM6IHsgJ0F1dGhvcml6YXRpb24nOiBgQmVhcmVyICR7cGF0VG9rZW4gfHwgJyd9YCB9LAogICAgICAgICAgcGFyYW1ldGVyczogeyBwdXJwb3NlOiAnYXNzaXN0YW50cycgfSwKICAgICAgICB9KTsKICAgICAgICBjb25zb2xlLmxvZygnW0NoYXRJbnB1dF0gbmF0aXZlIHVwbG9hZCBzdGF0dXM6JywgdXBsb2FkUmVzcC5zdGF0dXMsICduYW1lOicsIGZpbGUubmFtZSk7CiAgICAgICAgaWYgKHVwbG9hZFJlc3Auc3RhdHVzID49IDIwMCAmJiB1cGxvYWRSZXNwLnN0YXR1cyA8IDMwMCkgewogICAgICAgICAgY29uc3QgcmVzdWx0ID0gSlNPTi5wYXJzZSh1cGxvYWRSZXNwLmJvZHkpOwogICAgICAgICAgY29uc3QgZmlsZUlkID0gcmVzdWx0Py5kYXRhPy5pZCB8fCByZXN1bHQ/LmlkIHx8IG51bGw7CiAgICAgICAgICBjb25zb2xlLmxvZygnW0NoYXRJbnB1dF0gQ296ZSB1cGxvYWQgT0sgKG5hdGl2ZSksIGZpbGVfaWQ6JywgZmlsZUlkKTsKICAgICAgICAgIHJldHVybiBmaWxlSWQ7CiAgICAgICAgfQogICAgICAgIGNvbnNvbGUuZXJyb3IoJ1tDaGF0SW5wdXRdIENvemUgbmF0aXZlIHVwbG9hZCBmYWlsZWQ6JywgdXBsb2FkUmVzcC5zdGF0dXMsICh1cGxvYWRSZXNwLmJvZHkgfHwgJycpLnN1YnN0cmluZygwLCAzMDApKTsKICAgICAgICByZXR1cm4gbnVsbDsKICAgICAgfQoKICAgICAgLy8gV2ViOiBGb3JtRGF0YSB3aXRoIEJsb2IKICAgICAgY29uc3QgZm9ybURhdGEgPSBuZXcgRm9ybURhdGEoKTsKICAgICAgY29uc3QgYmxvYiA9IGZpbGUuYmxvYiB8fCBuZXcgQmxvYihbXSk7CiAgICAgIGNvbnN0IGZpbGVPYmogPSBuZXcgRmlsZShbYmxvYl0sIGZpbGUubmFtZSwgeyB0eXBlOiBmaWxlLnR5cGUgfHwgJ2FwcGxpY2F0aW9uL29jdGV0LXN0cmVhbScgfSk7CiAgICAgIGZvcm1EYXRhLmFwcGVuZCgnZmlsZScsIGZpbGVPYmopOwogICAgICBmb3JtRGF0YS5hcHBlbmQoJ3B1cnBvc2UnLCAnYXNzaXN0YW50cycpOwogICAgICBjb25zdCByZXNwID0gYXdhaXQgZmV0Y2goVVBMT0FEX1VSTCwgewogICAgICAgIG1ldGhvZDogJ1BPU1QnLAogICAgICAgIGhlYWRlcnM6IHsgJ0F1dGhvcml6YXRpb24nOiBgQmVhcmVyICR7cGF0VG9rZW4gfHwgJyd9YCB9LAogICAgICAgIGJvZHk6IGZvcm1EYXRhLAogICAgICB9KTsKICAgICAgaWYgKHJlc3Aub2spIHsKICAgICAgICBjb25zdCByZXN1bHQgPSBhd2FpdCByZXNwLmpzb24oKTsKICAgICAgICBjb25zdCBmaWxlSWQgPSByZXN1bHQuZGF0YT8uaWQgfHwgcmVzdWx0LmlkIHx8IG51bGw7CiAgICAgICAgY29uc29sZS5sb2coJ1tDaGF0SW5wdXRdIENvemUgdXBsb2FkIE9LICh3ZWIpLCBmaWxlX2lkOicsIGZpbGVJZCk7CiAgICAgICAgcmV0dXJuIGZpbGVJZDsKICAgICAgfQogICAgICBjb25zdCBlcnJUZXh0ID0gYXdhaXQgcmVzcC50ZXh0KCkuY2F0Y2goKCkgPT4gJycpOwogICAgICBjb25zb2xlLmVycm9yKCdbQ2hhdElucHV0XSBDb3plIHVwbG9hZCBmYWlsZWQ6JywgcmVzcC5zdGF0dXMsIGVyclRleHQpOwogICAgICByZXR1cm4gbnVsbDsKICAgIH0gY2F0Y2ggKGUpIHsKICAgICAgY29uc29sZS5lcnJvcignW0NoYXRJbnB1dF0gQ296ZSB1cGxvYWQgZXJyb3I6JywgZSk7CiAgICAgIHJldHVybiBudWxsOwogICAgfQogIH07CgogIGNvbnN0IGhhbmRsZVVwbG9hZEFuZFNlbmQgPSBhc3luYyAoKSA9PiB7CiAgICBpZiAoaXNTZW5kaW5nUmVmLmN1cnJlbnQpIHJldHVybjsKICAgIGNvbnN0IGVmZmVjdGl2ZUNvbnZJZCA9IGNvbnZlcnNhdGlvbklkIHx8ICcnOwogICAgaWYgKGF0dGFjaGVkRmlsZXMubGVuZ3RoID09PSAwKSB7CiAgICAgIGhhbmRsZVNlbmQoKTsKICAgICAgcmV0dXJuOwogICAgfQoKICAgIGlzU2VuZGluZ1JlZi5jdXJyZW50ID0gdHJ1ZTsKICAgIHNldFVwbG9hZGluZyh0cnVlKTsKICAgIGNvbnN0IHVwbG9hZGVkTmFtZXM6IHN0cmluZ1tdID0gW107CiAgICBjb25zdCBjb3plRmlsZUlkczogc3RyaW5nW10gPSBbXTsKICAgIGNvbnN0IHVwbG9hZGVkVXJsczogc3RyaW5nW10gPSBbXTsKCiAgICB0cnkgewogICAgICBmb3IgKGNvbnN0IGZpbGUgb2YgYXR0YWNoZWRGaWxlcykgewogICAgICAgIC8vIDEuIFVwbG9hZCB0byBwcm9qZWN0LWZpbGVzIChjb252ZXJzYXRpb24gZmlsZSBzdG9yYWdlKQogICAgICAgIHRyeSB7CiAgICAgICAgICBsZXQgYmxvYjogQmxvYjsKICAgICAgICAgIGlmIChmaWxlLmJsb2IpIHsKICAgICAgICAgICAgYmxvYiA9IGZpbGUuYmxvYjsKICAgICAgICAgIH0gZWxzZSBpZiAoZmlsZS51cmkpIHsKICAgICAgICAgICAgYmxvYiA9IGF3YWl0IHVyaVRvQmxvYihmaWxlLnVyaSk7CiAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICBibG9iID0gbmV3IEJsb2IoW10pOwogICAgICAgICAgfQogICAgICAgICAgY29uc3QgcmVzcCA9IGF3YWl0IGZldGNoKAogICAgICAgICAgICAnaHR0cHM6Ly9zLnN5bXNnZi54eXovcHJvamVjdC1maWxlcy9hcGkvZmlsZXMvdXBsb2FkJywKICAgICAgICAgICAgewogICAgICAgICAgICAgIG1ldGhvZDogJ1BPU1QnLAogICAgICAgICAgICAgIGhlYWRlcnM6IHsKICAgICAgICAgICAgICAgICdYLUNvbnZlcnNhdGlvbi1JZCc6IGVmZmVjdGl2ZUNvbnZJZCB8fCAncGVuZGluZycsCiAgICAgICAgICAgICAgICAnWC1GaWxlLU5hbWUnOiBmaWxlLm5hbWUsCiAgICAgICAgICAgICAgICAnQ29udGVudC1UeXBlJzogZmlsZS50eXBlIHx8ICdhcHBsaWNhdGlvbi9vY3RldC1zdHJlYW0nLAogICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgYm9keTogYmxvYiwKICAgICAgICAgICAgfQogICAgICAgICAgKTsKICAgICAgICAgIGlmIChyZXNwLm9rKSB7CiAgICAgICAgICAgIGNvbnN0IHJlc3VsdCA9IGF3YWl0IHJlc3AuanNvbigpOwogICAgICAgICAgICBjb25zdCBzYXZlZE5hbWUgPSByZXN1bHQuZGF0YT8ubmFtZSB8fCBmaWxlLm5hbWU7CiAgICAgICAgICAgIHVwbG9hZGVkTmFtZXMucHVzaChzYXZlZE5hbWUpOwogICAgICAgICAgICAvLyBCdWlsZCBwdWJsaWMgVVJMIGZvciB0aGUgdXBsb2FkZWQgZmlsZQogICAgICAgICAgICBjb25zdCBwdWJVcmwgPSAnaHR0cHM6Ly9zLnN5bXNnZi54eXovcHJvamVjdC1maWxlcycgKyAocmVzdWx0LmRhdGE/LnVybCB8fCAnJyk7CiAgICAgICAgICAgIHVwbG9hZGVkVXJscy5wdXNoKHB1YlVybCk7CiAgICAgICAgICAgIG9uRmlsZVVwbG9hZGVkPy4oeyBuYW1lOiBmaWxlLm5hbWUsIHVybDogcHViVXJsIH0pOwogICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgY29uc29sZS53YXJuKCdbQ2hhdElucHV0XSBwcm9qZWN0LWZpbGVzIHVwbG9hZCBmYWlsZWQ6JywgcmVzcC5zdGF0dXMpOwogICAgICAgICAgfQogICAgICAgIH0gY2F0Y2ggKHBlKSB7CiAgICAgICAgICBjb25zb2xlLndhcm4oJ1tDaGF0SW5wdXRdIHByb2plY3QtZmlsZXMgdXBsb2FkIGVycm9yOicsIHBlKTsKICAgICAgICB9CgogICAgICAgIC8vIDIuIFVwbG9hZCB0byBDb3plIGZpbGUgQVBJIChzbyBBSSBjYW4gc2VlIGl0KQogICAgICAgIGNvbnN0IGZpbGVJZCA9IGF3YWl0IHVwbG9hZFRvQ296ZShmaWxlKTsKICAgICAgICBpZiAoZmlsZUlkKSB7CiAgICAgICAgICBjb3plRmlsZUlkcy5wdXNoKGZpbGVJZCk7CiAgICAgICAgfQogICAgICB9CiAgICB9IGNhdGNoIChlKSB7CiAgICAgIGNvbnNvbGUuZXJyb3IoJ1tDaGF0SW5wdXRdIOaWh+S7tuS4iuS8oOWksei0pTonLCBlKTsKICAgIH0gZmluYWxseSB7CiAgICAgIHNldFVwbG9hZGluZyhmYWxzZSk7CiAgICAgIHNldFRpbWVvdXQoKCkgPT4geyBpc1NlbmRpbmdSZWYuY3VycmVudCA9IGZhbHNlOyB9LCA1MDApOwogICAgfQoKICAgIC8vIFN0b3JlIHBlbmRpbmcgYmxvYnMgZm9yIGxhdGVyIHN5bmMgKG5ldyBjb252ZXJzYXRpb24gY2FzZSkKICAgIGlmICghZWZmZWN0aXZlQ29udklkKSB7CiAgICAgIF9wZW5kaW5nRmlsZUJsb2JzID0gYXdhaXQgUHJvbWlzZS5hbGwoCiAgICAgICAgYXR0YWNoZWRGaWxlcy5tYXAoYXN5bmMgKGYpID0+IHsKICAgICAgICAgIGxldCBibG9iID0gZi5ibG9iOwogICAgICAgICAgaWYgKCFibG9iICYmIGYudXJpKSB7CiAgICAgICAgICAgIHRyeSB7IGJsb2IgPSBhd2FpdCB1cmlUb0Jsb2IoZi51cmkpOyB9IGNhdGNoIHsgYmxvYiA9IG5ldyBCbG9iKFtdKTsgfQogICAgICAgICAgfQogICAgICAgICAgcmV0dXJuIHsgYmxvYjogYmxvYiB8fCBuZXcgQmxvYihbXSksIG5hbWU6IGYubmFtZSwgdHlwZTogZi50eXBlIHx8ICdhcHBsaWNhdGlvbi9vY3RldC1zdHJlYW0nIH07CiAgICAgICAgfSkKICAgICAgKTsKICAgIH0KCiAgICBsZXQgbXNnVGV4dCA9IHRleHQudHJpbSgpOwogICAgY29uc3QgZGlzcGxheU5hbWVzID0gdXBsb2FkZWROYW1lcy5sZW5ndGggPiAwID8gdXBsb2FkZWROYW1lcyA6IGF0dGFjaGVkRmlsZXMubWFwKGYgPT4gZi5uYW1lKTsKICAgIGlmIChkaXNwbGF5TmFtZXMubGVuZ3RoID4gMCkgewogICAgICBjb25zdCBmaWxlTmFtZXMgPSBkaXNwbGF5TmFtZXMubWFwKG4gPT4gYFx1ezFGNENFfSR7bn1gKS5qb2luKCcgJyk7CiAgICAgIG1zZ1RleHQgPSBtc2dUZXh0ID8gYCR7bXNnVGV4dH1cbiR7ZmlsZU5hbWVzfWAgOiBmaWxlTmFtZXM7CiAgICB9CgogICAgaWYgKGNvemVGaWxlSWRzLmxlbmd0aCA9PT0gMCAmJiBhdHRhY2hlZEZpbGVzLmxlbmd0aCA+IDApIHsKICAgICAgQWxlcnQuYWxlcnQoCiAgICAgICAgJ+mZhOS7tuS4iuS8oOWksei0pScsCiAgICAgICAgJ+aWh+S7tuacquiDveS4iuS8oOWIsOacjeWKoeWZqO+8iOWPr+iDveaYr+e9kee7nOaIlumap+mBk+S4jeeos+Wumu+8ieOAguivt+mHjeivle+8jOaIluaNoueUqOaIquWbvi/ovoPlsI/nmoTmlofku7bjgIInLAogICAgICAgIFt7IHRleHQ6ICfnn6XpgZPkuoYnIH1dCiAgICAgICk7CiAgICB9CgogICAgLy8gQnVpbGQgZmlsZSBtZXRhZGF0YSB3aXRoIHB1YmxpYyBVUkxzIGZvciBpbWFnZXMKICAgIGNvbnN0IGZpbGVNZXRhID0gYXR0YWNoZWRGaWxlcy5tYXAoKGYsIGkpID0+ICh7CiAgICAgIG5hbWU6IGYubmFtZSwKICAgICAgdHlwZTogZi50eXBlIHx8ICdhcHBsaWNhdGlvbi9vY3RldC1zdHJlYW0nLAogICAgICB1cmw6IHVwbG9hZGVkVXJsc1tpXSB8fCAnJywKICAgICAgZmlsZUlkOiBjb3plRmlsZUlkc1tpXSB8fCAnJywKICAgIH0pKTsKICAgIG9uU2VuZChtc2dUZXh0LCBmaWxlTWV0YSwgY296ZUZpbGVJZHMubGVuZ3RoID4gMCA/IGNvemVGaWxlSWRzIDogdW5kZWZpbmVkKTsKICAgIHNldFRleHQoJycpOwogICAgc2V0QXR0YWNoZWRGaWxlcyhbXSk7CiAgfTsKCiAgY29uc3QgYmdDb2xvciA9IGlzRGFyayA/IENvbG9ycy5zdXJmYWNlRGFyayA6ICcjZmZmJzsKICBjb25zdCBib3JkZXJDb2xvciA9IGlzRGFyayA/IENvbG9ycy5ib3JkZXJEYXJrIDogQ29sb3JzLmJvcmRlckxpZ2h0OwogIGNvbnN0IGlucHV0Q29sb3IgPSBpc0RhcmsgPyBDb2xvcnMudGV4dEludmVyc2UgOiBDb2xvcnMudGV4dDsKICBjb25zdCBoYXNDb250ZW50ID0gdGV4dC50cmltKCkgfHwgYXR0YWNoZWRGaWxlcy5sZW5ndGggPiAwOwoKICBjb25zdCBxdW90ZUxhYmVsID0gcXVvdGVkTWVzc2FnZSA/IChxdW90ZWRNZXNzYWdlLnJvbGUgPT09ICd1c2VyJyA/ICfmiJEnIDogJ0FJJykgOiAnJzsKICBjb25zdCBxdW90ZVByZXZpZXcgPSBxdW90ZWRNZXNzYWdlID8gc3RyaXBNZChxdW90ZWRNZXNzYWdlLmNvbnRlbnQpLnN1YnN0cmluZygwLCAxMDApIDogJyc7CgogIGNvbnN0IGF0dGFjaE1lbnVJdGVtcyA9IFsKICAgIHsgaWNvbjogJ2ltYWdlLW91dGxpbmUnLCBsYWJlbDogJ+eFp+eJhycsIGNvbG9yOiAnIzNiODJmNicsIGFjdGlvbjogaGFuZGxlSW1hZ2VQaWNrZXIgfSwKICAgIHsgaWNvbjogJ2NhbWVyYS1vdXRsaW5lJywgbGFiZWw6ICfmi43nhacnLCBjb2xvcjogJyMxMGI5ODEnLCBhY3Rpb246IGhhbmRsZUNhbWVyYSB9LAogICAgeyBpY29uOiAnZG9jdW1lbnQtb3V0bGluZScsIGxhYmVsOiAn5paH5Lu2JywgY29sb3I6ICcjZjU5ZTBiJywgYWN0aW9uOiBoYW5kbGVEb2N1bWVudFBpY2tlciB9LAogIF07CgogIHJldHVybiAoCiAgICA8VmlldyBzdHlsZT17W3N0eWxlcy5jb250YWluZXIsIHsgYmFja2dyb3VuZENvbG9yOiBiZ0NvbG9yLCBib3JkZXJUb3BDb2xvcjogYm9yZGVyQ29sb3IgfV19PgogICAgICB7cXVvdGVkTWVzc2FnZSAmJiAoCiAgICAgICAgPFZpZXcgc3R5bGU9e3N0eWxlcy5xdW90ZUJhcn0+CiAgICAgICAgICA8VmlldyBzdHlsZT17c3R5bGVzLnF1b3RlSWNvbldyYXB9PgogICAgICAgICAgICA8SW9uaWNvbnMgbmFtZT0icmV0dXJuLWRvd24tYmFjay1vdXRsaW5lIiBzaXplPXsxNH0gY29sb3I9e0NvbG9ycy5wcmltYXJ5fSAvPgogICAgICAgICAgPC9WaWV3PgogICAgICAgICAgPFZpZXcgc3R5bGU9e3N0eWxlcy5xdW90ZUNvbnRlbnR9PgogICAgICAgICAgICA8VGV4dCBzdHlsZT17c3R5bGVzLnF1b3RlTGFiZWx9PuW8leeUqHtxdW90ZUxhYmVsfeeahOa2iOaBrzwvVGV4dD4KICAgICAgICAgICAgPFRleHQgc3R5bGU9e3N0eWxlcy5xdW90ZVRleHR9IG51bWJlck9mTGluZXM9ezJ9PntxdW90ZVByZXZpZXd9PC9UZXh0PgogICAgICAgICAgPC9WaWV3PgogICAgICAgICAgPFRvdWNoYWJsZU9wYWNpdHkgb25QcmVzcz17b25DbGVhclF1b3RlfSBoaXRTbG9wPXt7IHRvcDogOCwgYm90dG9tOiA4LCBsZWZ0OiA4LCByaWdodDogOCB9fT4KICAgICAgICAgICAgPElvbmljb25zIG5hbWU9ImNsb3NlIiBzaXplPXsxOH0gY29sb3I9e0NvbG9ycy50ZXh0VGVydGlhcnl9IC8+CiAgICAgICAgICA8L1RvdWNoYWJsZU9wYWNpdHk+CiAgICAgICAgPC9WaWV3PgogICAgICApfQoKICAgICAge2F0dGFjaGVkRmlsZXMubGVuZ3RoID4gMCAmJiAoCiAgICAgICAgPFZpZXcgc3R5bGU9e3N0eWxlcy5hdHRhY2htZW50c30+CiAgICAgICAgICB7YXR0YWNoZWRGaWxlcy5tYXAoKGZpbGUsIGluZGV4KSA9PiAoCiAgICAgICAgICAgIDxWaWV3IGtleT17aW5kZXh9IHN0eWxlPXtzdHlsZXMuYXR0YWNobWVudENoaXB9PgogICAgICAgICAgICAgIDxJb25pY29ucwogICAgICAgICAgICAgICAgbmFtZT17ZmlsZS50eXBlLnN0YXJ0c1dpdGgoJ2ltYWdlLycpID8gJ2ltYWdlJyA6IGZpbGUudHlwZS5zdGFydHNXaXRoKCd2aWRlby8nKSA/ICd2aWRlb2NhbScgOiAnZG9jdW1lbnQnfQogICAgICAgICAgICAgICAgc2l6ZT17MTR9CiAgICAgICAgICAgICAgICBjb2xvcj17Q29sb3JzLnByaW1hcnl9CiAgICAgICAgICAgICAgLz4KICAgICAgICAgICAgICA8VGV4dCBzdHlsZT17c3R5bGVzLmF0dGFjaG1lbnROYW1lfT57ZmlsZS5uYW1lfTwvVGV4dD4KICAgICAgICAgICAgICA8VG91Y2hhYmxlT3BhY2l0eSBvblByZXNzPXsoKSA9PiByZW1vdmVGaWxlKGluZGV4KX0gaGl0U2xvcD17eyB0b3A6IDgsIGJvdHRvbTogOCwgbGVmdDogOCwgcmlnaHQ6IDggfX0+CiAgICAgICAgICAgICAgICA8SW9uaWNvbnMgbmFtZT0iY2xvc2UtY2lyY2xlIiBzaXplPXsxNn0gY29sb3I9e0NvbG9ycy50ZXh0VGVydGlhcnl9IC8+CiAgICAgICAgICAgICAgPC9Ub3VjaGFibGVPcGFjaXR5PgogICAgICAgICAgICA8L1ZpZXc+CiAgICAgICAgICApKX0KICAgICAgICA8L1ZpZXc+CiAgICAgICl9CgogICAgICA8VmlldyBzdHlsZT17W3N0eWxlcy5pbnB1dFJvdywgeyBiYWNrZ3JvdW5kQ29sb3I6IGlzRGFyayA/IENvbG9ycy5zdXJmYWNlU2Vjb25kYXJ5RGFyayA6ICcjZWVmMGY0JyB9XX0+CiAgICAgICAgPFRvdWNoYWJsZU9wYWNpdHkKICAgICAgICAgIHN0eWxlPXtzdHlsZXMuYXR0YWNoQnRufQogICAgICAgICAgb25QcmVzcz17KCkgPT4gc2V0U2hvd0F0dGFjaE1lbnUodHJ1ZSl9CiAgICAgICAgICBhY3RpdmVPcGFjaXR5PXswLjd9CiAgICAgICAgPgogICAgICAgICAgPElvbmljb25zIG5hbWU9ImFkZCIgc2l6ZT17MjZ9IGNvbG9yPXtDb2xvcnMudGV4dFNlY29uZGFyeX0gLz4KICAgICAgICA8L1RvdWNoYWJsZU9wYWNpdHk+CgogICAgICAgIDxUZXh0SW5wdXQKICAgICAgICAgIHJlZj17aW5wdXRSZWZ9CiAgICAgICAgICBzdHlsZT17W3N0eWxlcy5pbnB1dCwgeyBjb2xvcjogaW5wdXRDb2xvciwgaGVpZ2h0OiBpbnB1dEhlaWdodCB9XX0KICAgICAgICAgIHZhbHVlPXt0ZXh0fQogICAgICAgICAgb25DaGFuZ2VUZXh0PXtzZXRUZXh0fQogICAgICAgICAgcGxhY2Vob2xkZXI9e3BsYWNlaG9sZGVyIHx8ICfovpPlhaXmtojmga8uLi4nfQogICAgICAgICAgcGxhY2Vob2xkZXJUZXh0Q29sb3I9e0NvbG9ycy50ZXh0VGVydGlhcnl9CiAgICAgICAgICBtdWx0aWxpbmUKICAgICAgICAgIG1heExlbmd0aD17MTAwMDB9CiAgICAgICAgICByZXR1cm5LZXlUeXBlPSJzZW5kIgogICAgICAgICAgb25TdWJtaXRFZGl0aW5nPXtoYW5kbGVVcGxvYWRBbmRTZW5kfQogICAgICAgICAgYmx1ck9uU3VibWl0PXt0cnVlfQogICAgICAgICAgb25LZXlEb3duPXsoZTogYW55KSA9PiB7CiAgICAgICAgICAgIGlmIChlLmtleSA9PT0gIkVudGVyIiAmJiAhZS5zaGlmdEtleSkgewogICAgICAgICAgICAgIGUucHJldmVudERlZmF1bHQoKTsKICAgICAgICAgICAgICBoYW5kbGVVcGxvYWRBbmRTZW5kKCk7CiAgICAgICAgICAgIH0KICAgICAgICAgIH19CiAgICAgICAgLz4KCiAgICAgICAge2lzU3RyZWFtaW5nICYmICgKICAgICAgICAgIDxUb3VjaGFibGVPcGFjaXR5IHN0eWxlPXtzdHlsZXMuc3RvcEJ0bn0gb25QcmVzcz17b25TdG9wfSBhY3RpdmVPcGFjaXR5PXswLjd9PgogICAgICAgICAgICA8SW9uaWNvbnMgbmFtZT0ic3RvcCIgc2l6ZT17MTh9IGNvbG9yPXtDb2xvcnMuZGFuZ2VyfSAvPgogICAgICAgICAgPC9Ub3VjaGFibGVPcGFjaXR5PgogICAgICAgICl9CiAgICAgICAgPFRvdWNoYWJsZU9wYWNpdHkKICAgICAgICAgIHN0eWxlPXtbc3R5bGVzLnNlbmRCdG4sIHsgYmFja2dyb3VuZENvbG9yOiBoYXNDb250ZW50ID8gQ29sb3JzLnByaW1hcnkgOiAndHJhbnNwYXJlbnQnIH1dfQogICAgICAgICAgb25QcmVzcz17aGFuZGxlVXBsb2FkQW5kU2VuZH0KICAgICAgICAgIGRpc2FibGVkPXshaGFzQ29udGVudCB8fCB1cGxvYWRpbmd9CiAgICAgICAgICBhY3RpdmVPcGFjaXR5PXswLjd9CiAgICAgICAgPgogICAgICAgICAge3VwbG9hZGluZyA/ICgKICAgICAgICAgICAgPEFjdGl2aXR5SW5kaWNhdG9yIHNpemU9InNtYWxsIiBjb2xvcj0iI2ZmZiIgLz4KICAgICAgICAgICkgOiAoCiAgICAgICAgICAgIDxJb25pY29ucyBuYW1lPSJzZW5kIiBzaXplPXsxNn0gY29sb3I9e2hhc0NvbnRlbnQgPyAnI2ZmZicgOiBDb2xvcnMudGV4dFRlcnRpYXJ5fSAvPgogICAgICAgICAgKX0KICAgICAgICA8L1RvdWNoYWJsZU9wYWNpdHk+CiAgICAgIDwvVmlldz4KCiAgICAgIDxNb2RhbAogICAgICAgIHZpc2libGU9e3Nob3dBdHRhY2hNZW51fQogICAgICAgIHRyYW5zcGFyZW50CiAgICAgICAgYW5pbWF0aW9uVHlwZT0iZmFkZSIKICAgICAgICBvblJlcXVlc3RDbG9zZT17KCkgPT4gc2V0U2hvd0F0dGFjaE1lbnUoZmFsc2UpfQogICAgICA+CiAgICAgICAgPFRvdWNoYWJsZU9wYWNpdHkKICAgICAgICAgIHN0eWxlPXtzdHlsZXMubW9kYWxPdmVybGF5fQogICAgICAgICAgYWN0aXZlT3BhY2l0eT17MX0KICAgICAgICAgIG9uUHJlc3M9eygpID0+IHNldFNob3dBdHRhY2hNZW51KGZhbHNlKX0KICAgICAgICA+CiAgICAgICAgICA8VmlldyBzdHlsZT17c3R5bGVzLmF0dGFjaE1lbnV9PgogICAgICAgICAgICB7YXR0YWNoTWVudUl0ZW1zLm1hcCgoaXRlbSkgPT4gKAogICAgICAgICAgICAgIDxUb3VjaGFibGVPcGFjaXR5CiAgICAgICAgICAgICAgICBrZXk9e2l0ZW0ubGFiZWx9CiAgICAgICAgICAgICAgICBzdHlsZT17c3R5bGVzLmF0dGFjaE1lbnVJdGVtfQogICAgICAgICAgICAgICAgb25QcmVzcz17aXRlbS5hY3Rpb259CiAgICAgICAgICAgICAgICBhY3RpdmVPcGFjaXR5PXswLjd9CiAgICAgICAgICAgICAgPgogICAgICAgICAgICAgICAgPFZpZXcgc3R5bGU9e1tzdHlsZXMuYXR0YWNoTWVudUljb24sIHsgYmFja2dyb3VuZENvbG9yOiBpdGVtLmNvbG9yICsgJzE4JyB9XX0+CiAgICAgICAgICAgICAgICAgIDxJb25pY29ucyBuYW1lPXtpdGVtLmljb24gYXMgYW55fSBzaXplPXsyMn0gY29sb3I9e2l0ZW0uY29sb3J9IC8+CiAgICAgICAgICAgICAgICA8L1ZpZXc+CiAgICAgICAgICAgICAgICA8VGV4dCBzdHlsZT17c3R5bGVzLmF0dGFjaE1lbnVMYWJlbH0+e2l0ZW0ubGFiZWx9PC9UZXh0PgogICAgICAgICAgICAgIDwvVG91Y2hhYmxlT3BhY2l0eT4KICAgICAgICAgICAgKSl9CiAgICAgICAgICA8L1ZpZXc+CiAgICAgICAgPC9Ub3VjaGFibGVPcGFjaXR5PgogICAgICA8L01vZGFsPgogICAgPC9WaWV3PgogICk7Cn07Cgpjb25zdCBzdHlsZXMgPSBTdHlsZVNoZWV0LmNyZWF0ZSh7CiAgY29udGFpbmVyOiB7IHBhZGRpbmdIb3Jpem9udGFsOiBTcGFjaW5nLm1kLCBwYWRkaW5nVG9wOiBTcGFjaW5nLnNtLCBwYWRkaW5nQm90dG9tOiBQbGF0Zm9ybS5PUyA9PT0gJ3dlYicgPyAzNCA6IFNwYWNpbmcuc20gfSwKICBxdW90ZUJhcjogewogICAgZmxleERpcmVjdGlvbjogJ3JvdycsCiAgICBhbGlnbkl0ZW1zOiAnY2VudGVyJywKICAgIGJhY2tncm91bmRDb2xvcjogQ29sb3JzLnByaW1hcnkgKyAnMDgnLAogICAgYm9yZGVyUmFkaXVzOiAxMCwKICAgIHBhZGRpbmdIb3Jpem9udGFsOiAxMiwKICAgIHBhZGRpbmdWZXJ0aWNhbDogOCwKICAgIG1hcmdpbkJvdHRvbTogOCwKICAgIGJvcmRlckxlZnRXaWR0aDogMywKICAgIGJvcmRlckxlZnRDb2xvcjogQ29sb3JzLnByaW1hcnksCiAgfSwKICBxdW90ZUljb25XcmFwOiB7IG1hcmdpblJpZ2h0OiA4IH0sCiAgcXVvdGVDb250ZW50OiB7IGZsZXg6IDEsIG1hcmdpblJpZ2h0OiA4IH0sCiAgcXVvdGVMYWJlbDogeyBmb250U2l6ZTogMTEsIGNvbG9yOiBDb2xvcnMucHJpbWFyeSwgZm9udFdlaWdodDogJzYwMCcsIG1hcmdpbkJvdHRvbTogMiB9LAogIHF1b3RlVGV4dDogeyBmb250U2l6ZTogMTMsIGNvbG9yOiBDb2xvcnMudGV4dFNlY29uZGFyeSB9LAogIGF0dGFjaG1lbnRzOiB7CiAgICBmbGV4RGlyZWN0aW9uOiAncm93JywKICAgIGZsZXhXcmFwOiAnd3JhcCcsCiAgICBnYXA6IDYsCiAgICBtYXJnaW5Cb3R0b206IDgsCiAgICBwYWRkaW5nSG9yaXpvbnRhbDogNCwKICB9LAogIGF0dGFjaG1lbnRDaGlwOiB7CiAgICBmbGV4RGlyZWN0aW9uOiAncm93JywKICAgIGFsaWduSXRlbXM6ICdjZW50ZXInLAogICAgYmFja2dyb3VuZENvbG9yOiBDb2xvcnMucHJpbWFyeSArICcxMCcsCiAgICBib3JkZXJSYWRpdXM6IDE2LAogICAgcGFkZGluZ0hvcml6b250YWw6IDEwLAogICAgcGFkZGluZ1ZlcnRpY2FsOiA1LAogICAgZ2FwOiA0LAogICAgbWF4V2lkdGg6IDIwMCwKICB9LAogIGF0dGFjaG1lbnROYW1lOiB7IGZvbnRTaXplOiAxMiwgY29sb3I6IENvbG9ycy50ZXh0LCBtYXhXaWR0aDogMTMwIH0sCiAgaW5wdXRSb3c6IHsKICAgIGZsZXhEaXJlY3Rpb246ICdyb3cnLCBhbGlnbkl0ZW1zOiAnY2VudGVyJywKICAgIGJvcmRlclJhZGl1czogQm9yZGVyUmFkaXVzLmZ1bGwsCiAgICBwYWRkaW5nSG9yaXpvbnRhbDogU3BhY2luZy5zbSwgcGFkZGluZ1ZlcnRpY2FsOiA2LAogIH0sCiAgYXR0YWNoQnRuOiB7CiAgICB3aWR0aDogNDAsIGhlaWdodDogNDAsIGJvcmRlclJhZGl1czogMjAsIGJvcmRlcldpZHRoOiAxLCBib3JkZXJDb2xvcjogQ29sb3JzLmJvcmRlciwKICAgIGp1c3RpZnlDb250ZW50OiAnY2VudGVyJywgYWxpZ25JdGVtczogJ2NlbnRlcicsCiAgfSwKICBpbnB1dDogeyBmbGV4OiAxLCBmb250U2l6ZTogRm9udFNpemUubWQsIG1heEhlaWdodDogMTIwLCBsaW5lSGVpZ2h0OiAyMCwgcGFkZGluZ1ZlcnRpY2FsOiAyIH0sCiAgc2VuZEJ0bjogeyB3aWR0aDogNDAsIGhlaWdodDogNDAsIGJvcmRlclJhZGl1czogMjAsIGp1c3RpZnlDb250ZW50OiAnY2VudGVyJywgYWxpZ25JdGVtczogJ2NlbnRlcicsIG1hcmdpbkxlZnQ6IFNwYWNpbmcuc20gfSwKICBzdG9wQnRuOiB7IHdpZHRoOiA0MCwgaGVpZ2h0OiA0MCwgYm9yZGVyUmFkaXVzOiAyMCwganVzdGlmeUNvbnRlbnQ6ICdjZW50ZXInLCBhbGlnbkl0ZW1zOiAnY2VudGVyJywgbWFyZ2luTGVmdDogU3BhY2luZy5zbSB9LAogIG1vZGFsT3ZlcmxheTogewogICAgZmxleDogMSwKICAgIGJhY2tncm91bmRDb2xvcjogJ3JnYmEoMCwwLDAsMC40KScsCiAgICBqdXN0aWZ5Q29udGVudDogJ2ZsZXgtZW5kJywKICB9LAogIGF0dGFjaE1lbnU6IHsKICAgIGZsZXhEaXJlY3Rpb246ICdyb3cnLAogICAgYmFja2dyb3VuZENvbG9yOiAnI2ZmZicsCiAgICBwYWRkaW5nVG9wOiAyMCwKICAgIHBhZGRpbmdCb3R0b206IDM2LAogICAgcGFkZGluZ0hvcml6b250YWw6IDI0LAogICAgYm9yZGVyVG9wTGVmdFJhZGl1czogMjAsCiAgICBib3JkZXJUb3BSaWdodFJhZGl1czogMjAsCiAgICBqdXN0aWZ5Q29udGVudDogJ3NwYWNlLWFyb3VuZCcsCiAgfSwKICBhdHRhY2hNZW51SXRlbTogewogICAgYWxpZ25JdGVtczogJ2NlbnRlcicsCiAgICBnYXA6IDgsCiAgfSwKICBhdHRhY2hNZW51SWNvbjogewogICAgd2lkdGg6IDU2LAogICAgaGVpZ2h0OiA1NiwKICAgIGJvcmRlclJhZGl1czogMjgsCiAgICBqdXN0aWZ5Q29udGVudDogJ2NlbnRlcicsCiAgICBhbGlnbkl0ZW1zOiAnY2VudGVyJywKICB9LAogIGF0dGFjaE1lbnVMYWJlbDogewogICAgZm9udFNpemU6IDEzLAogICAgY29sb3I6IENvbG9ycy50ZXh0LAogICAgZm9udFdlaWdodDogJzUwMCcsCiAgfSwKfSk7Cg==
+import React, { useState, useRef, useEffect } from 'react';
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Platform, Alert, ActivityIndicator, Modal, FlatList } from 'react-native';
+import { Colors, Spacing, BorderRadius, FontSize } from '../constants/theme';
+import { Ionicons } from '@expo/vector-icons';
+
+// Module-level storage for pending file blobs when no conversationId exists yet
+let _pendingFileBlobs: Array<{blob: Blob, name: string, type: string}> = [];
+export function getPendingFiles() { return _pendingFileBlobs; }
+export function clearPendingFiles() { _pendingFileBlobs = []; }
+
+interface AttachedFile {
+  name: string;
+  size: number;
+  type: string;
+  blob?: Blob;
+  uri?: string;
+}
+
+interface QuotedMessage {
+  role: string;
+  content: string;
+}
+
+interface ChatInputProps {
+  onSend: (text: string, files?: AttachedFile[], fileIds?: string[]) => void;
+  onStop?: () => void;
+  isStreaming?: boolean;
+  isDark?: boolean;
+  placeholder?: string;
+  onFileUploaded?: (file: { name: string; url: string }) => void;
+  conversationId?: string;
+  patToken?: string;
+  quotedMessage?: QuotedMessage | null;
+  onClearQuote?: () => void;
+  initialText?: string;
+}
+
+const stripMd = (text: string): string => {
+  if (!text) return "";
+  return text
+    .replace(/<img\s[^>]*alt="([^"]*)"[^>]*>/gi, (_, alt) => alt ? `[图片]` : "[图片]")
+    .replace(/<img\s[^>]*>/gi, "[图片]")
+    .replace(/<[^>]+>/g, "")
+    .replace(/#{1,6}\s*/g, "")
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/\*(.+?)\*/g, "$1")
+    .replace(/`(.+?)`/g, "$1")
+    .replace(/\[(.+?)\]\(.+?\)/g, "$1")
+    .replace(/!\[.*?\]\(.+?\)/g, "")
+    .replace(/^[-*+]\s+/gm, "")
+    .replace(/\n+/g, " ")
+    .trim();
+};
+
+// Read a native file URI into a Blob (for project-files raw upload)
+const uriToBlob = async (uri: string): Promise<Blob> => {
+  const resp = await fetch(uri);
+  return await resp.blob();
+};
+
+// Derive a filename from a URI
+const fileNameFromUri = (uri: string, fallback: string): string => {
+  try {
+    const parts = uri.split('/');
+    const last = parts[parts.length - 1];
+    if (last && last.includes('.')) return last.split('?')[0];
+  } catch {}
+  return fallback;
+};
+
+export const ChatInput: React.FC<ChatInputProps> = ({
+  onSend, onStop, isStreaming, isDark, placeholder,
+  onFileUploaded, conversationId, patToken,
+  quotedMessage, onClearQuote, initialText,
+}) => {
+  const [text, setText] = useState('');
+
+  React.useEffect(() => {
+    if (initialText && !text) {
+      setText(initialText);
+    }
+  }, [initialText]);
+  const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [showAttachMenu, setShowAttachMenu] = useState(false);
+  const inputRef = useRef<TextInput>(null);
+  const isSendingRef = useRef(false);
+  const [inputHeight, setInputHeight] = useState(40);
+
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+    if (!inputRef.current) return;
+    const node = inputRef.current as any;
+    const el = node?.getElement ? node.getElement() : node;
+    if (!el) return;
+    el.style.height = '1px';
+    const newHeight = Math.min(el.scrollHeight, 120);
+    setInputHeight(newHeight);
+    el.style.height = newHeight + 'px';
+  }, [text]);
+
+  const handleSend = () => {
+    if (isSendingRef.current) return;
+    const trimmed = text.trim();
+    if (!trimmed && attachedFiles.length === 0) return;
+    isSendingRef.current = true;
+    onSend(trimmed, attachedFiles.length > 0 ? attachedFiles : undefined);
+    setText('');
+    setAttachedFiles([]);
+    setTimeout(() => { isSendingRef.current = false; }, 500);
+  };
+
+  const addFiles = (newFiles: AttachedFile[]) => {
+    if (newFiles.length > 0) {
+      setAttachedFiles(prev => [...prev, ...newFiles]);
+    }
+  };
+
+  const handleDocumentPicker = async () => {
+    setShowAttachMenu(false);
+    if (Platform.OS === 'web') {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.multiple = true;
+      input.onchange = (e: any) => {
+        const files = Array.from(e.target.files || []) as File[];
+        addFiles(files.map(f => ({
+          name: f.name,
+          size: f.size,
+          type: f.type,
+          blob: f as Blob,
+        })));
+      };
+      input.click();
+    } else {
+      try {
+        const result = await DocumentPicker.getDocumentAsync({
+          multiple: true,
+          type: '*/*',
+          copyToCacheDirectory: true,
+        });
+        if (result.canceled) return;
+        addFiles(result.assets.map((asset: any) => ({
+          name: asset.name || 'unknown',
+          size: asset.size || 0,
+          type: asset.mimeType || 'application/octet-stream',
+          uri: asset.uri,
+        })));
+      } catch (e) {
+        console.error('[ChatInput] Document picker error:', e);
+      }
+    }
+  };
+
+  const handleImagePicker = async () => {
+    setShowAttachMenu(false);
+    if (Platform.OS === 'web') {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.multiple = true;
+      input.accept = 'image/*';
+      input.onchange = (e: any) => {
+        const files = Array.from(e.target.files || []) as File[];
+        addFiles(files.map(f => ({
+          name: f.name,
+          size: f.size,
+          type: f.type || 'image/jpeg',
+          blob: f as Blob,
+        })));
+      };
+      input.click();
+      return;
+    }
+    try {
+      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!perm.granted) {
+        Alert.alert('需要权限', '请在设置中允许访问照片库');
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsMultipleSelection: true,
+        quality: 0.9,
+      });
+      if (result.canceled) return;
+      addFiles(result.assets.map((asset: any) => ({
+        name: asset.fileName || fileNameFromUri(asset.uri, `photo_${Date.now()}.jpg`),
+        size: asset.fileSize || 0,
+        type: asset.mimeType || 'image/jpeg',
+        uri: asset.uri,
+      })));
+    } catch (e) {
+      console.error('[ChatInput] Image picker error:', e);
+    }
+  };
+
+  const handleCamera = async () => {
+    setShowAttachMenu(false);
+    if (Platform.OS === 'web') {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.capture = 'environment';
+      input.onchange = (e: any) => {
+        const files = Array.from(e.target.files || []) as File[];
+        addFiles(files.map(f => ({
+          name: f.name,
+          size: f.size,
+          type: f.type || 'image/jpeg',
+          blob: f as Blob,
+        })));
+      };
+      input.click();
+      return;
+    }
+    try {
+      const perm = await ImagePicker.requestCameraPermissionsAsync();
+      if (!perm.granted) {
+        Alert.alert('需要权限', '请在设置中允许访问相机');
+        return;
+      }
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ['images'],
+        quality: 0.9,
+      });
+      if (result.canceled) return;
+      addFiles(result.assets.map((asset: any) => ({
+        name: asset.fileName || `photo_${Date.now()}.jpg`,
+        size: asset.fileSize || 0,
+        type: asset.mimeType || 'image/jpeg',
+        uri: asset.uri,
+      })));
+    } catch (e) {
+      console.error('[ChatInput] Camera error:', e);
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setAttachedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const UPLOAD_URL = 'https://s.symsgf.xyz/v1/files/upload';
+
+  const uploadToCoze = async (file: AttachedFile): Promise<string | null> => {
+    try {
+      // Native (iOS/Android): use FileSystem.uploadAsync which builds multipart reliably.
+      // React Native FormData with {uri,name,type} often fails to send file bytes on iOS.
+      if (Platform.OS !== 'web' && file.uri) {
+        const uploadResp = await FileSystem.uploadAsync(UPLOAD_URL, file.uri, {
+          httpMethod: 'POST',
+          uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+          fieldName: 'file',
+          mimeType: file.type || 'application/octet-stream',
+          headers: { 'Authorization': `Bearer ${patToken || ''}` },
+          parameters: { purpose: 'assistants' },
+        });
+        console.log('[ChatInput] native upload status:', uploadResp.status, 'name:', file.name);
+        if (uploadResp.status >= 200 && uploadResp.status < 300) {
+          const result = JSON.parse(uploadResp.body);
+          const fileId = result?.data?.id || result?.id || null;
+          console.log('[ChatInput] Coze upload OK (native), file_id:', fileId);
+          return fileId;
+        }
+        console.error('[ChatInput] Coze native upload failed:', uploadResp.status, (uploadResp.body || '').substring(0, 300));
+        return null;
+      }
+
+      // Web: FormData with Blob
+      const formData = new FormData();
+      const blob = file.blob || new Blob([]);
+      const fileObj = new File([blob], file.name, { type: file.type || 'application/octet-stream' });
+      formData.append('file', fileObj);
+      formData.append('purpose', 'assistants');
+      const resp = await fetch(UPLOAD_URL, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${patToken || ''}` },
+        body: formData,
+      });
+      if (resp.ok) {
+        const result = await resp.json();
+        const fileId = result.data?.id || result.id || null;
+        console.log('[ChatInput] Coze upload OK (web), file_id:', fileId);
+        return fileId;
+      }
+      const errText = await resp.text().catch(() => '');
+      console.error('[ChatInput] Coze upload failed:', resp.status, errText);
+      return null;
+    } catch (e) {
+      console.error('[ChatInput] Coze upload error:', e);
+      return null;
+    }
+  };
+
+  const handleUploadAndSend = async () => {
+    if (isSendingRef.current) return;
+    const effectiveConvId = conversationId || '';
+    if (attachedFiles.length === 0) {
+      handleSend();
+      return;
+    }
+
+    isSendingRef.current = true;
+    setUploading(true);
+    const uploadedNames: string[] = [];
+    const cozeFileIds: string[] = [];
+    const uploadedUrls: string[] = [];
+
+    try {
+      for (const file of attachedFiles) {
+        // 1. Upload to project-files (conversation file storage)
+        try {
+          let blob: Blob;
+          if (file.blob) {
+            blob = file.blob;
+          } else if (file.uri) {
+            blob = await uriToBlob(file.uri);
+          } else {
+            blob = new Blob([]);
+          }
+          const resp = await fetch(
+            'https://s.symsgf.xyz/project-files/api/files/upload',
+            {
+              method: 'POST',
+              headers: {
+                'X-Conversation-Id': effectiveConvId || 'pending',
+                'X-File-Name': file.name,
+                'Content-Type': file.type || 'application/octet-stream',
+              },
+              body: blob,
+            }
+          );
+          if (resp.ok) {
+            const result = await resp.json();
+            const savedName = result.data?.name || file.name;
+            uploadedNames.push(savedName);
+            // Build public URL for the uploaded file
+            const pubUrl = 'https://s.symsgf.xyz/project-files' + (result.data?.url || '');
+            uploadedUrls.push(pubUrl);
+            onFileUploaded?.({ name: file.name, url: pubUrl });
+          } else {
+            console.warn('[ChatInput] project-files upload failed:', resp.status);
+          }
+        } catch (pe) {
+          console.warn('[ChatInput] project-files upload error:', pe);
+        }
+
+        // 2. Upload to Coze file API (so AI can see it)
+        const fileId = await uploadToCoze(file);
+        if (fileId) {
+          cozeFileIds.push(fileId);
+        }
+      }
+    } catch (e) {
+      console.error('[ChatInput] 文件上传失败:', e);
+    } finally {
+      setUploading(false);
+      setTimeout(() => { isSendingRef.current = false; }, 500);
+    }
+
+    // Store pending blobs for later sync (new conversation case)
+    if (!effectiveConvId) {
+      _pendingFileBlobs = await Promise.all(
+        attachedFiles.map(async (f) => {
+          let blob = f.blob;
+          if (!blob && f.uri) {
+            try { blob = await uriToBlob(f.uri); } catch { blob = new Blob([]); }
+          }
+          return { blob: blob || new Blob([]), name: f.name, type: f.type || 'application/octet-stream' };
+        })
+      );
+    }
+
+    let msgText = text.trim();
+    const displayNames = uploadedNames.length > 0 ? uploadedNames : attachedFiles.map(f => f.name);
+    if (displayNames.length > 0) {
+      const fileNames = displayNames.map(n => `\u{1F4CE}${n}`).join(' ');
+      msgText = msgText ? `${msgText}\n${fileNames}` : fileNames;
+    }
+
+    if (cozeFileIds.length === 0 && attachedFiles.length > 0) {
+      Alert.alert(
+        '附件上传失败',
+        '文件未能上传到服务器（可能是网络或隧道不稳定）。请重试，或换用截图/较小的文件。',
+        [{ text: '知道了' }]
+      );
+    }
+
+    // Build file metadata with public URLs for images
+    const fileMeta = attachedFiles.map((f, i) => ({
+      name: f.name,
+      type: f.type || 'application/octet-stream',
+      url: uploadedUrls[i] || '',
+      fileId: cozeFileIds[i] || '',
+    }));
+    onSend(msgText, fileMeta, cozeFileIds.length > 0 ? cozeFileIds : undefined);
+    setText('');
+    setAttachedFiles([]);
+  };
+
+  const bgColor = isDark ? Colors.surfaceDark : '#fff';
+  const borderColor = isDark ? Colors.borderDark : Colors.borderLight;
+  const inputColor = isDark ? Colors.textInverse : Colors.text;
+  const hasContent = text.trim() || attachedFiles.length > 0;
+
+  const quoteLabel = quotedMessage ? (quotedMessage.role === 'user' ? '我' : 'AI') : '';
+  const quotePreview = quotedMessage ? stripMd(quotedMessage.content).substring(0, 100) : '';
+
+  const attachMenuItems = [
+    { icon: 'image-outline', label: '照片', color: '#3b82f6', action: handleImagePicker },
+    { icon: 'camera-outline', label: '拍照', color: '#10b981', action: handleCamera },
+    { icon: 'document-outline', label: '文件', color: '#f59e0b', action: handleDocumentPicker },
+  ];
+
+  return (
+    <View style={[styles.container, { backgroundColor: bgColor, borderTopColor: borderColor }]}>
+      {quotedMessage && (
+        <View style={styles.quoteBar}>
+          <View style={styles.quoteIconWrap}>
+            <Ionicons name="return-down-back-outline" size={14} color={Colors.primary} />
+          </View>
+          <View style={styles.quoteContent}>
+            <Text style={styles.quoteLabel}>引用{quoteLabel}的消息</Text>
+            <Text style={styles.quoteText} numberOfLines={2}>{quotePreview}</Text>
+          </View>
+          <TouchableOpacity onPress={onClearQuote} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <Ionicons name="close" size={18} color={Colors.textTertiary} />
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {attachedFiles.length > 0 && (
+        <View style={styles.attachments}>
+          {attachedFiles.map((file, index) => (
+            <View key={index} style={styles.attachmentChip}>
+              <Ionicons
+                name={file.type.startsWith('image/') ? 'image' : file.type.startsWith('video/') ? 'videocam' : 'document'}
+                size={14}
+                color={Colors.primary}
+              />
+              <Text style={styles.attachmentName}>{file.name}</Text>
+              <TouchableOpacity onPress={() => removeFile(index)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                <Ionicons name="close-circle" size={16} color={Colors.textTertiary} />
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      )}
+
+      <View style={[styles.inputRow, { backgroundColor: isDark ? Colors.surfaceSecondaryDark : '#eef0f4' }]}>
+        <TouchableOpacity
+          style={styles.attachBtn}
+          onPress={() => setShowAttachMenu(true)}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="add" size={26} color={Colors.textSecondary} />
+        </TouchableOpacity>
+
+        <TextInput
+          ref={inputRef}
+          style={[styles.input, { color: inputColor, height: inputHeight }]}
+          value={text}
+          onChangeText={setText}
+          placeholder={placeholder || '输入消息...'}
+          placeholderTextColor={Colors.textTertiary}
+          multiline
+          maxLength={10000}
+          returnKeyType="send"
+          onSubmitEditing={handleUploadAndSend}
+          blurOnSubmit={true}
+          onKeyDown={(e: any) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              handleUploadAndSend();
+            }
+          }}
+        />
+
+        {isStreaming && (
+          <TouchableOpacity style={styles.stopBtn} onPress={onStop} activeOpacity={0.7}>
+            <Ionicons name="stop" size={18} color={Colors.danger} />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          style={[styles.sendBtn, { backgroundColor: hasContent ? Colors.primary : 'transparent' }]}
+          onPress={handleUploadAndSend}
+          disabled={!hasContent || uploading}
+          activeOpacity={0.7}
+        >
+          {uploading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Ionicons name="send" size={16} color={hasContent ? '#fff' : Colors.textTertiary} />
+          )}
+        </TouchableOpacity>
+      </View>
+
+      <Modal
+        visible={showAttachMenu}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowAttachMenu(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowAttachMenu(false)}
+        >
+          <View style={styles.attachMenu}>
+            {attachMenuItems.map((item) => (
+              <TouchableOpacity
+                key={item.label}
+                style={styles.attachMenuItem}
+                onPress={item.action}
+                activeOpacity={0.7}
+              >
+                <View style={[styles.attachMenuIcon, { backgroundColor: item.color + '18' }]}>
+                  <Ionicons name={item.icon as any} size={22} color={item.color} />
+                </View>
+                <Text style={styles.attachMenuLabel}>{item.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </TouchableOpacity>
+      </Modal>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: { paddingHorizontal: Spacing.md, paddingTop: Spacing.sm, paddingBottom: Platform.OS === 'web' ? 34 : Spacing.sm },
+  quoteBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.primary + '08',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginBottom: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.primary,
+  },
+  quoteIconWrap: { marginRight: 8 },
+  quoteContent: { flex: 1, marginRight: 8 },
+  quoteLabel: { fontSize: 11, color: Colors.primary, fontWeight: '600', marginBottom: 2 },
+  quoteText: { fontSize: 13, color: Colors.textSecondary },
+  attachments: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginBottom: 8,
+    paddingHorizontal: 4,
+  },
+  attachmentChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.primary + '10',
+    borderRadius: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    gap: 4,
+    maxWidth: 200,
+  },
+  attachmentName: { fontSize: 12, color: Colors.text, maxWidth: 130 },
+  inputRow: {
+    flexDirection: 'row', alignItems: 'center',
+    borderRadius: BorderRadius.full,
+    paddingHorizontal: Spacing.sm, paddingVertical: 6,
+  },
+  attachBtn: {
+    width: 40, height: 40, borderRadius: 20, borderWidth: 1, borderColor: Colors.border,
+    justifyContent: 'center', alignItems: 'center',
+  },
+  input: { flex: 1, fontSize: FontSize.md, maxHeight: 120, lineHeight: 20, paddingVertical: 2 },
+  sendBtn: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center', marginLeft: Spacing.sm },
+  stopBtn: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center', marginLeft: Spacing.sm },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-end',
+  },
+  attachMenu: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    paddingTop: 20,
+    paddingBottom: 36,
+    paddingHorizontal: 24,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    justifyContent: 'space-around',
+  },
+  attachMenuItem: {
+    alignItems: 'center',
+    gap: 8,
+  },
+  attachMenuIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  attachMenuLabel: {
+    fontSize: 13,
+    color: Colors.text,
+    fontWeight: '500',
+  },
+});
