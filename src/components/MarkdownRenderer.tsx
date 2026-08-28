@@ -320,8 +320,7 @@ const renderTable = (headerLine: string, lines: string[], startIdx: number, isDa
           showsHorizontalScrollIndicator={true}
           directionalLockEnabled
           alwaysBounceHorizontal={false}
-          nestedScrollEnabled
-          style={{ maxWidth: '100%' }}
+          style={{ alignSelf: 'flex-start', maxWidth: '100%', flexGrow: 0, flexShrink: 0 }}
           contentContainerStyle={{ flexGrow: 0, flexShrink: 0 }}
         >
           <View style={{ borderWidth: 1, borderColor, borderRadius: BorderRadius.md, overflow: 'hidden', flexDirection: 'column' }}>
